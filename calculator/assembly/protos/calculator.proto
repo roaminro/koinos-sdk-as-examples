@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package calc;
+
+message add_arguments {
+  int64 x = 1;
+  int64 y = 2;
+}
+
+message add_result {
+  int64 value = 1;
+}
+
+message sub_arguments {
+  int64 x = 1;
+  int64 y = 2;
+}
+
+message sub_result {
+  int64 value = 1;
+}
+
+message mul_arguments {
+  int64 x = 1;
+  int64 y = 2;
+}
+
+message mul_result {
+  int64 value = 1;
+}
+
+message div_arguments {
+  int64 x = 1;
+  int64 y = 2;
+}
+
+message div_result {
+  int64 value = 1;
+}

@@ -1,0 +1,25 @@
+{
+  "name": "koinos-cdt-as-examples",
+  "version": "0.1.0",
+  "main": "assembly/index.ts",
+  "license": "MIT",
+  "author": "Roamin Roe <roamin@tuta.io>",
+  "repository": "https://github.com/roaminroe/koinos-cdt-as-examples",
+  "dependencies": {
+    "koinos-cdt-as": "^0.1.0"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.10.0",
+    "@typescript-eslint/parser": "^5.10.0",
+    "as-proto-gen": "^0.1.0",
+    "assemblyscript": "^0.19.22",
+    "eslint": "^8.7.0",
+    "typescript": "^4.5.5"
+  },
+  "scripts": {
+    "lint": "eslint --max-warnings 0 --ext ts \"assembly/**/*.ts\"",
+    "asbuild:calculator": "npm run asbuild:calculator:debug && npm run asbuild:calculator:release",
+    "asbuild:calculator:release": "asc calculator/assembly/index.ts --target release --use abort= --config calculator/asconfig.json",
+    "asbuild:calculator:debug": "asc calculator/assembly/index.ts --target debug --use abort= --config calculator/asconfig.json"
+  }
+}

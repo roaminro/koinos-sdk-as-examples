@@ -1,0 +1,33 @@
+{
+   "methods" : {
+      "add": {
+         "argument"    : "koinos.contracts.calc.add_arguments",
+         "return"      : "koinos.contracts.calc.add_result",
+         "entry_point" : "0x01",
+         "description" : "Add two integers",
+         "read-only"   : true
+      },
+      "sub": {
+         "argument"    : "koinos.contracts.calc.sub_arguments",
+         "return"      : "koinos.contracts.calc.sub_result",
+         "entry_point" : "0x02",
+         "description" : "Subtract two integers",
+         "read-only"   : true
+      },
+      "mul": {
+         "argument"    : "koinos.contracts.calc.mul_arguments",
+         "return"      : "koinos.contracts.calc.mul_result",
+         "entry_point" : "0x03",
+         "description" : "Multiply two integers",
+         "read-only"   : true
+      },
+      "div": {
+         "argument"    : "koinos.contracts.calc.div_arguments",
+         "return"      : "koinos.contracts.calc.div_result",
+         "entry_point" : "0x04",
+         "description" : "Divide two integers",
+         "read-only"   : true
+      }
+   },
+   "types" : "Cq4DCgpjYWxjLnByb3RvEhVrb2lub3MuY29udHJhY3RzLmNhbGMiKwoNYWRkX2FyZ3VtZW50cxIMCgF4GAEgASgDUgF4EgwKAXkYAiABKANSAXkiIgoKYWRkX3Jlc3VsdBIUCgV2YWx1ZRgBIAEoA1IFdmFsdWUiKwoNc3ViX2FyZ3VtZW50cxIMCgF4GAEgASgDUgF4EgwKAXkYAiABKANSAXkiIgoKc3ViX3Jlc3VsdBIUCgV2YWx1ZRgBIAEoA1IFdmFsdWUiKwoNbXVsX2FyZ3VtZW50cxIMCgF4GAEgASgDUgF4EgwKAXkYAiABKANSAXkiIgoKbXVsX3Jlc3VsdBIUCgV2YWx1ZRgBIAEoA1IFdmFsdWUiKwoNZGl2X2FyZ3VtZW50cxIMCgF4GAEgASgDUgF4EgwKAXkYAiABKANSAXkiIgoKZGl2X3Jlc3VsdBIUCgV2YWx1ZRgBIAEoA1IFdmFsdWVCPVo7Z2l0aHViLmNvbS9rb2lub3Mva29pbm9zLXByb3RvLWdvbGFuZy9rb2lub3MvY29udHJhY3RzL2NhbGNiBnByb3RvMw=="
+}
