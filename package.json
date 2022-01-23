@@ -6,7 +6,7 @@
   "author": "Roamin Roe <roamin@tuta.io>",
   "repository": "https://github.com/roaminroe/koinos-cdt-as-examples",
   "dependencies": {
-    "koinos-cdt-as": "^0.1.1"
+    "koinos-cdt-as": "^0.1.2"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.10.0",
