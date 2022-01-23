@@ -614,10 +614,10 @@ json-stable-stringify-without-jsonify@^1.0.1:
   resolved "https://registry.yarnpkg.com/json-stable-stringify-without-jsonify/-/json-stable-stringify-without-jsonify-1.0.1.tgz#9db7b59496ad3f3cfef30a75142d2d930ad72651"
   integrity sha1-nbe1lJatPzz+8wp1FC0tkwrXJlE=
 
-koinos-cdt-as@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/koinos-cdt-as/-/koinos-cdt-as-0.1.2.tgz#39fc6700ab867ad126942d928290bc87bcdb594f"
-  integrity sha512-QAohRDM4iLR5lTiWar4gg1U1F5VYbzFX6M6II0QXopB4PPu1mLI7RD2eoKMzu/UauGzva743gRm11Ge+MA0dcA==
+koinos-cdt-as@^0.1.3:
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/koinos-cdt-as/-/koinos-cdt-as-0.1.3.tgz#ea8076123c4a6aa23f9a17842129593fd9dad83c"
+  integrity sha512-b09PR1w4LcZJRKdXK5ubp8VUwF3/1I0jRHLqt9M2KsygBCmsOcfAPtw+Lyluc/Ugfmsg58I2dFX5IdPxJBrh1g==
   dependencies:
     as-proto "npm:as-proto-tmp"
 

@@ -1,5 +1,5 @@
 import { calc } from "./protos/calculator";
-import { system, Protobuf } from "koinos-cdt-as";
+import { System, Protobuf } from "koinos-cdt-as";
 
 enum entries {
   addEntry = 1,
@@ -28,8 +28,8 @@ class Calculator {
 
 function main(): i32 {
 
-  const entryPoint = system.getEntryPoint();
-  const rdbuf = system.getContractArguments();
+  const entryPoint = System.getEntryPoint();
+  const rdbuf = System.getContractArguments();
   let retbuf = new Uint8Array(32);
 
   const c = new Calculator();
@@ -60,13 +60,13 @@ function main(): i32 {
       break;
     }
     default:
-      system.exitContract(1);
+      System.exitContract(1);
       break;
   }
   
-  system.setContractResultBytes(retbuf);
+  System.setContractResultBytes(retbuf);
 
-  system.exitContract(0);
+  System.exitContract(0);
   return 0;
 }
 
