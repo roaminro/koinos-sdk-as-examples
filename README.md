@@ -10,9 +10,9 @@ yarn install
 ```
 
 ## Important note
-In order for the file generation to work, it is important that your smart contract and your proto files have the same name. (i.e.: Calculator.ts and Calculator.proto)
-
-It is also important that your `proto` files live in the `assembly/proto/` folder of you smart contract, i.e.: `./calculator/assembly/proto/Calculator.proto`.
+- In order for the file generation to work, it is important that your smart contract and your proto files have the same name. (i.e.: Calculator.ts and Calculator.proto)
+- It is also important that your smart contract file lives in the `assembly` folder of your project. (i.e.: `./calculator/assembly/Calculator.ts`)
+- Finally, it is also important that your `proto` files live in the `assembly/proto/` folder of your project. (i.e.: `./calculator/assembly/proto/Calculator.proto`)
 
 ## Build examples
 To build a Smart Contract you can use the cli.js script. This script will help you generate all the files required to build your smart contract.
