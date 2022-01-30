@@ -6,6 +6,7 @@
   "author": "Roamin Roe <roamin@tuta.io>",
   "repository": "https://github.com/roaminroe/koinos-cdt-as-examples",
   "dependencies": {
+    "commander": "^9.0.0",
     "koinos-cdt-as": "^0.1.6"
   },
   "devDependencies": {
@@ -18,13 +19,6 @@
     "typescript": "^4.5.5"
   },
   "scripts": {
-    "asbuild:calculator:lint": "eslint --max-warnings 0 --ext ts \"calculator/assembly/**/*.ts\"",
-    "asbuild:calculator": "npm run asbuild:calculator:debug && npm run asbuild:calculator:release",
-    "asbuild:calculator:release": "yarn run generate:calculator:proto && yarn run generate:calculator:indexAndAbi && asc calculator/assembly/index.ts --target release --use abort= --config calculator/asconfig.json",
-    "asbuild:calculator:debug": "yarn run generate:calculator:proto && yarn run generate:calculator:indexAndAbi && asc calculator/assembly/index.ts --target debug --use abort= --config calculator/asconfig.json",
-    "generate:calculator:proto": "protoc --plugin=protoc-gen-as=./node_modules/.bin/as-proto-gen --as_out=. ./calculator/assembly/proto/Calculator.proto --descriptor_set_out=./calculator/assembly/proto/Calculator.pb",
-    "generate:calculator:indexAndAbi": "CONTRACT_PATH=./calculator/ asc calculator/assembly/Calculator.ts --target debug --use abort= --config calculator/asconfig.json --transform ./node_modules/koinos-cdt-as/tools/koinos-contract-transform.js",
-    "asbuild:calculator1": "asc calculator/assembly/index.ts --target release --use abort= --config calculator/asconfig.json"
-
+    "lint": "eslint --max-warnings 0 --ext ts \"*/assembly/**/*.ts\""
   }
 }

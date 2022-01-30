@@ -6,3 +6,4 @@ abi
 *.wasm
 *.pb
 **/proto/*.ts
+**/assembly/index.ts
