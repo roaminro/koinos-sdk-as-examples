@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package calc;
+package calculator;
 
 message add_arguments {
   int64 x = 1;

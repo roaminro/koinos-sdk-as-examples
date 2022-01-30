@@ -2,5 +2,7 @@ node_modules
 build
 \.idea/
 \.vs/
-
+abi
 *.wasm
+*.pb
+**/proto/*.ts
