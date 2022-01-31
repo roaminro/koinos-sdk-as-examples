@@ -7,3 +7,4 @@ build
 *.pb
 **/proto/*.ts
 **/assembly/index.ts
+**/assembly/*.boilerplate.ts

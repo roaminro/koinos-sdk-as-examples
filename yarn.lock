@@ -683,6 +683,13 @@ koinos-abi-proto-gen@^0.1.1:
   dependencies:
     google-protobuf "^3.19.4"
 
+koinos-as-gen@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/koinos-as-gen/-/koinos-as-gen-0.1.1.tgz#fa374c1be098e3470a1daf1b644303bb43d256d5"
+  integrity sha512-6K8AieejX2Kvm0QDYFr6ORzRlTKrfBuz3l++sMjlKpdUmgHgmG3fcqCU2nJpAKABRzO1SM+J6xZqkzqynEPUTQ==
+  dependencies:
+    google-protobuf "^3.19.4"
+
 koinos-cdt-as@^0.1.7:
   version "0.1.7"
   resolved "https://registry.npmjs.org/koinos-cdt-as/-/koinos-cdt-as-0.1.7.tgz"
