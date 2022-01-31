@@ -1,4 +1,3 @@
-import { entry_point } from 'koinos-cdt-as';
 import { calculator } from "./proto/Calculator";
 
 // @ts-ignore

@@ -15,12 +15,11 @@
     "as-proto-gen": "^0.1.0",
     "assemblyscript": "^0.19.22",
     "eslint": "^8.7.0",
-    "koinos-abi-proto-gen": "^0.1.0",
+    "koinos-abi-proto-gen": "^0.1.1",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.5"
   },
   "scripts": {
-    "lint": "eslint --max-warnings 0 --ext ts \"*/assembly/**/*.ts\"",
-    "generateAbi": "protoc --plugin=protoc-gen-abi=./node_modules/.bin/koinos-abi-proto-gen --abi_out=. ./calculator/assembly/proto/Calculator.proto"
+    "lint": "eslint --max-warnings 0 --ext ts \"*/assembly/**/*.ts\""
   }
 }

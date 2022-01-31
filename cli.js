@@ -16,7 +16,7 @@ program.command('build')
   .action((contractFolderPath, contractName, buildMode) => {
     // compile proto file
     console.log('Generating ABI file...');
-    execSync(`protoc --plugin=protoc-gen-abi=./node_modules/.bin/koinos-abi-proto-gen --abi_out=. ${contractFolderPath}/assembly/proto/${contractName}.proto`);
+    execSync(`protoc --plugin=protoc-gen-abi=./node_modules/.bin/koinos-abi-proto-gen --abi_out=${contractFolderPath}/abi/ ${contractFolderPath}/assembly/proto/${contractName}.proto`);
     
     console.log('Generating proto files...');
     execSync(`protoc --plugin=protoc-gen-as=./node_modules/.bin/as-proto-gen --as_out=. ${contractFolderPath}/assembly/proto/*.proto`);
@@ -38,7 +38,7 @@ program.command('generate-abi')
   .action((contractFolderPath, contractName) => {
     // compile proto file
     console.log('Generating ABI file...');
-    execSync(`protoc --plugin=protoc-gen-abi=./node_modules/.bin/koinos-abi-proto-gen --abi_out=. ${contractFolderPath}/assembly/proto/${contractName}.proto`);
+    execSync(`protoc --plugin=protoc-gen-abi=./node_modules/.bin/koinos-abi-proto-gen --abi_out=${contractFolderPath}/abi/ ${contractFolderPath}/assembly/proto/${contractName}.proto`);
   });
 
 program.command('generate-index-ts-file')
