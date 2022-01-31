@@ -2,9 +2,8 @@ node_modules
 build
 \.idea/
 \.vs/
-*.abi
 *.wasm
-*.pb
+**/abi/*.abi
 **/proto/*.ts
 **/assembly/index.ts
 **/assembly/*.boilerplate.ts
