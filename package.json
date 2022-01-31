@@ -16,7 +16,7 @@
     "assemblyscript": "^0.19.22",
     "eslint": "^8.7.0",
     "koinos-abi-proto-gen": "^0.1.1",
-    "koinos-as-gen": "^0.1.1",
+    "koinos-as-gen": "^0.1.3",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.5"
   },
