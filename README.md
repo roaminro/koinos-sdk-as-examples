@@ -35,22 +35,32 @@ This will result in the generation of:
 
 - a contract.wasm file in the folder `calculator/build/release` and `calculator/build/debug`
 
-- an contract.abi file in the folder `calculator/abi/`
+- a Calculator.abi file in the folder `calculator/assembly/proto/`
   
 ## Generate AssemblyScript proto files
-To generate the protofiles you will need to first install `protoc` on your machine https://github.com/protocolbuffers/protobuf/releases
+To generate the proto files you will need to first install `protoc` on your machine https://github.com/protocolbuffers/protobuf/releases
 
 ```sh
 # example for the calculator contract
 node cli.js generate-proto-files ./calculator
 ```
 
-## Generate ABI file and index.ts file
+## Generate ABI file
 ```sh
 # example for the calculator contract
 # build the debug version
-node cli.js generate-index-abi ./calculator Calculator debug
+node cli.js generate-abi ./calculator Calculator
 
 # build the release version
-node cli.js generate-index-abi ./calculator Calculator release
+node cli.js generate-abi ./calculator Calculator
+```
+
+## Generate index.ts file
+```sh
+# example for the calculator contract
+# build the debug version
+node cli.js generate-index-ts-file ./calculator Calculator debug
+
+# build the release version
+node cli.js generate-index-ts-file ./calculator Calculator release
 ```

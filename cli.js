@@ -15,12 +15,15 @@ program.command('build')
   .argument('<buildMode>', 'Build mode debug or realease')
   .action((contractFolderPath, contractName, buildMode) => {
     // compile proto file
+    console.log('Generating ABI file...');
+    execSync(`protoc --plugin=protoc-gen-abi=./node_modules/.bin/koinos-abi-proto-gen --abi_out=. ${contractFolderPath}/assembly/proto/${contractName}.proto`);
+    
     console.log('Generating proto files...');
     execSync(`protoc --plugin=protoc-gen-as=./node_modules/.bin/as-proto-gen --as_out=. ${contractFolderPath}/assembly/proto/*.proto`);
-    execSync(`protoc --plugin=protoc-gen-as=./node_modules/.bin/as-proto-gen --as_out=. ${contractFolderPath}/assembly/proto/${contractName}.proto --descriptor_set_out=${contractFolderPath}/assembly/proto/${contractName}.pb`);
+    execSync(`protoc --plugin=protoc-gen-as=./node_modules/.bin/as-proto-gen --as_out=. ${contractFolderPath}/assembly/proto/${contractName}.proto`);
 
-    // compile contract file to generate index.ts file and ABI file
-    console.log('Generating index.ts and ABI files...');
+    // compile contract file to generate index.ts file
+    console.log('Generating index.ts file...');
     execSync(`CONTRACT_PATH=${contractFolderPath} ./node_modules/assemblyscript/bin/asc ${contractFolderPath}/assembly/${contractName}.ts --target ${buildMode} --use abort= --config ${contractFolderPath}/asconfig.json --transform ./node_modules/koinos-cdt-as/tools/koinos-contract-transform.js`);
 
     // compile index.ts
@@ -28,14 +31,24 @@ program.command('build')
     execSync(`./node_modules/assemblyscript/bin/asc ${contractFolderPath}/assembly/index.ts --target ${buildMode} --use abort= --config ${contractFolderPath}/asconfig.json`);
   });
 
-program.command('generate-index-abi')
-  .description('Generate index.ts file and ABI')
+program.command('generate-abi')
+  .description('Generate ABI file')
+  .argument('<contractFolderPath>', 'Path to the contract folder')
+  .argument('<contractName>', 'Name of the contract')
+  .action((contractFolderPath, contractName) => {
+    // compile proto file
+    console.log('Generating ABI file...');
+    execSync(`protoc --plugin=protoc-gen-abi=./node_modules/.bin/koinos-abi-proto-gen --abi_out=. ${contractFolderPath}/assembly/proto/${contractName}.proto`);
+  });
+
+program.command('generate-index-ts-file')
+  .description('Generate index.ts file')
   .argument('<contractFolderPath>', 'Path to the contract folder')
   .argument('<contractName>', 'Name of the contract')
   .argument('<buildMode>', 'Build mode debug or realease')
   .action((contractFolderPath, contractName, buildMode) => {
-    // compile contract file to generate index.ts file and ABI file
-    console.log('Generating index.ts and ABI files...');
+    // compile contract file to generate index.ts file
+    console.log('Generating index.ts file...');
     execSync(`CONTRACT_PATH=${contractFolderPath} ./node_modules/assemblyscript/bin/asc ${contractFolderPath}/assembly/${contractName}.ts --target ${buildMode} --use abort= --config ${contractFolderPath}/asconfig.json --transform ./node_modules/koinos-cdt-as/tools/koinos-contract-transform.js`);
 
     // compile index.ts
