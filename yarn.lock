@@ -690,10 +690,10 @@ koinos-as-gen@^0.3.1:
   dependencies:
     google-protobuf "^3.19.4"
 
-koinos-as-sdk@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/koinos-as-sdk/-/koinos-as-sdk-0.3.0.tgz#44b08c957dab53a945d0326bc73c0108a2a5ed72"
-  integrity sha512-mLd4anVqFMfHvZoun/wcZI2/Mgf3ix257B6QCg/lCGOF0AhJBksa9NU9BUML4cliK2qyS8RHhLY+mK/XvE98bQ==
+koinos-as-sdk@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/koinos-as-sdk/-/koinos-as-sdk-0.3.1.tgz#e5ebc2e295fbb9964a04ff184705f02a7215df1b"
+  integrity sha512-Nc/RVblCt9L9YNE+Mm76BnKOuStwTnaLKmZ9PYFH2JSbFuWpcwqjeJAkB2ann3PaNlIVgLGOM9uF7gRhgFOFvQ==
   dependencies:
     as-proto "^0.2.0"
 
