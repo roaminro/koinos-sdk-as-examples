@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package chat;
+
+// @description Send a message
+// @read-only false
+message send_arguments {
+  string message = 1;
+}
+
+message send_result {
+}
+
+// @description Read last n messages
+// @read-only false
+// will send a transaction to leverage the cli logs to display the chat messages
+message read_arguments {
+  uint64 number_messages = 1;
+}
+
+message read_result {
+}
+
+// database objects
+message chat_message {
+  bytes user = 1;
+  string message = 2;
+  uint64 timestamp = 3;
+}
+
+message metadata_object {
+  uint64 last_message_id = 1;
+}
