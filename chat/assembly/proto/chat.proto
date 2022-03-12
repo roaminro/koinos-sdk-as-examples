@@ -21,6 +21,16 @@ message read_arguments {
 message read_result {
 }
 
+// @description Read last n messages for free!!
+// @read-only true
+message free_read_arguments {
+  uint64 number_messages = 1;
+}
+
+message free_read_result {
+  repeated string messages = 1;
+}
+
 // database objects
 message chat_message {
   bytes user = 1;
