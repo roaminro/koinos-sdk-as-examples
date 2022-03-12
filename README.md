@@ -2,8 +2,13 @@
 ## Installation
 
 ```sh
+// clone this repo
+git clone --recursive https://github.com/roaminroe/koinos-as-sdk-examples
+
 # with npm
 npm install
+
+// or
 
 # with yarn
 yarn install
