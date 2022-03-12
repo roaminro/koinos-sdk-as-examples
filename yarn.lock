@@ -739,10 +739,10 @@ json-stable-stringify-without-jsonify@^1.0.1:
   resolved "https://registry.npmjs.org/json-stable-stringify-without-jsonify/-/json-stable-stringify-without-jsonify-1.0.1.tgz"
   integrity sha1-nbe1lJatPzz+8wp1FC0tkwrXJlE=
 
-koinos-abi-proto-gen@^0.1.4:
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/koinos-abi-proto-gen/-/koinos-abi-proto-gen-0.1.4.tgz#3b0f94a41441f1619f7e42503aec713d032d6995"
-  integrity sha512-AL5PAJlUlv28XFpd/jBXY6EriiAOWnzi6RvbyLtfAzl7zm6c9L6FoDdFBGeE9wuyTrrRJBANRzswlr3wK6oRYQ==
+koinos-abi-proto-gen@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/koinos-abi-proto-gen/-/koinos-abi-proto-gen-0.1.5.tgz#88a8078863e02db281636cfa36fc439504b45091"
+  integrity sha512-3NTrS+c1/JISYR50Y3FjM3o2OVjew2uAwCQvZjfISuRqr4Xli5LeotGcN/rRqiW0vXs3a9GS1cknui9Br1NPLQ==
   dependencies:
     google-protobuf "^3.19.4"
     protobufjs "^6.11.2"

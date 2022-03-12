@@ -2,13 +2,13 @@
 ## Installation
 
 ```sh
-// clone this repo
+# clone this repo
 git clone --recursive https://github.com/roaminroe/koinos-as-sdk-examples
 
 # with npm
 npm install
 
-// or
+# or
 
 # with yarn
 yarn install
@@ -28,15 +28,16 @@ node cli.js help
 ```sh
 # example for building the calculator contract
 # build the debug version
-node cli.js build-all ./calculator calculator debug
+node cli.js build-all calculator debug calculator.proto 
 
 # build the release version
-node cli.js build-all ./calculator calculator release
+node cli.js build-all calculator release calculator.proto 
 ```
 
 This will result in the generation of:
 
 - a `calculator.abi` file in the folder `calculator/abi/`
+- a `calculator-abi.json` file in the folder `calculator/abi/`
 - a `contract.wasm` file in the folder `calculator/build/release` and `calculator/build/debug`
 - an `index.ts` file in the folder `calculator/assembly/`
 - a `Calculator.boilerplate.ts` file in the folder `calculator/assembly/`
@@ -46,20 +47,20 @@ To generate the proto files you will need to first install `protoc` on your mach
 
 ```sh
 # example for the calculator contract
-node cli.js generate-proto-files ./calculator
+node cli.js generate-proto-files calculator
 ```
 
 ## Generate ABI file
 ```sh
 # example for the calculator contract
-node cli.js generate-abi ./calculator calculator
+node cli.js generate-abi calculator calculator.proto
 ```
 This will generate a calculator.abi file in the folder `calculator/abi/`
 
 ## Generate contract.boilerplate.ts and index.ts files
 ```sh
 # example for the calculator contract
-node cli.js generate-as-files ./calculator calculator
+node cli.js generate-as-files calculator calculator.proto
 ```
 
 This will generate a `Calculator.boilerplate.ts`file and `index.ts` file in the folder `calculator/assembly/`
