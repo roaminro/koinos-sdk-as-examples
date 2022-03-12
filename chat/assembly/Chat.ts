@@ -56,9 +56,7 @@ export class Chat {
     }
 
     // reverse the messages array to have the latest message showing at the bottom when printing in the cli
-    messages.reverse().forEach((message) => {
-      System.log(message);
-    });
+    System.log(messages.reverse().join('\n'));
 
     return new chat.read_result();
   }
