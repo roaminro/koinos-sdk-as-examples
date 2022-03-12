@@ -13,7 +13,10 @@ program.command('build-all')
   .argument('<contractFolderPath>', 'Path to the contract folder')
   .argument('<protoFileName>', 'Name of the contract proto file')
   .argument('<buildMode>', 'Build mode debug or realease')
-  .action((contractFolderPath, protoFileName, buildMode) => {
+  .option('--generate_authorize', 'generate the authorize entry point')
+  .action((contractFolderPath, protoFileName, buildMode, options) => {
+    const generateAuthEndpoint = options.generate_authorize ? 'GENERATE_AUTHORIZE_ENTRY_POINT=1' : '';
+
     // compile proto file
     console.log('Generating ABI file...');
     execSync(`protoc --plugin=protoc-gen-abi=./node_modules/.bin/koinos-abi-proto-gen --abi_out=${contractFolderPath}/abi/ ${contractFolderPath}/assembly/proto/${protoFileName}.proto`);
@@ -23,7 +26,7 @@ program.command('build-all')
 
     // Generate CONTRACT.boilerplate.ts and index.ts files
     console.log('Generating boilerplate.ts and index.ts files...');
-    execSync(`protoc --plugin=protoc-gen-as=./node_modules/.bin/koinos-as-gen --as_out=${contractFolderPath}/assembly/ ${contractFolderPath}/assembly/proto/${protoFileName}.proto`);
+    execSync(`${generateAuthEndpoint} protoc --plugin=protoc-gen-as=./node_modules/.bin/koinos-as-gen --as_out=${contractFolderPath}/assembly/ ${contractFolderPath}/assembly/proto/${protoFileName}.proto`);
 
     // compile index.ts
     console.log('Compiling index.ts...');
@@ -54,10 +57,13 @@ program.command('generate-as-files')
   .description('Generate contract.boilerplate.ts and index.ts files')
   .argument('<contractFolderPath>', 'Path to the contract folder')
   .argument('<protoFileName>', 'Name of the contract proto file')
-  .action((contractFolderPath, protoFileName, buildMode) => {
+  .option('--generate_authorize', 'generate the authorize entry point')
+  .action((contractFolderPath, protoFileName, options) => {
+    const generateAuthEndpoint = options.generate_authorize ? 'GENERATE_AUTHORIZE_ENTRY_POINT=1' : '';
+
     // Generate CONTRACT.boilerplate.ts and index.ts files
     console.log('Generating boilerplate.ts and index.ts files...');
-    execSync(`protoc --plugin=protoc-gen-as=./node_modules/.bin/koinos-as-gen --as_out=${contractFolderPath}/assembly/ ${contractFolderPath}/assembly/proto/${protoFileName}.proto`);
+    execSync(`${generateAuthEndpoint} protoc --plugin=protoc-gen-as=./node_modules/.bin/koinos-as-gen --as_out=${contractFolderPath}/assembly/ ${contractFolderPath}/assembly/proto/${protoFileName}.proto`);
   });
 
 program.command('generate-proto-files')
