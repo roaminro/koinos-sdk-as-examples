@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package token;
 
-import "koinos/options.proto"; 
+import "koinos/options.proto";
 
 // @description Returns the token's name
 // @read-only true

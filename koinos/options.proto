@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package options;
+package koinos;
 
 import "google/protobuf/descriptor.proto";
 
