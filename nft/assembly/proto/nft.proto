@@ -1,0 +1,157 @@
+syntax = "proto3";
+
+package nft;
+
+import "koinos/options.proto";
+
+// @description Returns the token's name
+// @read-only true
+message name_arguments {
+}
+
+message name_result {
+   string value = 1;
+}
+
+// @description Returns the token's symbol
+// @read-only true
+message symbol_arguments {
+}
+
+message symbol_result {
+   string value = 1;
+}
+
+// @description Gets the balance of an owner
+// @read-only true
+message balance_of_arguments {
+   bytes owner = 1 [(koinos.btype) = ADDRESS];
+}
+
+message balance_of_result {
+   uint64 value = 1 [jstype = JS_STRING];
+}
+
+// @description Gets the owner of a token
+// @read-only true
+message owner_of_arguments {
+   uint64 token_id = 1 [jstype = JS_STRING];
+}
+
+message owner_of_result {
+   bytes value = 1 [(koinos.btype) = ADDRESS];
+}
+
+// @description Gets approved address for a token
+// @read-only true
+message get_approved_arguments {
+   uint64 token_id = 1 [jstype = JS_STRING];
+}
+
+message get_approved_result {
+   bytes value = 1 [(koinos.btype) = ADDRESS];
+}
+
+// @description Checks if an operator is approved by an owner
+// @read-only true
+message is_approved_for_all_arguments {
+   bytes owner = 1 [(koinos.btype) = ADDRESS];
+   bytes operator = 2 [(koinos.btype) = ADDRESS];
+}
+
+message is_approved_for_all_result {
+   bool value = 1;
+}
+
+// @description Mints a new token
+// @read-only false
+message mint_arguments {
+   bytes to = 1 [(koinos.btype) = ADDRESS];
+   uint64 token_id = 2 [jstype = JS_STRING];
+}
+
+message mint_result {
+   bool value = 1;
+}
+
+// @description Transfers a token
+// @read-only false
+message transfer_arguments {
+   bytes from = 1 [(koinos.btype) = ADDRESS];
+   bytes to = 2 [(koinos.btype) = ADDRESS];
+   uint64 token_id = 3 [jstype = JS_STRING];
+}
+
+message transfer_result {
+   bool value = 1;
+}
+
+// @description Approves an address to transfer a token
+// @read-only false
+message approve_arguments {
+   bytes approver_address = 1 [(koinos.btype) = ADDRESS];
+   bytes to = 2 [(koinos.btype) = ADDRESS];
+   uint64 token_id = 3 [jstype = JS_STRING];
+}
+
+message approve_result {
+   bool value = 1;
+}
+
+// @description Approves or revokes an address to operate on all tokens owned by caller
+// @read-only false
+message set_approval_for_all_arguments {
+   bytes approver_address = 1 [(koinos.btype) = ADDRESS];
+   bytes operator_address = 2 [(koinos.btype) = ADDRESS];
+   bool approved = 3;
+}
+
+message set_approval_for_all_result {
+   bool value = 1;
+}
+
+// events
+message mint_event {
+   bytes to = 1 [(koinos.btype) = ADDRESS];
+   uint64 id = 2 [jstype = JS_STRING];
+}
+
+message transfer_event {
+   bytes from = 1 [(koinos.btype) = ADDRESS];
+   bytes to = 2 [(koinos.btype) = ADDRESS];
+   uint64 id = 3 [jstype = JS_STRING];
+}
+
+message operator_approval_event {
+   bytes approver_address = 1 [(koinos.btype) = ADDRESS];
+   bytes operator_address = 2 [(koinos.btype) = ADDRESS];
+   bool approved = 3;
+}
+
+message token_approval_event {
+   bytes approver_address = 1 [(koinos.btype) = ADDRESS];
+   bytes to = 2 [(koinos.btype) = ADDRESS];
+   uint64 id = 3 [jstype = JS_STRING];
+}
+
+// objects
+message token_object {
+   bytes owner = 1 [(koinos.btype) = ADDRESS];
+}
+
+message balance_object {
+   uint64 value = 1 [jstype = JS_STRING];
+}
+
+message token_approval_object {
+   bytes address = 1 [(koinos.btype) = ADDRESS];
+}
+
+message operator_approval_key{
+   bytes approver_address = 1 [(koinos.btype) = ADDRESS];
+   bytes operator_address = 2 [(koinos.btype) = ADDRESS];
+}
+
+message operator_approval_object {
+   bool approved = 1;
+}

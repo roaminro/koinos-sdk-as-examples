@@ -1,4 +1,7 @@
 # koinos-cdt-as-examples
+
+`DISCLAIMER: NONE OF THESE CONTRACTS HAVE BEEN AUDITED, USE AT YOUR OWN RISK`
+
 ## Installation
 
 ```sh
