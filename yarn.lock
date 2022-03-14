@@ -747,17 +747,17 @@ koinos-abi-proto-gen@^0.1.5:
     google-protobuf "^3.19.4"
     protobufjs "^6.11.2"
 
-koinos-as-gen@^0.3.2:
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/koinos-as-gen/-/koinos-as-gen-0.3.2.tgz#c43d8858b74b6b10249ae8131b322928144b1769"
-  integrity sha512-wd7hPBuHli48nNfPvZEb7Pa3evfFhMRh/2QhIWYLOKD0NSoFcnZ40dso4X8+BD0rL5xDVvD6bDmpd32An8CiOg==
+koinos-as-gen@^0.3.5:
+  version "0.3.5"
+  resolved "https://registry.yarnpkg.com/koinos-as-gen/-/koinos-as-gen-0.3.5.tgz#7d077dfe6d6ea0dd17b703519e31f7d1d11d0f28"
+  integrity sha512-xxcqLK0llZmBZvm7WL18FGdtHHYaiyx+FMiemhM08NezKR+2KUuZezXXyZp5VNyHNkvrfXwPqFzwEzr/XEkfeA==
   dependencies:
     google-protobuf "^3.19.4"
 
-koinos-as-sdk@^0.3.3:
-  version "0.3.3"
-  resolved "https://registry.yarnpkg.com/koinos-as-sdk/-/koinos-as-sdk-0.3.3.tgz#3b760ff6205c386b2ec7de384d13c19571642b2e"
-  integrity sha512-TZEAGZkfs1VOh76ZLnHM/hL6i/3JwCJIQX3yjC0F07sAOaeXuedlTBBm95ZD8aVLFj8udsiKnQDtPt2jbpQLzA==
+koinos-as-sdk@^0.3.4:
+  version "0.3.4"
+  resolved "https://registry.yarnpkg.com/koinos-as-sdk/-/koinos-as-sdk-0.3.4.tgz#7e3fffbb9e9f1439624d1af53e5789670a74cafb"
+  integrity sha512-kM0Pbu7kz1yqzn4OrCEDKYGNdlW/IveGE5Q7pN8zgzSLn7QaLtHJ9qaL5vWIZVppa4MHqD6rfRFcAW1+8UYRbw==
   dependencies:
     as-proto "^0.2.0"
 
