@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package immutable;
+
+
+// @description Add two integers
+// @read-only true
+message add_arguments {
+  int64 x = 1;
+  int64 y = 2;
+}
+
+message add_result {
+  int64 value = 1;
+}
