@@ -7,3 +7,4 @@ const digest = crypto.createHash('sha256').update(bytecode).digest();
 
 // prepend 18 (sha2-256) and 32 (32 bytes) because Koinos uses multihash digests
 console.log('bytecode sha2-256 digest:', Buffer.from([18, 32, ...digest]).toString('base64'));
+console.log('contract size:', bytecode.byteLength);

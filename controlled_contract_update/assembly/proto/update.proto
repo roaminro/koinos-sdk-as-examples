@@ -3,10 +3,11 @@ syntax = "proto3";
 package update;
 
 
-// @description Allow a contract update by providing the SHA2-256 digest of its bytecode
+// @description Allow a contract update by providing the SHA2-256 digest of its bytecode and its size
 // @read-only false
 message allow_sha256_arguments {
   string digest = 1;
+  uint32 contract_size = 2;
 }
 
 message allow_sha256_result {
