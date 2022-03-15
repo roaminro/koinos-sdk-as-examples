@@ -11,11 +11,18 @@ program
 program.command('generate-abi')
   .description('Generate ABI file')
   .argument('<contractFolderPath>', 'Path to the contract folder')
-  .argument('<protoFileName>', 'Name of the contract proto file')
-  .action((contractFolderPath, protoFileName) => {
+  .argument('<buildMode>', 'Build mode debug or realease')
+  .argument('<protoFileNames...>', 'Name of the contract proto files')
+  .option('--generate_authorize', 'generate the authorize entry point')
+  .action((contractFolderPath, buildMode, protoFileNames, options) => {
+    const generateAuthEndpoint = options.generate_authorize ? 'GENERATE_AUTHORIZE_ENTRY_POINT=1' : '';
+    const protoFileNamesFinal = protoFileNames.map(protoFileName => `${contractFolderPath}/assembly/proto/${protoFileName}`);
+
     // compile proto file
     console.log('Generating ABI file...');
-    execSync(`cd ${contractFolderPath}/assembly/proto && npx protoc --proto_path=. --plugin=protoc-gen-abi=../../../node_modules/.bin/koinos-abi-proto-gen --abi_out=../../abi/ ${protoFileName}.proto`);
+    let cmd = `protoc --plugin=protoc-gen-abi=./node_modules/.bin/koinos-abi-proto-gen --abi_out=${contractFolderPath}/abi/ ${protoFileNamesFinal.join(' ')}`;
+    console.log(cmd);
+    execSync(cmd);
   });
 
 program.command('generate-proto-files')
@@ -24,7 +31,9 @@ program.command('generate-proto-files')
   .action((contractFolderPath) => {
     // compile proto file
     console.log('Generating proto files...');
-    execSync(`cd ${contractFolderPath}/assembly/proto && npx protoc --proto_path=. --plugin=protoc-gen-as=../../../node_modules/.bin/as-proto-gen --as_out=. *.proto`);
+    cmd = `protoc --plugin=protoc-gen-as=./node_modules/.bin/as-proto-gen --as_out=. ${contractFolderPath}/assembly/proto/*.proto`;
+    console.log(cmd);
+    execSync(cmd);
   });
 
 program.command('generate-as-files')
@@ -34,7 +43,15 @@ program.command('generate-as-files')
   .action((contractFolderPath, protoFileName, buildMode) => {
     // Generate CONTRACT.boilerplate.ts and index.ts files
     console.log('Generating boilerplate.ts and index.ts files...');
-    execSync(`cd ${contractFolderPath}/assembly/proto && npx protoc --proto_path=. --plugin=protoc-gen-as=../../../node_modules/.bin/koinos-as-gen --as_out=../ ${protoFileName}.proto`);
+    cmd = `${generateAuthEndpoint} protoc --plugin=protoc-gen-as=./node_modules/.bin/koinos-as-gen --as_out=${contractFolderPath}/assembly/ ${protoFileNamesFinal[0]}`;
+    console.log(cmd);
+    execSync(cmd);
+
+    // compile index.ts
+    console.log('Compiling index.ts...');
+    cmd = `./node_modules/assemblyscript/bin/asc ${contractFolderPath}/assembly/index.ts --target ${buildMode} --use abort= --config ${contractFolderPath}/asconfig.json`;
+    console.log(cmd);
+    execSync(cmd);
   });
 
 program.command('build-as')
@@ -47,28 +64,31 @@ program.command('build-as')
     execSync(`./node_modules/assemblyscript/bin/asc ${contractFolderPath}/assembly/index.ts --target ${buildMode} --use abort= --config ${contractFolderPath}/asconfig.json`);
   });
 
-// TODO this doesn't work
-program.command('upload-contract')
-  .description('Upload built contract to Koinos network. Requires `koinos-cli` on PATH.')
+program.command('generate-abi')
+  .description('Generate ABI files')
   .argument('<contractFolderPath>', 'Path to the contract folder')
-  .argument('<abiFilename>', 'Name of the ABI file to upload with the contract')
-  .argument('<buildMode>', 'Build mode debug or release')
-  .argument('<walletFilename>', 'Name of the wallet to use for upload')
-  .argument('<walletPassword>', 'Password for the encrypted wallet file')
-  .action((contractFolderPath, abiFilename, buildMode, walletFilename, walletPassword) => {
-    if (!walletFilename || !walletPassword) {
-      console.error("wallet filename and password are required. Run `npm run upload -- filename password`. If you do not have a wallet, run `koinos-cli --execute create <filename> <password>`");
-      return;
-    }
+  .argument('<protoFileNames...>', 'Name of the contract proto files')
+  .action((contractFolderPath, protoFileNames) => {
+    const protoFileNamesFinal = protoFileNames.map(protoFileName => `${contractFolderPath}/assembly/proto/${protoFileName}`);
 
-    if (buildMode !== "debug") {
-      console.error("${buildMode} build mode not supported. Use 'debug' to upload to Koinos testnet.");
-      return;
-    }
+    // compile proto file
+    console.log('Generating ABI file...');
+    let cmd = `protoc --plugin=protoc-gen-abi=./node_modules/.bin/koinos-abi-proto-gen --abi_out=${contractFolderPath}/abi/ ${protoFileNamesFinal.join(' ')}`;
+    console.log(cmd);
+    execSync(cmd);
+  });
 
-    // compile index.ts
-    console.log('Uploading contract...');
-    execSync(`koinos-cli --execute connect https://api.koinos.io; open ${walletFilename} ${walletPassword}; upload ${contractFolderPath}/build/${buildMode}/contract.wasm ${contractFolderPath}/abi/${abiFilename}.abi`);
+program.command('generate-as-files')
+  .description('Generate contract.boilerplate.ts and index.ts files')
+  .argument('<contractFolderPath>', 'Path to the contract folder')
+  .argument('<protoFileName>', 'Name of the contract proto file')
+  .option('--generate_authorize', 'generate the authorize entry point')
+  .action((contractFolderPath, protoFileName, options) => {
+    const generateAuthEndpoint = options.generate_authorize ? 'GENERATE_AUTHORIZE_ENTRY_POINT=1' : '';
+
+    // Generate CONTRACT.boilerplate.ts and index.ts files
+    console.log('Generating boilerplate.ts and index.ts files...');
+    execSync(`${generateAuthEndpoint} protoc --plugin=protoc-gen-as=./node_modules/.bin/koinos-as-gen --as_out=${contractFolderPath}/assembly/ ${contractFolderPath}/assembly/proto/${protoFileName}`);
   });
 
 program.parse();

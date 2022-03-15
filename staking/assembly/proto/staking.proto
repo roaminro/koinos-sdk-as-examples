@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package staking;
+
+import "koinos/options.proto"; 
+
+/*
+   @description Get staking balance
+   @read-only true
+*/
+message balance_of_arguments {
+   bytes account = 1 [(koinos.btype) = ADDRESS];
+}
+
+message balance_of_result {
+   uint64 value = 1 [jstype = JS_STRING];
+}
+
+/*
+   @description Stake token
+   @read-only false
+*/
+message stake_arguments {
+   bytes account = 1 [(koinos.btype) = ADDRESS];
+   uint64 value  = 2 [jstype = JS_STRING];
+}
+
+message stake_result {
+   bool value = 1;
+}
+
+/*
+   @description Withdraw staked token
+   @read-only false
+*/
+message withdraw_arguments {
+   bytes account = 1 [(koinos.btype) = ADDRESS];
+   uint64 value  = 2 [jstype = JS_STRING];
+}
+
+message withdraw_result {
+   bool value = 1;
+}
+
+message balance_object {
+   uint64 value = 1 [jstype = JS_STRING];
+}
+
+message stake_event {
+   bytes account = 1 [(koinos.btype) = ADDRESS];
+   uint64 value = 2 [jstype = JS_STRING];
+}
+
+message withdraw_event {
+   bytes account = 1 [(koinos.btype) = ADDRESS];
+   uint64 value = 2 [jstype = JS_STRING];
+}
