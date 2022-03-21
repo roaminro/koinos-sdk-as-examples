@@ -3,6 +3,23 @@
 const { program } = require('commander');
 const { execSync } = require('child_process');
 
+let ASProtoGenPath;
+let koinoABIGenPath;
+let koinosASGenPath;
+
+switch (process.platform) {
+  case 'win32':
+    ASProtoGenPath = '.\\node_modules\\.bin\\as-proto-gen.cmd';
+    koinoABIGenPath = '.\\node_modules\\.bin\\koinos-abi-proto-gen.cmd';
+    koinosASGenPath = '.\\node_modules\\.bin\\koinos-as-gen.cmd';
+    break;
+  default:
+    ASProtoGenPath = './node_modules/.bin/as-proto-gen';
+    koinoABIGenPath = './node_modules/.bin/koinos-abi-proto-gen';
+    koinosASGenPath = './node_modules/.bin/koinos-as-gen';
+    break;
+}
+
 program
   .name('Koinos AssemblyScript Smart Contracts CLI')
   .description('CLI to build Koinos AssemblyScript Smart Contracts')
@@ -20,24 +37,24 @@ program.command('build-all')
 
     // compile proto file
     console.log('Generating ABI file...');
-    let cmd = `protoc --plugin=protoc-gen-abi=./node_modules/.bin/koinos-abi-proto-gen --abi_out=${contractFolderPath}/abi/ ${protoFileNamesFinal.join(' ')}`;
+    let cmd = `protoc --plugin=protoc-gen-abi=${koinoABIGenPath} --abi_out=${contractFolderPath}/abi/ ${protoFileNamesFinal.join(' ')}`;
     console.log(cmd);
     execSync(cmd);
 
     console.log('Generating proto files...');
-    cmd = `protoc --plugin=protoc-gen-as=./node_modules/.bin/as-proto-gen --as_out=. ${contractFolderPath}/assembly/proto/*.proto`;
+    cmd = `protoc --plugin=protoc-gen-as=${ASProtoGenPath} --as_out=. ${contractFolderPath}/assembly/proto/*.proto`;
     console.log(cmd);
     execSync(cmd);
 
     // Generate CONTRACT.boilerplate.ts and index.ts files
     console.log('Generating boilerplate.ts and index.ts files...');
-    cmd = `${generateAuthEndpoint} protoc --plugin=protoc-gen-as=./node_modules/.bin/koinos-as-gen --as_out=${contractFolderPath}/assembly/ ${protoFileNamesFinal[0]}`;
+    cmd = `${generateAuthEndpoint} protoc --plugin=protoc-gen-as=${koinosASGenPath} --as_out=${contractFolderPath}/assembly/ ${protoFileNamesFinal[0]}`;
     console.log(cmd);
     execSync(cmd);
 
     // compile index.ts
     console.log('Compiling index.ts...');
-    cmd = `./node_modules/assemblyscript/bin/asc ${contractFolderPath}/assembly/index.ts --target ${buildMode} --use abort= --config ${contractFolderPath}/asconfig.json`;
+    cmd = `node ./node_modules/assemblyscript/bin/asc ${contractFolderPath}/assembly/index.ts --target ${buildMode} --use abort= --config ${contractFolderPath}/asconfig.json`;
     console.log(cmd);
     execSync(cmd);
   });
@@ -49,7 +66,7 @@ program.command('build')
   .action((contractFolderPath, buildMode) => {
     // compile index.ts
     console.log('Compiling index.ts...');
-    execSync(`./node_modules/assemblyscript/bin/asc ${contractFolderPath}/assembly/index.ts --target ${buildMode} --use abort= --config ${contractFolderPath}/asconfig.json`);
+    execSync(`node ./node_modules/assemblyscript/bin/asc ${contractFolderPath}/assembly/index.ts --target ${buildMode} --use abort= --config ${contractFolderPath}/asconfig.json`);
   });
 
 program.command('generate-abi')
@@ -61,7 +78,7 @@ program.command('generate-abi')
 
     // compile proto file
     console.log('Generating ABI file...');
-    let cmd = `protoc --plugin=protoc-gen-abi=./node_modules/.bin/koinos-abi-proto-gen --abi_out=${contractFolderPath}/abi/ ${protoFileNamesFinal.join(' ')}`;
+    let cmd = `protoc --plugin=protoc-gen-abi=${koinoABIGenPath} --abi_out=${contractFolderPath}/abi/ ${protoFileNamesFinal.join(' ')}`;
     console.log(cmd);
     execSync(cmd);
   });
@@ -76,7 +93,7 @@ program.command('generate-as-files')
 
     // Generate CONTRACT.boilerplate.ts and index.ts files
     console.log('Generating boilerplate.ts and index.ts files...');
-    execSync(`${generateAuthEndpoint} protoc --plugin=protoc-gen-as=./node_modules/.bin/koinos-as-gen --as_out=${contractFolderPath}/assembly/ ${contractFolderPath}/assembly/proto/${protoFileName}`);
+    execSync(`${generateAuthEndpoint} protoc --plugin=protoc-gen-as=${koinosASGenPath} --as_out=${contractFolderPath}/assembly/ ${contractFolderPath}/assembly/proto/${protoFileName}`);
   });
 
 program.command('generate-proto-files')
@@ -85,7 +102,7 @@ program.command('generate-proto-files')
   .action((contractFolderPath) => {
     // compile proto file
     console.log('Generating proto files...');
-    execSync(`protoc --plugin=protoc-gen-as=./node_modules/.bin/as-proto-gen --as_out=. ${contractFolderPath}/assembly/proto/*.proto`);
+    execSync(`protoc --plugin=protoc-gen-as=${ASProtoGenPath} --as_out=. ${contractFolderPath}/assembly/proto/*.proto`);
   });
 
 program.parse();
