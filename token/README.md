@@ -14,3 +14,9 @@ node cli.js build-all token debug token.proto
 # build the release version
 node cli.js build-all token release token.proto 
 ```
+
+## Run tests
+```sh
+# example for the calculator contract
+node cli.js run-tests token
+```

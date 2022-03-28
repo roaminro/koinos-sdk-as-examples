@@ -1,9 +1,8 @@
-import { authority, Base58, Base64, chain, common, google, protocol, StringBytes, System, system_calls, value, Crypto, MockVM, Arrays, Protobuf } from "koinos-as-sdk";
+import { authority, Base58, MockVM, Arrays, Protobuf } from "koinos-as-sdk";
 import { Token } from "../Token";
 import { token } from "../proto/token";
 
 const CONTRACT_ID = Base58.decode("1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe");
-
 const MOCK_ACCT1 = Base58.decode("1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG");
 const MOCK_ACCT2 = Base58.decode("1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqK");
 
