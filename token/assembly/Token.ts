@@ -1,4 +1,4 @@
-import { authority, Base58, Protobuf, System } from "koinos-as-sdk";
+import { Arrays, authority, Protobuf, System } from "koinos-as-sdk";
 import { token } from "./proto/token";
 import { State } from "./State";
 
@@ -37,7 +37,7 @@ export class Token {
   }
 
   balance_of(args: token.balance_of_arguments): token.balance_of_result {
-    const owner = args.owner as Uint8Array;
+    const owner = args.owner!;
 
     const balanceObj = this._state.GetBalance(owner);
 
@@ -48,16 +48,13 @@ export class Token {
   }
 
   transfer(args: token.transfer_arguments): token.transfer_result {
-    const from = args.from as Uint8Array;
-    const to = args.to as Uint8Array;
+    const from = args.from!;
+    const to = args.to!;
     const value = args.value;
-
-    const fromB58 = Base58.encode(from);
-    const toB58 = Base58.encode(to);
 
     const res = new token.transfer_result();
 
-    if (fromB58 == toB58) {
+    if (Arrays.equal(from, to)) {
       System.log('Cannot transfer to self');
 
       return res;
@@ -92,7 +89,7 @@ export class Token {
   }
 
   mint(args: token.mint_arguments): token.mint_result {
-    const to = args.to as Uint8Array;
+    const to = args.to!;
     const value = args.value;
 
     const res = new token.mint_result(false);
