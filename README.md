@@ -67,3 +67,9 @@ node cli.js generate-as-files calculator calculator.proto
 ```
 
 This will generate a `Calculator.boilerplate.ts`file and `index.ts` file in the folder `calculator/assembly/`
+
+## Run tests
+```sh
+# example for the calculator contract
+node cli.js run-tests calculator
+```

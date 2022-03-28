@@ -105,4 +105,14 @@ program.command('generate-proto-files')
     execSync(`protoc --plugin=protoc-gen-as=${ASProtoGenPath} --as_out=. ${contractFolderPath}/assembly/proto/*.proto`);
   });
 
+program.command('run-tests')
+  .description('Run contract tests')
+  .argument('<contractFolderPath>', 'Path to the contract folder')
+  .action((contractFolderPath) => {
+    console.log('Running tests...');
+    let cmd = `yarn asp --verbose --config ${contractFolderPath}/as-pect.config.js`;
+    console.log(cmd);
+    execSync(cmd, { stdio: 'inherit' });
+  });
+
 program.parse();
