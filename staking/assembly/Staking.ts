@@ -1,7 +1,6 @@
-import { Base58, Protobuf, System } from "koinos-as-sdk";
+import { Base58, Protobuf, System, Token } from "koinos-as-sdk";
 import { staking } from "./proto/staking";
 import { State } from "./State";
-import { Token } from "./Token";
 
 const TOKEN_CONTRACT_ID = Base58.decode('19JntSm8pSNETT9aHTwAUHC5RMoaSmgZPJ');
 
