@@ -46,8 +46,6 @@ This will result in the generation of:
 - a `Calculator.boilerplate.ts` file in the folder `calculator/assembly/`
   
 ## Generate AssemblyScript proto files
-To generate the proto files you will need to first install `protoc` on your machine https://github.com/protocolbuffers/protobuf/releases
-
 ```sh
 # example for the calculator contract
 node cli.js generate-proto-files calculator

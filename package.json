@@ -1,6 +1,6 @@
 {
   "name": "koinos-as-sdk-examples",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "main": "assembly/index.ts",
   "license": "MIT",
   "author": "Roamin Roe <roamin@tuta.io>",
@@ -11,6 +11,7 @@
   "devDependencies": {
     "@as-covers/core": "^0.2.1",
     "@as-pect/cli": "^6.2.4",
+    "@roaminroe/protoc": "^2.4.0",
     "@typescript-eslint/eslint-plugin": "^5.10.0",
     "@typescript-eslint/parser": "^5.10.0",
     "as-proto-gen": "^0.2.2",
