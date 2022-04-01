@@ -1,4 +1,4 @@
-import { authority, Base58, Protobuf, System } from "koinos-as-sdk";
+import { authority, Base58, Protobuf, System, SafeMath } from "koinos-as-sdk";
 import { nft } from "./proto/nft";
 import { State } from "./State";
 
@@ -99,7 +99,7 @@ export class Nft {
 
     // update the owner's balance
     const balance = this._state.GetBalance(to);
-    balance.value += 1;
+    balance.value = SafeMath.add(balance.value, 1);
 
     this._state.SaveBalance(to, balance);
     this._state.SaveToken(token_id, token);
@@ -165,12 +165,12 @@ export class Nft {
     // update the balances
     // from
     const fromBalance = this._state.GetBalance(from);
-    fromBalance.value -= 1;
+    fromBalance.value = SafeMath.sub(fromBalance.value, 1);
     this._state.SaveBalance(from, fromBalance);
 
     // to
     const toBalance = this._state.GetBalance(to);
-    toBalance.value += 1;
+    toBalance.value = SafeMath.add(toBalance.value, 1);
     this._state.SaveBalance(to, toBalance);
 
     // update token owner

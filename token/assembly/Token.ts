@@ -72,6 +72,7 @@ export class Token {
 
     const toBalance = this._state.GetBalance(to);
 
+    // the balances cannot hold more than the supply, so we don't check for overflow/underflow
     fromBalance.value -= value;
     toBalance.value += value;
 

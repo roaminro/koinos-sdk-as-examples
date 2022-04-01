@@ -1,4 +1,4 @@
-import { Base58, Protobuf, System, Token } from "koinos-as-sdk";
+import { Base58, Protobuf, SafeMath, System, Token } from "koinos-as-sdk";
 import { staking } from "./proto/staking";
 import { State } from "./State";
 
@@ -39,7 +39,7 @@ export class Staking {
     }
 
     const accountBalance = this._state.GetBalance(account);
-    accountBalance.value += value;
+    accountBalance.value = SafeMath.add(accountBalance.value, value);
 
     this._state.SaveBalance(account, accountBalance);
 

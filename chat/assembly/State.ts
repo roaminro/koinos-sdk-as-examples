@@ -31,6 +31,7 @@ export class State {
   }
 
   IncrementLastMessageId(): void {
+    // we don't check for overflow here, overwritting the old messages is an acceptable behavior
     this.lastMessageId += 1;
 
     const metadata = new chat.metadata_object(this.lastMessageId);
