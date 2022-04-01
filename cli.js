@@ -92,28 +92,41 @@ program.command('generate-abi')
     execSync(cmd, { stdio: 'inherit' });
   });
 
-program.command('generate-as-files')
+program.command('generate-contract-as')
   .description('Generate contract.boilerplate.ts and index.ts files')
   .argument('<contractFolderPath>', 'Path to the contract folder')
   .argument('<protoFileName>', 'Name of the contract proto file')
+  .argument('<additionalProtoFileNames...>', 'Name of the additional proto files')
   .option('--generate_authorize', 'generate the authorize entry point')
-  .action((contractFolderPath, protoFileName, options) => {
+  .action((contractFolderPath, protoFileName, additionalProtoFileNames, options) => {
     const generateAuthEndpoint = options.generate_authorize ? 'GENERATE_AUTHORIZE_ENTRY_POINT=1' : '';
 
     // Generate CONTRACT.boilerplate.ts and index.ts files
     console.log('Generating boilerplate.ts and index.ts files...');
-    const cmd = `${generateAuthEndpoint} yarn protoc --plugin=protoc-gen-as=${koinosASGenPath} --as_out=${contractFolderPath}/assembly/ ${contractFolderPath}/assembly/proto/${protoFileName}`;
+    const cmd = `${generateAuthEndpoint} yarn protoc --plugin=protoc-gen-as=${koinosASGenPath} --as_out=${contractFolderPath}/assembly/ ${contractFolderPath}/assembly/proto/${protoFileName} ${additionalProtoFileNames.join(' ')}`;
     console.log(cmd);
     execSync(cmd, { stdio: 'inherit' });
   });
 
-program.command('generate-proto-files')
-  .description('Generate proto files')
+program.command('generate-contract-proto')
+  .description('Generate AS files for the contract proto files')
   .argument('<contractFolderPath>', 'Path to the contract folder')
-  .action((contractFolderPath) => {
+  .argument('<additionalProtoFileNames...>', 'Name of the additional proto files')
+  .action((contractFolderPath, additionalProtoFileNames) => {
     // compile proto file
-    console.log('Generating proto files...');
-    const cmd =`yarn protoc --plugin=protoc-gen-as=${ASProtoGenPath} --as_out=. ${contractFolderPath}/assembly/proto/*.proto`;
+    console.log('Generating Contract AS proto files...');
+    const cmd =`yarn protoc --plugin=protoc-gen-as=${ASProtoGenPath} --as_out=. ${contractFolderPath}/assembly/proto/*.proto ${additionalProtoFileNames.join(' ')}`;
+    console.log(cmd);
+    execSync(cmd, { stdio: 'inherit' });
+  });
+
+program.command('generate-as-proto')
+  .description('Generate AS files for the given proto files')
+  .argument('<protoFileNames...>', 'Name of the proto files to compile')
+  .action((protoFileNames) => {
+    // compile proto files
+    console.log('Generating AS proto files...');
+    const cmd =`yarn protoc --plugin=protoc-gen-as=${ASProtoGenPath} --as_out=. ${protoFileNames.join(' ')}`;
     console.log(cmd);
     execSync(cmd, { stdio: 'inherit' });
   });

@@ -45,10 +45,10 @@ This will result in the generation of:
 - an `index.ts` file in the folder `calculator/assembly/`
 - a `Calculator.boilerplate.ts` file in the folder `calculator/assembly/`
   
-## Generate AssemblyScript proto files
+## Generate AssemblyScript files for all the proto files of a contract
 ```sh
 # example for the calculator contract
-node cli.js generate-proto-files calculator
+node cli.js generate-contract-proto calculator
 ```
 
 ## Generate ABI file
@@ -61,7 +61,7 @@ This will generate a calculator.abi file in the folder `calculator/abi/`
 ## Generate contract.boilerplate.ts and index.ts files
 ```sh
 # example for the calculator contract
-node cli.js generate-as-files calculator calculator.proto
+node cli.js generate-contract-as calculator calculator.proto
 ```
 
 This will generate a `Calculator.boilerplate.ts`file and `index.ts` file in the folder `calculator/assembly/`

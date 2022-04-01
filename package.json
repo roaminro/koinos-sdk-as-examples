@@ -1,6 +1,6 @@
 {
   "name": "koinos-as-sdk-examples",
-  "version": "0.3.9",
+  "version": "0.3.10",
   "main": "assembly/index.ts",
   "license": "MIT",
   "author": "Roamin Roe <roamin@tuta.io>",
