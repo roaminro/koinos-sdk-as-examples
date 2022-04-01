@@ -1,3 +1,4 @@
+import { SafeMath } from "koinos-as-sdk";
 import { calculator } from "./proto/calculator";
 
 export class Calculator {
@@ -6,7 +7,7 @@ export class Calculator {
     const y = args.y;
 
     const res = new calculator.add_result();
-    res.value = x + y;
+    res.value = SafeMath.add(x, y);
 
     return res;
   }
@@ -16,7 +17,7 @@ export class Calculator {
     const y = args.y;
 
     const res = new calculator.sub_result();
-    res.value = x - y;
+    res.value = SafeMath.sub(x, y);
 
     return res;
   }
@@ -26,7 +27,7 @@ export class Calculator {
     const y = args.y;
 
     const res = new calculator.mul_result();
-    res.value = x * y;
+    res.value = SafeMath.mul(x, y);
 
     return res;
   }
@@ -36,7 +37,7 @@ export class Calculator {
     const y = args.y;
 
     const res = new calculator.div_result();
-    res.value = x / y;
+    res.value = SafeMath.div(x, y);
 
     return res;
   }

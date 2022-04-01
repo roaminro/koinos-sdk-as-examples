@@ -1,4 +1,4 @@
-import { Arrays, authority, Protobuf, System } from "koinos-as-sdk";
+import { Arrays, authority, Protobuf, System, SafeMath } from "koinos-as-sdk";
 import { token } from "./proto/token";
 import { State } from "./State";
 
@@ -98,9 +98,9 @@ export class Token {
 
     const supply = this._state.GetSupply();
 
-    const newSupply = supply.value + value;
+    const newSupply = SafeMath.tryAdd(supply.value, value);
 
-    if (newSupply < supply.value) {
+    if (newSupply.error) {
       System.log('Mint would overflow supply');
 
       return res;
@@ -109,7 +109,7 @@ export class Token {
     const toBalance = this._state.GetBalance(to);
     toBalance.value += value;
 
-    supply.value = newSupply;
+    supply.value = newSupply.value;
 
     this._state.SaveSupply(supply);
     this._state.SaveBalance(to, toBalance);
