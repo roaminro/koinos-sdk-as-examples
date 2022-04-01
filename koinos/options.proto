@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 package koinos;
+option go_package = "github.com/koinos/koinos-proto-golang/koinos";
 
 import "google/protobuf/descriptor.proto";
 

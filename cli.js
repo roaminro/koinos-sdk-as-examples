@@ -33,11 +33,15 @@ program.command('build-all')
   .option('--generate_authorize', 'generate the authorize entry point')
   .action((contractFolderPath, buildMode, protoFileNames, options) => {
     const generateAuthEndpoint = options.generate_authorize ? 'GENERATE_AUTHORIZE_ENTRY_POINT=1' : '';
-    const protoFileNamesFinal = protoFileNames.map(protoFileName => `${contractFolderPath}/assembly/proto/${protoFileName}`);
+
+    // to make it easier for dapps devs, the first proto filename is considered to be the contract proto file
+    // that's the only one for which we auto populate the contract path
+    // the rest must have the full path to the proto files
+    protoFileNames[0] = `${contractFolderPath}/assembly/proto/${protoFileNames[0]}`;
 
     // compile proto file
     console.log('Generating ABI file...');
-    let cmd = `yarn protoc --plugin=protoc-gen-abi=${koinoABIGenPath} --abi_out=${contractFolderPath}/abi/ ${protoFileNamesFinal.join(' ')}`;
+    let cmd = `yarn protoc --plugin=protoc-gen-abi=${koinoABIGenPath} --abi_out=${contractFolderPath}/abi/ ${protoFileNames.join(' ')}`;
     console.log(cmd);
     execSync(cmd, { stdio: 'inherit' });
 
@@ -48,7 +52,7 @@ program.command('build-all')
 
     // Generate CONTRACT.boilerplate.ts and index.ts files
     console.log('Generating boilerplate.ts and index.ts files...');
-    cmd = `${generateAuthEndpoint} yarn protoc --plugin=protoc-gen-as=${koinosASGenPath} --as_out=${contractFolderPath}/assembly/ ${protoFileNamesFinal[0]}`;
+    cmd = `${generateAuthEndpoint} yarn protoc --plugin=protoc-gen-as=${koinosASGenPath} --as_out=${contractFolderPath}/assembly/ ${protoFileNames[0]}`;
     console.log(cmd);
     execSync(cmd, { stdio: 'inherit' });
 
@@ -76,11 +80,14 @@ program.command('generate-abi')
   .argument('<contractFolderPath>', 'Path to the contract folder')
   .argument('<protoFileNames...>', 'Name of the contract proto files')
   .action((contractFolderPath, protoFileNames) => {
-    const protoFileNamesFinal = protoFileNames.map(protoFileName => `${contractFolderPath}/assembly/proto/${protoFileName}`);
-
+    // to make it easier for dapps devs, the first proto filename is considered to be the contract proto file
+    // that's the only one for which we auto populate the contract path
+    // the rest must have the full path to the proto files
+    protoFileNames[0] = `${contractFolderPath}/assembly/proto/${protoFileNames[0]}`;
+    
     // compile proto file
     console.log('Generating ABI file...');
-    const cmd = `yarn protoc --plugin=protoc-gen-abi=${koinoABIGenPath} --abi_out=${contractFolderPath}/abi/ ${protoFileNamesFinal.join(' ')}`;
+    const cmd = `yarn protoc --plugin=protoc-gen-abi=${koinoABIGenPath} --abi_out=${contractFolderPath}/abi/ ${protoFileNames.join(' ')}`;
     console.log(cmd);
     execSync(cmd, { stdio: 'inherit' });
   });

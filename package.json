@@ -1,6 +1,6 @@
 {
   "name": "koinos-as-sdk-examples",
-  "version": "0.3.8",
+  "version": "0.3.9",
   "main": "assembly/index.ts",
   "license": "MIT",
   "author": "Roamin Roe <roamin@tuta.io>",
@@ -17,7 +17,7 @@
     "as-proto-gen": "^0.2.2",
     "assemblyscript": "^0.19.22",
     "eslint": "^8.7.0",
-    "koinos-abi-proto-gen": "^0.1.5",
+    "koinos-abi-proto-gen": "^0.1.6",
     "koinos-as-gen": "^0.3.5",
     "koinos-as-sdk": "^0.3.7",
     "koinos-mock-vm": "^1.0.3",
