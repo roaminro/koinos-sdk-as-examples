@@ -9,10 +9,12 @@ on:
 jobs:
   build:
 
-    runs-on: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.platform }}
+    name: "${{ matrix.platform }} ${{ matrix.nodeversion }}"
 
     strategy:
       matrix:
+        platform: [ubuntu-latest, macos-latest]
         node-version: [16.x, 17.x]
 
     steps:
