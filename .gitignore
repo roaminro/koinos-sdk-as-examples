@@ -3,8 +3,4 @@ build
 \.idea/
 \.vs/
 *.wasm
-**/abi/*.abi
-**/proto/*.ts
-**/assembly/index.ts
-**/assembly/*.boilerplate.ts
 *.pb

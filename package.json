@@ -1,6 +1,6 @@
 {
   "name": "koinos-as-sdk-examples",
-  "version": "0.3.11",
+  "version": "0.3.12",
   "main": "assembly/index.ts",
   "license": "MIT",
   "author": "Roamin Roe <roamin@tuta.io>",
@@ -26,6 +26,15 @@
     "yaml": "^2.0.0-11"
   },
   "scripts": {
-    "lint": "eslint --max-warnings 0 --ext ts \"*/assembly/**/*.ts\""
+    "lint": "eslint --max-warnings 0 --ext ts \"*/assembly/**/*.ts\"",
+    "buildCalculator": "node cli.js build-all calculator release calculator.proto && node cli.js run-tests calculator",
+    "buildChat": "node cli.js build-all chat release chat.proto",
+    "buildControlledContractUpdate": "node cli.js build-all --generate_authorize controlled_contract_update release update.proto",
+    "buildImmutable": "node cli.js build-all immutable release immutable.proto",
+    "buildNft": "node cli.js build-all nft release nft.proto",
+    "buildStaking": "node cli.js build-all staking release staking.proto",
+    "buildToken": "node cli.js build-all token release token.proto && node cli.js run-tests token",
+    "buildTransactionStorage": "node cli.js build transaction_storage release && node cli.js run-tests transaction_storage",
+    "buildAll": "yarn lint && yarn buildCalculator && yarn buildChat && yarn buildControlledContractUpdate && yarn buildImmutable && yarn buildNft && yarn buildStaking && yarn buildToken && yarn buildTransactionStorage"
   }
 }
