@@ -626,6 +626,11 @@ array-union@^2.1.0:
   resolved "https://registry.npmjs.org/array-union/-/array-union-2.1.0.tgz"
   integrity sha512-HGyxoOTYUyCM6stUe6EJgnd4EoewAI7zMdfqO+kGjnlZmBDz/cR5pf8r/cR4Wq60sL/p0IkcjUEEPwS3GFrIyw==
 
+as-bignum@^0.2.18:
+  version "0.2.18"
+  resolved "https://registry.yarnpkg.com/as-bignum/-/as-bignum-0.2.18.tgz#61ed4dd07d4a62107bde227fdb4370190217bf0b"
+  integrity sha512-5LODrOr7wvS643oh7PHfyRtbBO9vCcU69vNNvrqh5yovrApM9nRHDeT5XcqnaSI8TqK9ZhN12qhZnq4rdIGcwQ==
+
 as-proto-gen@^0.2.2:
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/as-proto-gen/-/as-proto-gen-0.2.2.tgz#5195079270ee1350c889855916f5ce691592d269"
@@ -1514,11 +1519,12 @@ koinos-as-gen@^0.3.5:
   dependencies:
     google-protobuf "^3.19.4"
 
-koinos-as-sdk@^0.3.9:
-  version "0.3.9"
-  resolved "https://registry.yarnpkg.com/koinos-as-sdk/-/koinos-as-sdk-0.3.9.tgz#ae07fdee65ca746a1ad9bae3902d2bbbdb08ae39"
-  integrity sha512-CaMwW0Bmy9YTiRXU6flChF6GpLDFuXdM6O6A/gMMXKhzMqI/qtRgu3PqgXWp5L18bJQmR9mKMJhVfxinJ/OiyQ==
+koinos-as-sdk@^0.3.10:
+  version "0.3.10"
+  resolved "https://registry.yarnpkg.com/koinos-as-sdk/-/koinos-as-sdk-0.3.10.tgz#29597182b3d7d856261a19f9e020f0cdeafc0abe"
+  integrity sha512-7gkfp5kRnvbCWR6TvjiSpzbJ6Ub5EynbS/S3ZbZK0WMB7LPgeNhmiQHIWEN1E4fS4EEt0vHelsA+G2EHo0gTwg==
   dependencies:
+    as-bignum "^0.2.18"
     as-proto "^0.2.2"
 
 koinos-mock-vm@^1.0.3:
