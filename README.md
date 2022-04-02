@@ -1,3 +1,5 @@
+![Test](https://github.com/roaminroe/koinos-as-sdk-examples/actions/workflows/test.yml/badge.svg)
+
 # koinos-cdt-as-examples
 
 `DISCLAIMER: NONE OF THESE CONTRACTS HAVE BEEN AUDITED, USE AT YOUR OWN RISK`
