@@ -3,11 +3,11 @@
 ![Test MacOS](https://github.com/roaminroe/koinos-as-sdk-examples/actions/workflows/test-macos.yml/badge.svg)
 
 
-# koinos-as-sdk-examples
+# Koinos AssemblyScript SDK Examples
 
 `DISCLAIMER: NONE OF THESE CONTRACTS HAVE BEEN AUDITED, USE AT YOUR OWN RISK`
 
-Link to the Koinos AS SDK documentation: https://roaminroe.github.io/koinos-as-sdk/
+Link to the Koinos AssemblyScript SDK documentation: https://roaminroe.github.io/koinos-as-sdk/
 
 ## Installation
 
