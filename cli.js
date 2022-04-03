@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { program } = require('commander');
 const { execSync } = require('child_process');
+const packageJson = require('./package.json');
 
 let ASProtoGenPath;
 let koinoABIGenPath;
@@ -26,7 +27,7 @@ switch (process.platform) {
 program
   .name('Koinos AssemblyScript Smart Contracts CLI')
   .description('CLI to build Koinos AssemblyScript Smart Contracts')
-  .version('0.1.0');
+  .version(packageJson.version);
 
 program.command('build-all')
   .description('Build all Smart Contract files')
@@ -35,7 +36,7 @@ program.command('build-all')
   .argument('<protoFileNames...>', 'Name of the contract proto files')
   .option('--generate_authorize', 'generate the authorize entry point')
   .action((contractFolderPath, buildMode, protoFileNames, options) => {
-    let generateAuthEndpoint = options.generate_authorize ? isWin ? 'set GENERATE_AUTHORIZE_ENTRY_POINT=1&&' : 'GENERATE_AUTHORIZE_ENTRY_POINT=1 ' : '';
+    const generateAuthEndpoint = options.generate_authorize ? isWin ? 'set GENERATE_AUTHORIZE_ENTRY_POINT=1&&' : 'GENERATE_AUTHORIZE_ENTRY_POINT=1 ' : '';
 
     // to make it easier for dapps devs, the first proto filename is considered to be the contract proto file
     // that's the only one for which we auto populate the contract path
@@ -102,11 +103,12 @@ program.command('generate-contract-as')
   .argument('<additionalProtoFileNames...>', 'Name of the additional proto files')
   .option('--generate_authorize', 'generate the authorize entry point')
   .action((contractFolderPath, protoFileName, additionalProtoFileNames, options) => {
-    const generateAuthEndpoint = options.generate_authorize ? 'GENERATE_AUTHORIZE_ENTRY_POINT=1' : '';
+    const generateAuthEndpoint = options.generate_authorize ? isWin ? 'set GENERATE_AUTHORIZE_ENTRY_POINT=1&&' : 'GENERATE_AUTHORIZE_ENTRY_POINT=1 ' : '';
+
 
     // Generate CONTRACT.boilerplate.ts and index.ts files
     console.log('Generating boilerplate.ts and index.ts files...');
-    const cmd = `${generateAuthEndpoint} yarn protoc --plugin=protoc-gen-as=${koinosASGenPath} --as_out=${contractFolderPath}/assembly/ ${contractFolderPath}/assembly/proto/${protoFileName} ${additionalProtoFileNames.join(' ')}`;
+    const cmd = `${generateAuthEndpoint}yarn protoc --plugin=protoc-gen-as=${koinosASGenPath} --as_out=${contractFolderPath}/assembly/ ${contractFolderPath}/assembly/proto/${protoFileName} ${additionalProtoFileNames.join(' ')}`;
     console.log(cmd);
     execSync(cmd, { stdio: 'inherit' });
   });
