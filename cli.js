@@ -7,8 +7,11 @@ let ASProtoGenPath;
 let koinoABIGenPath;
 let koinosASGenPath;
 
+let isWin = false;
+
 switch (process.platform) {
   case 'win32':
+    isWin = true;
     ASProtoGenPath = '.\\node_modules\\.bin\\as-proto-gen.cmd';
     koinoABIGenPath = '.\\node_modules\\.bin\\koinos-abi-proto-gen.cmd';
     koinosASGenPath = '.\\node_modules\\.bin\\koinos-as-gen.cmd';
@@ -32,7 +35,7 @@ program.command('build-all')
   .argument('<protoFileNames...>', 'Name of the contract proto files')
   .option('--generate_authorize', 'generate the authorize entry point')
   .action((contractFolderPath, buildMode, protoFileNames, options) => {
-    const generateAuthEndpoint = options.generate_authorize ? 'GENERATE_AUTHORIZE_ENTRY_POINT=1' : '';
+    let generateAuthEndpoint = options.generate_authorize ? isWin ? 'set GENERATE_AUTHORIZE_ENTRY_POINT=1&&' : 'GENERATE_AUTHORIZE_ENTRY_POINT=1 ' : '';
 
     // to make it easier for dapps devs, the first proto filename is considered to be the contract proto file
     // that's the only one for which we auto populate the contract path
@@ -52,7 +55,7 @@ program.command('build-all')
 
     // Generate CONTRACT.boilerplate.ts and index.ts files
     console.log('Generating boilerplate.ts and index.ts files...');
-    cmd = `${generateAuthEndpoint} yarn protoc --plugin=protoc-gen-as=${koinosASGenPath} --as_out=${contractFolderPath}/assembly/ ${protoFileNames[0]}`;
+    cmd = `${generateAuthEndpoint}yarn protoc --plugin=protoc-gen-as=${koinosASGenPath} --as_out=${contractFolderPath}/assembly/ ${protoFileNames[0]}`;
     console.log(cmd);
     execSync(cmd, { stdio: 'inherit' });
 
