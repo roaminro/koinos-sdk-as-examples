@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package wallet;
+
+import "koinos/options.proto";
+
+// Objects
+
+message key_auth {
+  bytes address = 1 [(btype) = ADDRESS];
+  uint32 weight = 2;
+}
+
+message authority {
+  repeated key_auth key_auths = 1;
+  uint32 weight_threshold = 2;
+}
+
+message authority_names {
+  repeated string names = 1;
+}
