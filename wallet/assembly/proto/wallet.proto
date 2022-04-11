@@ -6,8 +6,13 @@ import "koinos/options.proto";
 
 // Objects
 
+/** Authority
+ * Set of addresses, weights, and weight threshold that defines
+ * an authority to perform certain actions
+ */
+
 message key_auth {
-  bytes address = 1 [(btype) = ADDRESS];
+  bytes address = 1 [(koinos.btype) = ADDRESS];
   uint32 weight = 2;
 }
 
@@ -19,3 +24,57 @@ message authority {
 message authority_names {
   repeated string names = 1;
 }
+
+/** Contract protection
+ * set of key-values that make link between
+ * contracts and authorities. The authority can be
+ * native (authority defined in the contract wallet)
+ * or external (authority defined in other contract)
+ */
+
+message protected_contract {
+  bytes contract_id = 1 [(koinos.btype) = CONTRACT_ID];
+  oneof protection {
+    uint32 entry_point = 2;
+    bool entire_contract = 3;
+  }
+}
+
+message external_authority {
+  bytes contract_id = 1 [(koinos.btype) = CONTRACT_ID];
+  uint32 entry_point = 2;
+}
+
+message authority_contract {
+  oneof authority {
+    string native = 1;
+    external_authority external = 2;
+  }
+  uint32 delay_update = 3;
+}
+
+// Interface
+
+// @description Adds a new authority to the contract
+// @read-only false
+message add_authority_arguments {
+  string name = 1;
+  authority authority = 2;
+}
+
+message add_authority_result {
+  bool value = 1;
+}
+
+/*
+// @description Get authority by name
+// @read-only true
+message get_authority_arguments {
+  string name = 1;
+}
+
+message get_authority_result {
+  bool value = 1;
+}
+*/
+
