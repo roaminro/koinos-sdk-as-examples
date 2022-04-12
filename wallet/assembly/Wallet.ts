@@ -53,8 +53,24 @@ export class Wallet {
 
   add_authority(args: wallet.add_authority_arguments): wallet.add_authority_result {
     const authNames = this._state.getAuthorityNames();
-    if (authNames.names.length == 0 && args.name != "owner") {
+    const existOwner = authNames.names.length > 0;
+    if (!existOwner && args.name != "owner") {
       System.log("The first authority must be 'owner'");
+      System.exitContract(1);
+    }
+
+    if (args.name == null) {
+      System.log("name undefined");
+      System.exitContract(1);
+    }
+
+    if (args.authority == null) {
+      System.log("authority undefined");
+      System.exitContract(1);
+    }
+    
+    if (args.authority!.weight_threshold == null) {
+      System.log("weight_threshold undefined");
       System.exitContract(1);
     }
 
@@ -63,11 +79,21 @@ export class Wallet {
       System.exitContract(1);
     }
     
-    this._requireAuthority("owner");
+    if (existOwner) this._requireAuthority("owner");
     this._state.setAuthority(args.name!, args.authority!);
     authNames.names.push(args.name!);
     this._state.setAuthorityNames(authNames);
     return new wallet.add_authority_result(true);
+  }
+
+  get_authorities(args: wallet.get_authorities_arguments): wallet.get_authorities_result {
+    const result = new wallet.get_authorities_result();
+    const authNames = this._state.getAuthorityNames();
+    for (let i = 0; i < authNames.names.length; i++) {
+      const authority = this._state.getAuthority(authNames.names[i]);
+      result.authorities.push(new wallet.add_authority_arguments(authNames.names[i], authority));
+    }
+    return result;
   }
 
   // todo: update authority function

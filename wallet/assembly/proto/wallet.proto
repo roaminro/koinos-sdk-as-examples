@@ -66,15 +66,10 @@ message add_authority_result {
   bool value = 1;
 }
 
-/*
 // @description Get authority by name
 // @read-only true
-message get_authority_arguments {
-  string name = 1;
-}
+message get_authorities_arguments {}
 
-message get_authority_result {
-  bool value = 1;
+message get_authorities_result {
+  repeated add_authority_arguments authorities = 1;
 }
-*/
-
