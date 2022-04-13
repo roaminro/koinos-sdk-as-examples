@@ -60,13 +60,14 @@ message authority_contract {
 message add_authority_arguments {
   string name = 1;
   authority authority = 2;
+  bool impossible = 3;
 }
 
 message add_authority_result {
   bool value = 1;
 }
 
-// @description Get authority by name
+// @description Get authorities
 // @read-only true
 message get_authorities_arguments {}
 

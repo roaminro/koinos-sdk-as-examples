@@ -2,14 +2,28 @@ import { Arrays, authority, value, Protobuf, System, Crypto, SafeMath } from "ko
 import { wallet } from "./proto/wallet";
 import { State } from "./State";
 
+function exit(message: string): void {
+  System.log(message);
+  System.exitContract(1);
+}
+
+function isImpossible(authority: wallet.authority): boolean {
+  const keyAuths = authority.key_auths;
+  let totalWeight: u32 = 0;
+  for(let i = 0; i < keyAuths.length; i++) {
+    totalWeight += keyAuths[i].weight;
+  }
+  return totalWeight < authority.weight_threshold;
+}
+
 export class Wallet {
 
-  _contractId: Uint8Array;
-  _state: State;
+  contractId: Uint8Array;
+  state: State;
 
   constructor() {
-    this._contractId = System.getContractId();
-    this._state = new State(this._contractId);
+    this.contractId = System.getContractId();
+    this.state = new State(this.contractId);
   }
 
   _equalBytes(a: Uint8Array, b: Uint8Array): boolean {
@@ -21,10 +35,9 @@ export class Wallet {
   }
 
   _requireAuthority(name: string): void {
-    const auth = this._state.getAuthority(name);
+    const auth = this.state.getAuthority(name);
     if (auth == null) {
-      System.log(`invalid authority '${name}'`);
-      System.exitContract(1);
+      exit(`invalid authority '${name}'`);
       return;
     }
     
@@ -46,51 +59,49 @@ export class Wallet {
     }
     
     if (totalWeight < auth.weight_threshold) {
-      System.log(`authority ${name} failed`);
-      System.exitContract(1);
+      exit(`authority ${name} failed`);
     }
   }
 
   add_authority(args: wallet.add_authority_arguments): wallet.add_authority_result {
-    const authNames = this._state.getAuthorityNames();
+    let authNames = this.state.getAuthorityNames();
     const existOwner = authNames.names.length > 0;
     if (!existOwner && args.name != "owner") {
-      System.log("The first authority must be 'owner'");
-      System.exitContract(1);
+      exit("The first authority must be 'owner'");
     }
 
     if (args.name == null) {
-      System.log("name undefined");
-      System.exitContract(1);
+      exit("name undefined");
     }
 
     if (args.authority == null) {
-      System.log("authority undefined");
-      System.exitContract(1);
-    }
-    
-    if (args.authority!.weight_threshold == null) {
-      System.log("weight_threshold undefined");
-      System.exitContract(1);
+      exit("authority undefined");
     }
 
     if (authNames.names.includes(args.name!)) {
-      System.log(`Authority ${args.name!} already exists`);
-      System.exitContract(1);
+      exit(`Authority ${args.name!} already exists`);
+    }
+
+    const impossible = isImpossible(args.authority!);
+    if (impossible != args.impossible) {
+      if (impossible)
+        exit(`Impossible authority: If this is your intention tag it as impossible`);
+      else
+        exit(`The authority was tagged as impossible but it is not`)
     }
     
     if (existOwner) this._requireAuthority("owner");
-    this._state.setAuthority(args.name!, args.authority!);
+    this.state.setAuthority(args.name!, args.authority!);
     authNames.names.push(args.name!);
-    this._state.setAuthorityNames(authNames);
+    this.state.setAuthorityNames(authNames);
     return new wallet.add_authority_result(true);
   }
 
   get_authorities(args: wallet.get_authorities_arguments): wallet.get_authorities_result {
     const result = new wallet.get_authorities_result();
-    const authNames = this._state.getAuthorityNames();
+    const authNames = this.state.getAuthorityNames();
     for (let i = 0; i < authNames.names.length; i++) {
-      const authority = this._state.getAuthority(authNames.names[i]);
+      const authority = this.state.getAuthority(authNames.names[i]);
       result.authorities.push(new wallet.add_authority_arguments(authNames.names[i], authority));
     }
     return result;
@@ -102,10 +113,10 @@ export class Wallet {
   authorize(args: authority.authorize_arguments): authority.authorize_result {
     if (args.type == authority.authorization_type.contract_call) {
       // check if there is an authority for the specific endpoint
-      let authContract = this._state.getAuthorityProtectedContract(args.call!, false);
+      let authContract = this.state.getAuthorityProtectedContract(args.call!, false);
       if (!authContract) {
         // check if there is an authority for the entire contract
-        authContract = this._state.getAuthorityProtectedContract(args.call!, true);
+        authContract = this.state.getAuthorityProtectedContract(args.call!, true);
         if (!authContract) {
           this._requireAuthority("owner"); // todo: change to "active"
           return new authority.authorize_result(true);
@@ -113,20 +124,19 @@ export class Wallet {
       }
 
       if (authContract.native != null) {
-        this._requireAuthority(authContract.native);
+        this._requireAuthority(authContract.native!);
         return new authority.authorize_result(true);
       }
 
       if (authContract.external != null) {
-        const contractId = authContract.external.contract_id!;
-        const entryPoint = authContract.external.entry_point;
+        const contractId = authContract.external!.contract_id!;
+        const entryPoint = authContract.external!.entry_point;
         const resBuf = System.callContract(contractId, entryPoint, Protobuf.encode(args, authority.authorize_arguments.encode))!;
         const authorized = Protobuf.decode<authority.authorize_result>(resBuf, authority.authorize_result.decode);
         return authorized;
       }
 
-      System.log("Authority is not defined correctly");
-      return new authority.authorize_result(false);
+      exit("Authority is not defined correctly");
     }
     // todo: type upload_contract
     // todo: type transaction_application
