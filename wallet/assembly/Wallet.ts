@@ -108,8 +108,20 @@ export class Wallet {
     if (existingAuthority) {
       exit("protected contract already exists");
     }
+    if (args.authority!.native != null) {
+      const auth = this.state.getAuthority(args.authority!.native!);
+      if (auth == null) {
+        exit(`authority '${args.authority!.native!}' does not exist`);
+      }
+    }
+    args.authority!.last_update = System.getHeadInfo().head_block_time;
     this._requireAuthority("owner");
     this.state.setProtection(protectionKey, args.authority!);
+
+    const protectedContractKeys = this.state.getProtectedContractKeys();
+    protectedContractKeys.keys.push(protectionKey);
+    this.state.setProtectedContractKeys(protectedContractKeys);
+
     return new wallet.add_protection_result(true);
   }
 
@@ -119,6 +131,17 @@ export class Wallet {
     for (let i = 0; i < authNames.names.length; i++) {
       const authority = this.state.getAuthority(authNames.names[i]);
       result.authorities.push(new wallet.add_authority_arguments(authNames.names[i], authority));
+    }
+    return result;
+  }
+
+  get_protections(args: wallet.get_protections_arguments): wallet.get_protections_result {
+    const result = new wallet.get_protections_result();
+    const keys = this.state.getProtectedContractKeys().keys;
+    for (let i = 0; i < keys.length; i++) {
+      const protectedContract = Protobuf.decode<wallet.protected_contract>(keys[i], wallet.protected_contract.decode);
+      const authorityContract = this.state.getProtection(keys[i]);
+      result.protections.push(new wallet.add_protection_arguments(protectedContract, authorityContract));
     }
     return result;
   }
@@ -134,7 +157,7 @@ export class Wallet {
         // check if there is an authority for the remaining entry points
         authContract = this.state.getProtectionByTarget(args.call!, true);
         if (!authContract) {
-          this._requireAuthority("owner"); // todo: change to "active"
+          this._requireAuthority("owner"); // todo: change to "active" ?
           return new authority.authorize_result(true);
         }
       }
@@ -159,8 +182,13 @@ export class Wallet {
     return new authority.authorize_result(false);
   }
 
+  require_authority(args: wallet.require_authority_arguments): wallet.require_authority_result {
+    this._requireAuthority(args.name!);
+    return new wallet.require_authority_result(true);
+  }
+
   // todo: authorize update authority protected contract
   // todo: request update (clock starts)
-  // todo: add protected contract
   // todo: update protected contract
+  // todo: create events
 }

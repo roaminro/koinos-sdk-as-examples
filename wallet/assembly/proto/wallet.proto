@@ -51,7 +51,7 @@ message authority_contract {
     external_authority external = 2;
   }
   uint32 delay_update = 3;
-  uint64 last_update = 4;
+  uint64 last_update = 4 [jstype = JS_STRING];
 }
 
 message key_array {
@@ -83,6 +83,16 @@ message add_protection_result {
   bool value = 1;
 }
 
+// @description require authority by name
+// @read-only false
+message require_authority_arguments {
+  string name = 1;
+}
+
+message require_authority_result {
+  bool value = 1;
+}
+
 // @description Get authorities
 // @read-only true
 message get_authorities_arguments {}
@@ -93,8 +103,8 @@ message get_authorities_result {
 
 // @description Get contracts protected and their authorities
 // @read-only true
-/*message get_protections_arguments {}
+message get_protections_arguments {}
 
 message get_protections_result {
   repeated add_protection_arguments protections = 1;
-}*/
+}
