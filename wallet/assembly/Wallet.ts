@@ -38,7 +38,6 @@ export class Wallet {
     const auth = this.state.getAuthority(name);
     if (auth == null) {
       exit(`invalid authority '${name}'`);
-      return;
     }
     
     const sigBytes = System.getTransactionField("signatures")!.message_value!.value!;
@@ -50,15 +49,15 @@ export class Wallet {
       const publicKey = System.recoverPublicKey(signatures.values[i].bytes_value!, txId);
       const address = Crypto.addressFromPublicKey(publicKey!);
 
-      for(let j = 0; j < auth.key_auths.length; j++) {
-        const keyAddress = auth.key_auths[j].address!;
+      for(let j = 0; j < auth!.key_auths.length; j++) {
+        const keyAddress = auth!.key_auths[j].address!;
         if(this._equalBytes(address, keyAddress)) {
-          totalWeight += auth.key_auths[j].weight;
+          totalWeight += auth!.key_auths[j].weight;
         }  
       }
     }
     
-    if (totalWeight < auth.weight_threshold) {
+    if (totalWeight < auth!.weight_threshold) {
       exit(`authority ${name} failed`);
     }
   }
@@ -97,6 +96,23 @@ export class Wallet {
     return new wallet.add_authority_result(true);
   }
 
+  add_protection(args: wallet.add_protection_arguments): wallet.add_protection_result {
+    if (args.protected_contract == null) {
+      exit("protected undefined");
+    }
+    if (args.authority == null) {
+      exit("authority undefined");
+    }
+    const protectionKey = Protobuf.encode(args.protected_contract!, wallet.protected_contract.encode);
+    const existingAuthority = this.state.getProtection(protectionKey);
+    if (existingAuthority) {
+      exit("protected contract already exists");
+    }
+    this._requireAuthority("owner");
+    this.state.setProtection(protectionKey, args.authority!);
+    return new wallet.add_protection_result(true);
+  }
+
   get_authorities(args: wallet.get_authorities_arguments): wallet.get_authorities_result {
     const result = new wallet.get_authorities_result();
     const authNames = this.state.getAuthorityNames();
@@ -113,10 +129,10 @@ export class Wallet {
   authorize(args: authority.authorize_arguments): authority.authorize_result {
     if (args.type == authority.authorization_type.contract_call) {
       // check if there is an authority for the specific endpoint
-      let authContract = this.state.getAuthorityProtectedContract(args.call!, false);
+      let authContract = this.state.getProtectionByTarget(args.call!, false);
       if (!authContract) {
-        // check if there is an authority for the entire contract
-        authContract = this.state.getAuthorityProtectedContract(args.call!, true);
+        // check if there is an authority for the remaining entry points
+        authContract = this.state.getProtectionByTarget(args.call!, true);
         if (!authContract) {
           this._requireAuthority("owner"); // todo: change to "active"
           return new authority.authorize_result(true);
