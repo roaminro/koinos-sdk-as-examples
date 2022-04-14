@@ -1,13 +1,13 @@
-import { authority, Base58, Base64, chain, Crypto, protocol, StringBytes, System } from "koinos-as-sdk";
-import { update } from "./proto/update";
+import { authorize_arguments, authorize_result, Base58, Base64, object_space, Crypto, upload_contract_operation, StringBytes, System } from "koinos-as-sdk";
+import * as update from "./proto/update";
 
 const DIGEST_KEY = 'digest';
 const CONTRACT_SIZE_KEY = 'contract_size';
-const DIGEST_SPACE = new chain.object_space(false, System.getContractId(), 0);
+const DIGEST_SPACE = new object_space(false, System.getContractId(), 0);
 
 export class Update {
 
-  authorize(args: authority.authorize_arguments): authority.authorize_result {
+  authorize(args: authorize_arguments): authorize_result {
     let authorizedUpload = false;
 
     // get the contract size that will be uploaded
@@ -26,7 +26,7 @@ export class Update {
 
         // search for an upload_contract operation for this contract
         if (op.upload_contract) {
-          const uploadOp = (op.upload_contract as protocol.upload_contract_operation);
+          const uploadOp = (op.upload_contract as upload_contract_operation);
           if (Base58.encode(uploadOp.contract_id as Uint8Array) == Base58.encode(contractId)) {
 
             // calculate the bytecode's digest
@@ -46,7 +46,7 @@ export class Update {
       }
     }
 
-    return new authority.authorize_result(authorizedUpload);
+    return new authorize_result(authorizedUpload);
   }
 
   allow_sha256(

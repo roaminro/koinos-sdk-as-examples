@@ -1,6 +1,5 @@
-import { authority, Base58, Base64, chain, common, google, protocol, StringBytes, System, system_calls, value, Crypto } from "koinos-as-sdk";
 import { Calculator } from "../Calculator";
-import { calculator } from "../proto/calculator";
+import * as calculator from "../proto/calculator";
 
 describe("calculator", () => {
   it("should add", () => {

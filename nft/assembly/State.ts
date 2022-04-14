@@ -1,5 +1,5 @@
-import { chain, Protobuf, System } from "koinos-as-sdk";
-import { nft } from "./proto/nft";
+import { object_space, Protobuf, System } from "koinos-as-sdk";
+import * as nft from "./proto/nft";
 
 const TOKEN_SPACE_ID = 0;
 const BALANCE_SPACE_ID = 1;
@@ -8,18 +8,18 @@ const TOKEN_APPROVAL_SPACE_ID = 3;
 
 export class State {
   contractId: Uint8Array;
-  tokenSpace: chain.object_space;
-  balanceSpace: chain.object_space;
-  operatorApprovalSpace: chain.object_space;
-  tokenApprovalSpace: chain.object_space;
+  tokenSpace: object_space;
+  balanceSpace: object_space;
+  operatorApprovalSpace: object_space;
+  tokenApprovalSpace: object_space;
 
   constructor(contractId: Uint8Array) {
     this.contractId = contractId;
 
-    this.tokenSpace = new chain.object_space(false, contractId, TOKEN_SPACE_ID);
-    this.balanceSpace = new chain.object_space(false, contractId, BALANCE_SPACE_ID);
-    this.operatorApprovalSpace = new chain.object_space(false, contractId, OPERATOR_APPROVAL_SPACE_ID);
-    this.tokenApprovalSpace = new chain.object_space(false, contractId, TOKEN_APPROVAL_SPACE_ID);
+    this.tokenSpace = new object_space(false, contractId, TOKEN_SPACE_ID);
+    this.balanceSpace = new object_space(false, contractId, BALANCE_SPACE_ID);
+    this.operatorApprovalSpace = new object_space(false, contractId, OPERATOR_APPROVAL_SPACE_ID);
+    this.tokenApprovalSpace = new object_space(false, contractId, TOKEN_APPROVAL_SPACE_ID);
   }
 
   GetToken(tokenId: u64): nft.token_object | null {
