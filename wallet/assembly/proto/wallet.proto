@@ -7,13 +7,21 @@ import "koinos/options.proto";
 // Objects
 
 /** Authority
- * Set of addresses, weights, and weight threshold that defines
- * an authority to perform certain actions
+ * Set of addresses (or contract ids), weights, and weight
+ * threshold that defines an authority to perform
+ * certain actions.
+ * - When an address is set it is required its signature
+ *   in the transaction.
+ * - When a contract id is set it is required to be
+ *   the "caller". 
  */
 
 message key_auth {
-  bytes address = 1 [(koinos.btype) = ADDRESS];
-  uint32 weight = 2;
+  oneof key_type {
+    bytes address = 1 [(koinos.btype) = ADDRESS];
+    bytes contract_id = 2 [(koinos.btype) = CONTRACT_ID];
+  }
+  uint32 weight = 3;
 }
 
 message authority {

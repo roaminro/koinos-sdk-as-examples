@@ -1,4 +1,4 @@
-import { Arrays, authority, value, Protobuf, System, Crypto, SafeMath } from "koinos-as-sdk";
+import { Arrays, authority, value, Protobuf, System, Crypto, SafeMath, Base58 } from "koinos-as-sdk";
 import { wallet } from "./proto/wallet";
 import { State } from "./State";
 
@@ -9,11 +9,29 @@ function exit(message: string): void {
 
 function isImpossible(authority: wallet.authority): boolean {
   const keyAuths = authority.key_auths;
-  let totalWeight: u32 = 0;
+
+  // add weights from addresses
+  let totalWeightAddresses: u32 = 0;
   for(let i = 0; i < keyAuths.length; i++) {
-    totalWeight += keyAuths[i].weight;
+    if (keyAuths[i].address != null)
+      totalWeightAddresses += keyAuths[i].weight;
   }
-  return totalWeight < authority.weight_threshold;
+
+  let hasContract = false;
+  for(let i = 0; i < keyAuths.length; i++) {
+    if (keyAuths[i].contract_id != null) {
+      hasContract = true;
+      if(totalWeightAddresses + keyAuths[i].weight < authority.weight_threshold) {
+        System.log(`Impossible for contract ${Base58.encode(keyAuths[i].contract_id!)}`);
+        return true;
+      }
+    } else if (keyAuths[i].address == null) {
+      exit(`No address or contract_id in key_auth ${i}`);
+    }
+  }
+
+  if(hasContract) return false;
+  return totalWeightAddresses < authority.weight_threshold;
 }
 
 export class Wallet {
@@ -42,18 +60,40 @@ export class Wallet {
     
     const sigBytes = System.getTransactionField("signatures")!.message_value!.value!;
     const signatures = Protobuf.decode<value.list_type>(sigBytes, value.list_type.decode);    
-    const txId = System.getTransactionField("id")!.bytes_value!;    
+    const txId = System.getTransactionField("id")!.bytes_value!;
     
     let totalWeight: u32 = 0;
+
+    // add weights from signatures
+    const signers: Uint8Array[] = [];
     for(let i = 0; i < signatures.values.length; i++) {
       const publicKey = System.recoverPublicKey(signatures.values[i].bytes_value!, txId);
       const address = Crypto.addressFromPublicKey(publicKey!);
 
+      for(let j = 0; j < signers.length; j++) {
+        if(this._equalBytes(address, signers[i])) {
+          exit("Duplicate signature detected");
+        }
+      }
+
+      signers.push(address);
+
       for(let j = 0; j < auth!.key_auths.length; j++) {
-        const keyAddress = auth!.key_auths[j].address!;
-        if(this._equalBytes(address, keyAddress)) {
+        const keyAddress = auth!.key_auths[j].address;
+        if(keyAddress != null && this._equalBytes(address, keyAddress)) {
           totalWeight += auth!.key_auths[j].weight;
         }  
+      }
+    }
+
+    // add weight from the caller
+    const caller = System.getCaller().caller;
+    if (caller != null) {
+      for(let j = 0; j < auth!.key_auths.length; j++) {
+        const contractId = auth!.key_auths[j].contract_id;
+        if(contractId != null && this._equalBytes(caller, contractId)) {
+          totalWeight += auth!.key_auths[j].weight;
+        }
       }
     }
     
@@ -103,6 +143,9 @@ export class Wallet {
     if (args.authority == null) {
       exit("authority undefined");
     }
+    if (args.protected_contract!.contract_id == null) {
+      exit("protected_contract.contract_id not defined");
+    }
     const protectionKey = Protobuf.encode(args.protected_contract!, wallet.protected_contract.encode);
     const existingAuthority = this.state.getProtection(protectionKey);
     if (existingAuthority) {
@@ -113,6 +156,11 @@ export class Wallet {
       if (auth == null) {
         exit(`authority '${args.authority!.native!}' does not exist`);
       }
+    } else if (args.authority!.external != null) {
+      if (args.authority!.external!.contract_id == null)
+        exit("authority.external.contract_id not defined");
+    } else {
+      exit("authority without native or external");
     }
     args.authority!.last_update = System.getHeadInfo().head_block_time;
     this._requireAuthority("owner");
