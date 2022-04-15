@@ -7,6 +7,10 @@ function exit(message: string): void {
   System.exitContract(1);
 }
 
+function fromUint32toUint64(n: u32): u64 {
+  return (n as u64) - u64.MAX_VALUE + u32.MAX_VALUE;
+}
+
 function isImpossible(authority: wallet.authority): boolean {
   const keyAuths = authority.key_auths;
 
@@ -173,6 +177,44 @@ export class Wallet {
     return new wallet.add_protection_result(true);
   }
 
+  request_update_protection(args: wallet.request_update_protection_arguments): wallet.request_update_protection_result {
+    if (args.protected_contract == null) {
+      exit("protected undefined");
+    }
+    if (args.authority == null) {
+      exit("authority undefined");
+    }
+    if (args.protected_contract!.contract_id == null) {
+      exit("protected_contract.contract_id not defined");
+    }
+    const protectionKey = Protobuf.encode(args.protected_contract!, wallet.protected_contract.encode);
+    const existingAuthority = this.state.getProtection(protectionKey);
+    if (!existingAuthority) {
+      exit("protected contract does not exist");
+    }
+    if (args.authority!.native != null) {
+      const auth = this.state.getAuthority(args.authority!.native!);
+      if (auth == null) {
+        exit(`authority '${args.authority!.native!}' does not exist`);
+      }
+    } else if (args.authority!.external != null) {
+      if (args.authority!.external!.contract_id == null)
+        exit("authority.external.contract_id not defined");
+    } else {
+      exit("authority without native or external");
+    }
+    
+    const total = this.state.getTotalRequestsUpdateProtection();
+    args.authority!.last_update = 0;
+    args.application_time = System.getHeadInfo().head_block_time + fromUint32toUint64(existingAuthority!.delay_update);
+    args.id = total + 1;
+    this._requireAuthority("owner");
+
+    // check if request already exists and in that case reject
+    this.state.addRequestUpdateProtection(args);
+    return new wallet.request_update_protection_result(true);
+  }
+
   get_authorities(args: wallet.get_authorities_arguments): wallet.get_authorities_result {
     const result = new wallet.get_authorities_result();
     const authNames = this.state.getAuthorityNames();
@@ -190,6 +232,20 @@ export class Wallet {
       const protectedContract = Protobuf.decode<wallet.protected_contract>(keys[i], wallet.protected_contract.decode);
       const authorityContract = this.state.getProtection(keys[i]);
       result.protections.push(new wallet.add_protection_arguments(protectedContract, authorityContract));
+    }
+    return result;
+  }
+
+  get_requests_update_protection(args: wallet.get_requests_update_protection_arguments): wallet.get_requests_update_protection_result {
+    const result = new wallet.get_requests_update_protection_result();
+    const keys = this.state.getRequestsUpdateProtectionKeys().keys;
+    for (let i = 0; i < keys.length; i++) {
+      const request = this.state.getRequestUpdateProtection(keys[i]);
+      if (request == null) {
+        System.log(`The key ${i} is empty`);
+      } else {
+        result.requests.push(request);
+      }
     }
     return result;
   }

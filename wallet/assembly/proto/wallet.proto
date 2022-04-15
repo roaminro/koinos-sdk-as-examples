@@ -91,6 +91,19 @@ message add_protection_result {
   bool value = 1;
 }
 
+// @description Updates an existing protection
+// @read-only false
+message request_update_protection_arguments {
+  uint32 id = 1;
+  protected_contract protected_contract = 2;
+  authority_contract authority = 3;
+  uint64 application_time = 4 [jstype = JS_STRING];
+}
+
+message request_update_protection_result {
+  bool value = 1;
+}
+
 // @description require authority by name
 // @read-only false
 message require_authority_arguments {
@@ -115,4 +128,12 @@ message get_protections_arguments {}
 
 message get_protections_result {
   repeated add_protection_arguments protections = 1;
+}
+
+// @description Get requests to update protection
+// @read-only true
+message get_requests_update_protection_arguments {}
+
+message get_requests_update_protection_result {
+  repeated request_update_protection_arguments requests = 1;
 }
