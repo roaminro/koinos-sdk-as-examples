@@ -382,6 +382,15 @@
   resolved "https://registry.npmjs.org/@protobufjs/utf8/-/utf8-1.1.0.tgz"
   integrity sha1-p3c2C1s5oaLlEG+OhY8v0tBgxXA=
 
+"@roaminroe/as-proto-gen@^0.3.3":
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/@roaminroe/as-proto-gen/-/as-proto-gen-0.3.3.tgz#5d9b2d3d63c06109277443d9cb526a2b28eb441c"
+  integrity sha512-++Y+/ap1db31Yenka750cV2xWA0u9JeY0pP0mutNNwWqQYZmKJtrigSvUE6ixUJU2K2jBpE9UGsJzGJo+R1l0w==
+  dependencies:
+    google-protobuf "^3.19.2"
+    prettier "^2.5.0"
+    ts-poet "^4.9.0"
+
 "@roaminroe/protoc@^2.4.0":
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/@roaminroe/protoc/-/protoc-2.4.0.tgz#9f50b727af5bdf7a06e20ae38a2f9c80ef24a2d0"
@@ -630,15 +639,6 @@ as-bignum@^0.2.18:
   version "0.2.18"
   resolved "https://registry.yarnpkg.com/as-bignum/-/as-bignum-0.2.18.tgz#61ed4dd07d4a62107bde227fdb4370190217bf0b"
   integrity sha512-5LODrOr7wvS643oh7PHfyRtbBO9vCcU69vNNvrqh5yovrApM9nRHDeT5XcqnaSI8TqK9ZhN12qhZnq4rdIGcwQ==
-
-as-proto-gen@^0.2.2:
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/as-proto-gen/-/as-proto-gen-0.2.2.tgz#5195079270ee1350c889855916f5ce691592d269"
-  integrity sha512-t8Yg7Ax5iWSLL1NRiwqiTAe6a5rCkylkLt1Wvxc7qo2MiVxi2sWO96rGLJNUkwxpU6Io9j0oCI78xrl+fdiyWg==
-  dependencies:
-    google-protobuf "^3.19.2"
-    prettier "^2.5.0"
-    ts-poet "^4.9.0"
 
 as-proto@^0.2.2:
   version "0.2.2"
@@ -1249,9 +1249,9 @@ google-protobuf@^3.19.2:
   integrity sha512-3GRDj8o9XjcALYjgxNKeD7Wm6w/V8r1Jo4sLYMic9+VaIMLBx8TQeHP9yaoRoDymNONhnkmmveDPyjw/Fpw8+A==
 
 google-protobuf@^3.19.4:
-  version "3.19.4"
-  resolved "https://registry.npmjs.org/google-protobuf/-/google-protobuf-3.19.4.tgz"
-  integrity sha512-OIPNCxsG2lkIvf+P5FNfJ/Km95CsXOBecS9ZcAU6m2Rq3svc0Apl9nB3GMDNKfQ9asNv4KjyAqGwPQFrVle3Yg==
+  version "3.20.0"
+  resolved "https://registry.yarnpkg.com/google-protobuf/-/google-protobuf-3.20.0.tgz#8705ab5fb7e91e9578250a4a8ac533a3cc0bc0bb"
+  integrity sha512-hhXv5IKLDIkb0pEm53G053UZGhRAhw3wM5Jk7ly5sGIQRkO1s63FaDqM9QjlrPHygKEE2awUlLP9fFrG6M9vfQ==
 
 graceful-fs@^4.1.2, graceful-fs@^4.2.6, graceful-fs@^4.2.9:
   version "4.2.9"
@@ -1512,17 +1512,17 @@ koinos-abi-proto-gen@^0.1.6:
     google-protobuf "^3.19.4"
     protobufjs "^6.11.2"
 
-koinos-as-gen@^0.3.5:
-  version "0.3.5"
-  resolved "https://registry.npmjs.org/koinos-as-gen/-/koinos-as-gen-0.3.5.tgz"
-  integrity sha512-xxcqLK0llZmBZvm7WL18FGdtHHYaiyx+FMiemhM08NezKR+2KUuZezXXyZp5VNyHNkvrfXwPqFzwEzr/XEkfeA==
+koinos-as-gen@^0.4.4:
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/koinos-as-gen/-/koinos-as-gen-0.4.4.tgz#9d9d64a84881f8af4eaff0ee951a0c88a5b6eeff"
+  integrity sha512-sTBs84EzfTFRZw9nXoXhxcodQDp7okOgcMwwL9oUnJQ1tf4nL44hST/4xw40KEr+Vk8CQo3klEcBPP2WtC/zbA==
   dependencies:
     google-protobuf "^3.19.4"
 
-koinos-as-sdk@^0.3.10:
-  version "0.3.10"
-  resolved "https://registry.yarnpkg.com/koinos-as-sdk/-/koinos-as-sdk-0.3.10.tgz#29597182b3d7d856261a19f9e020f0cdeafc0abe"
-  integrity sha512-7gkfp5kRnvbCWR6TvjiSpzbJ6Ub5EynbS/S3ZbZK0WMB7LPgeNhmiQHIWEN1E4fS4EEt0vHelsA+G2EHo0gTwg==
+koinos-as-sdk@^0.4.3:
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/koinos-as-sdk/-/koinos-as-sdk-0.4.3.tgz#13500e10a95e9d5669fd080aada4e1a6de678993"
+  integrity sha512-6nxvxwz05bK2zcB06VpoZnlvmViz+0ODkUX2+b80BvOxoirpiSvWucxq6cgNIruc9UTRbMfKewi3loSimMmkFw==
   dependencies:
     as-bignum "^0.2.18"
     as-proto "^0.2.2"

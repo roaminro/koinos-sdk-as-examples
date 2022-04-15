@@ -1,10 +1,10 @@
-import { authority } from "koinos-as-sdk";
-import { immutable } from "./proto/immutable";
+import { authorize_arguments, authorize_result } from "koinos-as-sdk";
+import * as immutable from "./proto/immutable";
 
 export class Immutable {
-  authorize(args: authority.authorize_arguments): authority.authorize_result {
+  authorize(args: authorize_arguments): authorize_result {
     // return false when trying to upload a new version of the contract
-    return new authority.authorize_result(false);
+    return new authorize_result(false);
   }
 
   add(args: immutable.add_arguments): immutable.add_result {

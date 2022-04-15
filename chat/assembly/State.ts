@@ -1,5 +1,5 @@
-import { chain, System } from "koinos-as-sdk";
-import { chat } from "./proto/chat";
+import { System, object_space } from "koinos-as-sdk";
+import * as chat from "./proto/chat";
 
 const METADATA_SPACE_ID = 0;
 const METADATA_OBJECT_ID = "0";
@@ -7,19 +7,19 @@ const MESSAGES_SPACE_ID = 1;
 
 export class State {
   contractId: Uint8Array;
-  metadataSpace: chain.object_space;
-  messagesSpace: chain.object_space;
+  metadataSpace: object_space;
+  messagesSpace: object_space;
 
   lastMessageId: u64 = 0;
 
   constructor(contractId: Uint8Array) {
     this.contractId = contractId;
 
-    this.metadataSpace = new chain.object_space();
+    this.metadataSpace = new object_space();
     this.metadataSpace.id = METADATA_SPACE_ID;
     this.metadataSpace.zone = contractId;
 
-    this.messagesSpace = new chain.object_space();
+    this.messagesSpace = new object_space();
     this.messagesSpace.id = MESSAGES_SPACE_ID;
     this.messagesSpace.zone = contractId;
 
