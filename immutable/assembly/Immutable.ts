@@ -1,4 +1,4 @@
-import { authorize_arguments, authorize_result } from "koinos-as-sdk";
+import { authorize_arguments, authorize_result } from "koinos-sdk-as";
 import * as immutable from "./proto/immutable";
 
 export class Immutable {

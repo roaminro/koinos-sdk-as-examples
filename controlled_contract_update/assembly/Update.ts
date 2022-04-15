@@ -1,4 +1,4 @@
-import { authorize_arguments, authorize_result, Base58, Base64, object_space, Crypto, upload_contract_operation, StringBytes, System } from "koinos-as-sdk";
+import { authorize_arguments, authorize_result, Base58, Base64, object_space, Crypto, upload_contract_operation, StringBytes, System } from "koinos-sdk-as";
 import * as update from "./proto/update";
 
 const DIGEST_KEY = 'digest';

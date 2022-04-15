@@ -1,4 +1,4 @@
-import { Arrays, Protobuf, System, SafeMath, authorization_type } from "koinos-as-sdk";
+import { Arrays, Protobuf, System, SafeMath, authorization_type } from "koinos-sdk-as";
 import * as token from "./proto/token";
 import { State } from "./State";
 

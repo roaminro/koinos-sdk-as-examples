@@ -1,19 +1,19 @@
-![Test Ubuntu](https://github.com/roaminroe/koinos-as-sdk-examples/actions/workflows/test-ubuntu.yml/badge.svg)
-![Test Windows](https://github.com/roaminroe/koinos-as-sdk-examples/actions/workflows/test-windows.yml/badge.svg)
-![Test MacOS](https://github.com/roaminroe/koinos-as-sdk-examples/actions/workflows/test-macos.yml/badge.svg)
+![Test Ubuntu](https://github.com/roaminroe/koinos-sdk-as-examples/actions/workflows/test-ubuntu.yml/badge.svg)
+![Test Windows](https://github.com/roaminroe/koinos-sdk-as-examples/actions/workflows/test-windows.yml/badge.svg)
+![Test MacOS](https://github.com/roaminroe/koinos-sdk-as-examples/actions/workflows/test-macos.yml/badge.svg)
 
 
 # Koinos AssemblyScript SDK Examples
 
 `DISCLAIMER: NONE OF THESE CONTRACTS HAVE BEEN AUDITED, USE AT YOUR OWN RISK`
 
-Link to the Koinos AssemblyScript SDK documentation: https://roaminroe.github.io/koinos-as-sdk/
+Link to the Koinos AssemblyScript SDK documentation: https://roaminroe.github.io/koinos-sdk-as/
 
 ## Installation
 
 ```sh
 # clone this repo
-git clone --recursive https://github.com/roaminroe/koinos-as-sdk-examples
+git clone --recursive https://github.com/roaminroe/koinos-sdk-as-examples
 
 # with npm
 npm install

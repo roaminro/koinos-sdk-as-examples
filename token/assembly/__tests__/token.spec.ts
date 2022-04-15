@@ -1,4 +1,4 @@
-import { Base58, MockVM, Arrays, Protobuf, authorization_type } from "koinos-as-sdk";
+import { Base58, MockVM, Arrays, Protobuf, authorization_type } from "koinos-sdk-as";
 import { Token } from "../Token";
 import * as token from "../proto/token";
 

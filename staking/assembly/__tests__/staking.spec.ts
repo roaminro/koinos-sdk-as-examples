@@ -1,4 +1,4 @@
-import { Base58, MockVM, Protobuf, transfer_result } from 'koinos-as-sdk';
+import { Base58, MockVM, Protobuf, transfer_result } from 'koinos-sdk-as';
 import { Staking } from '../Staking';
 import * as staking from '../proto/staking';
 

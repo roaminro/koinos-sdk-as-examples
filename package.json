@@ -1,10 +1,10 @@
 {
-  "name": "koinos-as-sdk-examples",
+  "name": "koinos-sdk-as-examples",
   "version": "0.4.0",
   "main": "assembly/index.ts",
   "license": "MIT",
   "author": "Roamin Roe <roamin@tuta.io>",
-  "repository": "https://github.com/roaminroe/koinos-as-sdk-examples",
+  "repository": "https://github.com/roaminroe/koinos-sdk-as-examples",
   "dependencies": {
     "commander": "^9.0.0"
   },
@@ -18,8 +18,8 @@
     "assemblyscript": "^0.19.22",
     "eslint": "^8.7.0",
     "koinos-abi-proto-gen": "^0.1.6",
-    "koinos-as-gen": "^0.4.4",
-    "koinos-as-sdk": "^0.4.3",
+    "koinos-as-gen": "^0.4.5",
+    "koinos-sdk-as": "^0.4.3",
     "koinos-mock-vm": "^1.0.3",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.5",

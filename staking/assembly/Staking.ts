@@ -1,4 +1,4 @@
-import { Base58, Protobuf, SafeMath, System, Token } from "koinos-as-sdk";
+import { Base58, Protobuf, SafeMath, System, Token } from "koinos-sdk-as";
 import * as staking from "./proto/staking";
 import { State } from "./State";
 

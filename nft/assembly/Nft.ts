@@ -1,4 +1,4 @@
-import { Base58, Protobuf, System, SafeMath, authorization_type } from "koinos-as-sdk";
+import { Base58, Protobuf, System, SafeMath, authorization_type } from "koinos-sdk-as";
 import * as nft from "./proto/nft";
 import { State } from "./State";
 

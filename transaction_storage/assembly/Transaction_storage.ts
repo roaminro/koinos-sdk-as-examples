@@ -1,4 +1,4 @@
-import { object_space, transaction as koinosTransaction, System } from "koinos-as-sdk";
+import { object_space, transaction as koinosTransaction, System } from "koinos-sdk-as";
 import * as transaction_storage from "./proto/transaction_storage";
 
 export class Transaction_storage {

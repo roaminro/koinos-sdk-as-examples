@@ -1,4 +1,4 @@
-import { Base58, object_space, System, transaction, Arrays, MockVM } from "koinos-as-sdk";
+import { Base58, object_space, System, transaction, Arrays, MockVM } from "koinos-sdk-as";
 import { Transaction_storage } from "../Transaction_storage";
 import * as transaction_storage from "../proto/transaction_storage";
 

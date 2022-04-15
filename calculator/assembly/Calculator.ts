@@ -1,4 +1,4 @@
-import { SafeMath } from "koinos-as-sdk";
+import { SafeMath } from "koinos-sdk-as";
 import * as calculator from "./proto/calculator";
 
 export class Calculator {

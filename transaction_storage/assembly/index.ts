@@ -3,7 +3,7 @@ import {
   Protobuf,
   authorize_arguments,
   authorize_result,
-} from "koinos-as-sdk";
+} from "koinos-sdk-as";
 import { Transaction_storage as ContractClass } from "./Transaction_storage";
 import * as ProtoNamespace from "./proto/transaction_storage";
 

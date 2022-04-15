@@ -1,5 +1,5 @@
 import { Writer, Reader } from "as-proto";
-import { transaction } from "koinos-as-sdk";
+import { transaction } from "koinos-sdk-as";
 
 export class store_transaction_arguments {
   static encode(message: store_transaction_arguments, writer: Writer): void {
