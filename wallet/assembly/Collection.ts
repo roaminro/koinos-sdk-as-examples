@@ -1,11 +1,12 @@
 import { Reader, Writer } from "as-proto";
-import { chain, System } from "koinos-as-sdk";
+import { chain, System, value as val, Protobuf } from "koinos-as-sdk";
 import { wallet } from "./proto/wallet";
 
 export class Collection<Item,KeyType> {
   space: chain.object_space;
   varsSpace: chain.object_space;
   listKeysKey: Uint8Array;
+  counterKeysKey: Uint8Array;
   itemEncoder: (message: Item, writer: Writer) => void;
   itemDecoder: (reader: Reader, length: i32) => Item;
   isArrayString: boolean;
@@ -14,6 +15,7 @@ export class Collection<Item,KeyType> {
     space: chain.object_space,
     varsSpace: chain.object_space,
     listKeysKey: Uint8Array,
+    counterKeysKey: Uint8Array,
     itemEncoder: (message: Item, writer: Writer) => void,
     itemDecoder: (reader: Reader, length: i32) => Item,
     isArrayString: boolean
@@ -21,6 +23,7 @@ export class Collection<Item,KeyType> {
     this.space = space;
     this.varsSpace = varsSpace;
     this.listKeysKey = listKeysKey;
+    this.counterKeysKey = counterKeysKey;
     this.itemEncoder = itemEncoder;
     this.itemDecoder = itemDecoder;
     this.isArrayString = isArrayString;
@@ -34,7 +37,17 @@ export class Collection<Item,KeyType> {
     const item = System.getObject<T, Item>(this.space, key, this.itemDecoder);
     return item;
   }
-  
+
+  getCounter(): u32 {
+    const counter = System.getObject<Uint8Array, val.value_type>(this.varsSpace, this.counterKeysKey, val.value_type.decode);
+    return counter ? counter.uint32_value : 0;
+  }
+
+  static calcKey(n: u32): Uint8Array {
+    const value = new val.value_type(null, 0, 0, 0, 0, n);
+    return Protobuf.encode(value, val.value_type.encode);
+  }
+
   setKeys(keys: Uint8Array[]): void {
     const list = new wallet.bytes_array(keys);
     System.putObject(this.varsSpace, this.listKeysKey, list, wallet.bytes_array.encode);

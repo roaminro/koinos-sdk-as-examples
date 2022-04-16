@@ -1,7 +1,6 @@
 import { authority, value, Protobuf, chain, System, Crypto, SafeMath, Base58 } from "koinos-as-sdk";
 import { Collection } from "./Collection";
 import { wallet } from "./proto/wallet";
-import { State } from "./State";
 
 const VARS_SPACE_ID = 0;
 const AUTHORITIES_SPACE_ID = 1;
@@ -11,11 +10,11 @@ const REQUESTS_UPDATE_PROTECTION_SPACE_ID = 3;
 const AUTHORITY_NAMES_KEY = new Uint8Array(1);
 const PROTECTED_KEYS_KEY = new Uint8Array(1);
 const REQUESTS_UPDATE_PROTECTION_KEYS_KEY = new Uint8Array(1);
-const TOTAL_REQUESTS_UPDATE_PROTECTION_KEY = new Uint8Array(1);
+const COUNTER_REQUESTS_UPDATE_PROTECTION_KEY = new Uint8Array(1);
 AUTHORITY_NAMES_KEY[0] = 0;
 PROTECTED_KEYS_KEY[0] = 1;
 REQUESTS_UPDATE_PROTECTION_KEYS_KEY[0] = 2;
-TOTAL_REQUESTS_UPDATE_PROTECTION_KEY[0] = 3;
+COUNTER_REQUESTS_UPDATE_PROTECTION_KEY[0] = 3;
 
 function exit(message: string): void {
   System.log(message);
@@ -56,18 +55,18 @@ function isImpossible(authority: wallet.authority): boolean {
 export class Wallet {
 
   contractId: Uint8Array;
-  state: State;
   authorities: Collection<wallet.authority, string>;
   protections: Collection<wallet.authority_contract, Uint8Array>;
+  requests: Collection<wallet.request_update_protection_arguments, Uint8Array>;
 
   constructor() {
     this.contractId = System.getContractId();
-    this.state = new State(this.contractId);
     const varsSpace = new chain.object_space(false, this.contractId, VARS_SPACE_ID);
     this.authorities = new Collection(
       new chain.object_space(false, this.contractId, AUTHORITIES_SPACE_ID),
       varsSpace,
       AUTHORITY_NAMES_KEY,
+      new Uint8Array(1), // not used
       wallet.authority.encode,
       wallet.authority.decode,
       true
@@ -76,8 +75,18 @@ export class Wallet {
       new chain.object_space(false, this.contractId, PROTECTED_CONTRACTS_SPACE_ID),
       varsSpace,
       PROTECTED_KEYS_KEY,
+      new Uint8Array(1), // not used
       wallet.authority_contract.encode,
       wallet.authority_contract.decode,
+      false
+    );
+    this.requests = new Collection(
+      new chain.object_space(false, this.contractId, REQUESTS_UPDATE_PROTECTION_SPACE_ID),
+      varsSpace,
+      REQUESTS_UPDATE_PROTECTION_KEYS_KEY,
+      COUNTER_REQUESTS_UPDATE_PROTECTION_KEY,
+      wallet.request_update_protection_arguments.encode,
+      wallet.request_update_protection_arguments.decode,
       false
     );
   }
@@ -88,6 +97,12 @@ export class Wallet {
       if (a[i] != b[i]) return false;
     }
     return true;
+  }
+
+  _getProtectionByTarget(call: authority.call_target, remainingEntryPoints: bool): wallet.authority_contract | null {
+    const protectedContract = new wallet.protected_contract(call.contract_id, call.entry_point, remainingEntryPoints);
+    const key = Protobuf.encode(protectedContract, wallet.protected_contract.encode);
+    return this.protections.get(key);
   }
 
   _requireAuthority(name: string): void {
@@ -238,14 +253,15 @@ export class Wallet {
       exit("authority without native or external");
     }
     
-    const total = this.state.getTotalRequestsUpdateProtection();
+    const counter = this.requests.getCounter();
     args.authority!.last_update = 0;
     args.application_time = System.getHeadInfo().head_block_time + fromUint32toUint64(existingAuthority!.delay_update);
-    args.id = total + 1;
+    args.id = counter + 1;
     this._requireAuthority("owner");
 
-    // check if request already exists and in that case reject
-    this.state.addRequestUpdateProtection(args);
+    // todo: check if request already exists and in that case reject
+    const key = Collection.calcKey(args.id);
+    this.requests.set(key, args);
     return new wallet.request_update_protection_result(true);
   }
 
@@ -272,9 +288,9 @@ export class Wallet {
 
   get_requests_update_protection(args: wallet.get_requests_update_protection_arguments): wallet.get_requests_update_protection_result {
     const result = new wallet.get_requests_update_protection_result();
-    const keys = this.state.getRequestsUpdateProtectionKeys().keys;
+    const keys = this.requests.getKeys();
     for (let i = 0; i < keys.length; i++) {
-      const request = this.state.getRequestUpdateProtection(keys[i]);
+      const request = this.requests.get(keys[i]);
       if (request == null) {
         System.log(`The key ${i} is empty`);
       } else {
@@ -290,10 +306,10 @@ export class Wallet {
   authorize(args: authority.authorize_arguments): authority.authorize_result {
     if (args.type == authority.authorization_type.contract_call) {
       // check if there is an authority for the specific endpoint
-      let authContract = this.state.getProtectionByTarget(args.call!, false);
+      let authContract = this._getProtectionByTarget(args.call!, false);
       if (!authContract) {
         // check if there is an authority for the remaining entry points
-        authContract = this.state.getProtectionByTarget(args.call!, true);
+        authContract = this._getProtectionByTarget(args.call!, true);
         if (!authContract) {
           this._requireAuthority("owner"); // todo: change to "active" ?
           return new authority.authorize_result(true);
