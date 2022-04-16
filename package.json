@@ -17,7 +17,7 @@
     "@typescript-eslint/parser": "^5.10.0",
     "assemblyscript": "^0.19.22",
     "eslint": "^8.7.0",
-    "koinos-abi-proto-gen": "^0.1.6",
+    "koinos-abi-proto-gen": "^0.1.10",
     "koinos-as-gen": "^0.4.5",
     "koinos-sdk-as": "^0.4.3",
     "koinos-mock-vm": "^1.0.3",

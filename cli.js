@@ -37,6 +37,7 @@ program.command('build-all')
   .option('--generate_authorize', 'generate the authorize entry point')
   .action((contractFolderPath, buildMode, protoFileNames, options) => {
     const generateAuthEndpoint = options.generate_authorize ? isWin ? 'set GENERATE_AUTHORIZE_ENTRY_POINT=1&&' : 'GENERATE_AUTHORIZE_ENTRY_POINT=1 ' : '';
+    const includeKoinosChainAuth = generateAuthEndpoint ? 'koinos/chain/authority.proto' : '';
 
     // to make it easier for dapps devs, the first proto filename is considered to be the contract proto file
     // that's the only one for which we auto populate the contract path
@@ -45,7 +46,7 @@ program.command('build-all')
 
     // compile proto file
     console.log('Generating ABI file...');
-    let cmd = `yarn protoc --plugin=protoc-gen-abi=${koinoABIGenPath} --abi_out=${contractFolderPath}/abi/ ${protoFileNames.join(' ')}`;
+    let cmd = `${generateAuthEndpoint} yarn protoc --plugin=protoc-gen-abi=${koinoABIGenPath} --abi_out=${contractFolderPath}/abi/ ${protoFileNames.join(' ')} ${includeKoinosChainAuth}`;
     console.log(cmd);
     execSync(cmd, { stdio: 'inherit' });
 
