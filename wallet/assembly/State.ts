@@ -31,32 +31,6 @@ export class State {
     this.requestsUpdateProtectionSpace = new chain.object_space(false, contractId, REQUESTS_UPDATE_PROTECTION_SPACE_ID);
   }
 
-  setAuthority(name: string, authority: wallet.authority): void {
-    System.putObject(this.authoritiesSpace, name, authority, wallet.authority.encode);
-  }
-
-  getAuthority(name: string): wallet.authority | null {
-    const authority = System.getObject<String, wallet.authority>(this.authoritiesSpace, name, wallet.authority.decode);
-    return authority;
-  }
-
-  setAuthorityNames(authNames: wallet.authority_names): void {
-    System.putObject(this.varsSpace, AUTHORITY_NAMES_KEY, authNames, wallet.authority_names.encode);
-  }
-
-  getAuthorityNames(): wallet.authority_names {
-    const authNames = System.getObject<Uint8Array, wallet.authority_names>(this.varsSpace, AUTHORITY_NAMES_KEY, wallet.authority_names.decode);
-    return authNames ? authNames : new wallet.authority_names();
-  }
-
-  setProtection(key: Uint8Array, authority: wallet.authority_contract): void {
-    System.putObject(this.protectedContractsSpace, key, authority, wallet.authority_contract.encode);
-  }
-
-  getProtection(key: Uint8Array): wallet.authority_contract | null {
-    return System.getObject<Uint8Array, wallet.authority_contract>(this.protectedContractsSpace, key, wallet.authority_contract.decode);
-  }
-
   getProtectionByTarget(call: authority.call_target, remainingEntryPoints: bool): wallet.authority_contract | null {
     const protectedContract = new wallet.protected_contract(call.contract_id, call.entry_point, remainingEntryPoints);
     const key = Protobuf.encode(protectedContract, wallet.protected_contract.encode);
@@ -64,15 +38,6 @@ export class State {
     return authority;
   }
   
-  setProtectedContractKeys(keys: wallet.key_array): void {
-    System.putObject(this.varsSpace, PROTECTED_KEYS_KEY, keys, wallet.key_array.encode);
-  }
-
-  getProtectedContractKeys(): wallet.key_array {
-    const keys = System.getObject<Uint8Array, wallet.key_array>(this.varsSpace, PROTECTED_KEYS_KEY, wallet.key_array.decode);
-    return keys ? keys : new wallet.key_array();
-  }
-
   setTotalRequestsUpdateProtection(total: u32): void {
     const val = new value.value_type(null, 0, 0, 0, 0, total);
     System.putObject(this.varsSpace, TOTAL_REQUESTS_UPDATE_PROTECTION_KEY, val, value.value_type.encode);

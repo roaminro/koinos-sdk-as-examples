@@ -1,6 +1,21 @@
-import { Arrays, authority, value, Protobuf, System, Crypto, SafeMath, Base58 } from "koinos-as-sdk";
+import { authority, value, Protobuf, chain, System, Crypto, SafeMath, Base58 } from "koinos-as-sdk";
+import { Collection } from "./Collection";
 import { wallet } from "./proto/wallet";
 import { State } from "./State";
+
+const VARS_SPACE_ID = 0;
+const AUTHORITIES_SPACE_ID = 1;
+const PROTECTED_CONTRACTS_SPACE_ID = 2;
+const REQUESTS_UPDATE_PROTECTION_SPACE_ID = 3;
+
+const AUTHORITY_NAMES_KEY = new Uint8Array(1);
+const PROTECTED_KEYS_KEY = new Uint8Array(1);
+const REQUESTS_UPDATE_PROTECTION_KEYS_KEY = new Uint8Array(1);
+const TOTAL_REQUESTS_UPDATE_PROTECTION_KEY = new Uint8Array(1);
+AUTHORITY_NAMES_KEY[0] = 0;
+PROTECTED_KEYS_KEY[0] = 1;
+REQUESTS_UPDATE_PROTECTION_KEYS_KEY[0] = 2;
+TOTAL_REQUESTS_UPDATE_PROTECTION_KEY[0] = 3;
 
 function exit(message: string): void {
   System.log(message);
@@ -42,10 +57,29 @@ export class Wallet {
 
   contractId: Uint8Array;
   state: State;
+  authorities: Collection<wallet.authority, string>;
+  protections: Collection<wallet.authority_contract, Uint8Array>;
 
   constructor() {
     this.contractId = System.getContractId();
     this.state = new State(this.contractId);
+    const varsSpace = new chain.object_space(false, this.contractId, VARS_SPACE_ID);
+    this.authorities = new Collection(
+      new chain.object_space(false, this.contractId, AUTHORITIES_SPACE_ID),
+      varsSpace,
+      AUTHORITY_NAMES_KEY,
+      wallet.authority.encode,
+      wallet.authority.decode,
+      true
+    );
+    this.protections = new Collection(
+      new chain.object_space(false, this.contractId, PROTECTED_CONTRACTS_SPACE_ID),
+      varsSpace,
+      PROTECTED_KEYS_KEY,
+      wallet.authority_contract.encode,
+      wallet.authority_contract.decode,
+      false
+    );
   }
 
   _equalBytes(a: Uint8Array, b: Uint8Array): boolean {
@@ -57,7 +91,7 @@ export class Wallet {
   }
 
   _requireAuthority(name: string): void {
-    const auth = this.state.getAuthority(name);
+    const auth = this.authorities.get(name);
     if (auth == null) {
       exit(`invalid authority '${name}'`);
     }
@@ -86,7 +120,7 @@ export class Wallet {
         const keyAddress = auth!.key_auths[j].address;
         if(keyAddress != null && this._equalBytes(address, keyAddress)) {
           totalWeight += auth!.key_auths[j].weight;
-        }  
+        }
       }
     }
 
@@ -107,8 +141,8 @@ export class Wallet {
   }
 
   add_authority(args: wallet.add_authority_arguments): wallet.add_authority_result {
-    let authNames = this.state.getAuthorityNames();
-    const existOwner = authNames.names.length > 0;
+    let names = this.authorities.getKeysS();
+    const existOwner = names.length > 0;
     if (!existOwner && args.name != "owner") {
       exit("The first authority must be 'owner'");
     }
@@ -121,7 +155,7 @@ export class Wallet {
       exit("authority undefined");
     }
 
-    if (authNames.names.includes(args.name!)) {
+    if (names.includes(args.name!)) {
       exit(`Authority ${args.name!} already exists`);
     }
 
@@ -134,9 +168,9 @@ export class Wallet {
     }
     
     if (existOwner) this._requireAuthority("owner");
-    this.state.setAuthority(args.name!, args.authority!);
-    authNames.names.push(args.name!);
-    this.state.setAuthorityNames(authNames);
+    this.authorities.set(args.name!, args.authority!);
+    names.push(args.name!);
+    this.authorities.setKeysS(names);
     return new wallet.add_authority_result(true);
   }
 
@@ -151,12 +185,12 @@ export class Wallet {
       exit("protected_contract.contract_id not defined");
     }
     const protectionKey = Protobuf.encode(args.protected_contract!, wallet.protected_contract.encode);
-    const existingAuthority = this.state.getProtection(protectionKey);
+    const existingAuthority = this.protections.get(protectionKey);
     if (existingAuthority) {
       exit("protected contract already exists");
     }
     if (args.authority!.native != null) {
-      const auth = this.state.getAuthority(args.authority!.native!);
+      const auth = this.authorities.get(args.authority!.native!);
       if (auth == null) {
         exit(`authority '${args.authority!.native!}' does not exist`);
       }
@@ -168,11 +202,11 @@ export class Wallet {
     }
     args.authority!.last_update = System.getHeadInfo().head_block_time;
     this._requireAuthority("owner");
-    this.state.setProtection(protectionKey, args.authority!);
+    this.protections.set(protectionKey, args.authority!);
 
-    const protectedContractKeys = this.state.getProtectedContractKeys();
-    protectedContractKeys.keys.push(protectionKey);
-    this.state.setProtectedContractKeys(protectedContractKeys);
+    const protectedContractKeys = this.protections.getKeys();
+    protectedContractKeys.push(protectionKey);
+    this.protections.setKeys(protectedContractKeys);
 
     return new wallet.add_protection_result(true);
   }
@@ -188,12 +222,12 @@ export class Wallet {
       exit("protected_contract.contract_id not defined");
     }
     const protectionKey = Protobuf.encode(args.protected_contract!, wallet.protected_contract.encode);
-    const existingAuthority = this.state.getProtection(protectionKey);
+    const existingAuthority = this.protections.get(protectionKey);
     if (!existingAuthority) {
       exit("protected contract does not exist");
     }
     if (args.authority!.native != null) {
-      const auth = this.state.getAuthority(args.authority!.native!);
+      const auth = this.authorities.get(args.authority!.native!);
       if (auth == null) {
         exit(`authority '${args.authority!.native!}' does not exist`);
       }
@@ -217,20 +251,20 @@ export class Wallet {
 
   get_authorities(args: wallet.get_authorities_arguments): wallet.get_authorities_result {
     const result = new wallet.get_authorities_result();
-    const authNames = this.state.getAuthorityNames();
-    for (let i = 0; i < authNames.names.length; i++) {
-      const authority = this.state.getAuthority(authNames.names[i]);
-      result.authorities.push(new wallet.add_authority_arguments(authNames.names[i], authority));
+    const names = this.authorities.getKeysS();
+    for (let i = 0; i < names.length; i++) {
+      const authority = this.authorities.get(names[i]);
+      result.authorities.push(new wallet.add_authority_arguments(names[i], authority));
     }
     return result;
   }
 
   get_protections(args: wallet.get_protections_arguments): wallet.get_protections_result {
     const result = new wallet.get_protections_result();
-    const keys = this.state.getProtectedContractKeys().keys;
+    const keys = this.protections.getKeys();
     for (let i = 0; i < keys.length; i++) {
       const protectedContract = Protobuf.decode<wallet.protected_contract>(keys[i], wallet.protected_contract.decode);
-      const authorityContract = this.state.getProtection(keys[i]);
+      const authorityContract = this.protections.get(keys[i]);
       result.protections.push(new wallet.add_protection_arguments(protectedContract, authorityContract));
     }
     return result;

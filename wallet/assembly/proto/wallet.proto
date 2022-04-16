@@ -66,6 +66,14 @@ message key_array {
   repeated bytes keys = 1;
 }
 
+message bytes_array {
+  repeated bytes keys = 1;
+}
+
+message string_array {
+  repeated string keys = 1;
+}
+
 // Interface
 
 // @description Adds a new authority to the contract

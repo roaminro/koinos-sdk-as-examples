@@ -1,48 +1,79 @@
 import { Reader, Writer } from "as-proto";
-import { authority, chain, value, System, Protobuf } from "koinos-as-sdk";
+import { chain, System } from "koinos-as-sdk";
 import { wallet } from "./proto/wallet";
 
-type Encoder<T> = (message: T, writer: Writer) => void;
-type Decoder<T> = (reader: Reader, length: number) => T;
-
-export class Collection<Item> {
+export class Collection<Item,KeyType> {
   space: chain.object_space;
   varsSpace: chain.object_space;
   listKeysKey: Uint8Array;
   itemEncoder: (message: Item, writer: Writer) => void;
-  itemDecoder: (reader: Reader, length: number) => Item;
+  itemDecoder: (reader: Reader, length: i32) => Item;
+  isArrayString: boolean;
+  
   constructor(
     space: chain.object_space,
     varsSpace: chain.object_space,
-    listKeysKey: Uint8Array, 
+    listKeysKey: Uint8Array,
     itemEncoder: (message: Item, writer: Writer) => void,
-    itemDecoder: (reader: Reader, length: number) => Item
+    itemDecoder: (reader: Reader, length: i32) => Item,
+    isArrayString: boolean
   ) {
     this.space = space;
     this.varsSpace = varsSpace;
     this.listKeysKey = listKeysKey;
     this.itemEncoder = itemEncoder;
     this.itemDecoder = itemDecoder;
+    this.isArrayString = isArrayString;
   }
-  setItem(key: Uint8Array, value: Item): void {
+  
+  set(key: KeyType, value: Item): void {
     System.putObject(this.space, key, value, this.itemEncoder);
   }
-  getItem(key: Uint8Array): Item | null {
-    const item = System.getObject<Uint8Array, Item>(this.space, key, this.itemDecoder);
+  
+  get<T>(key: T): Item | null {
+    const item = System.getObject<T, Item>(this.space, key, this.itemDecoder);
     return item;
   }
-  setListKeys(keys: wallet.key_array): void {
-    System.putObject(this.varsSpace, this.listKeysKey, keys, wallet.key_array.encode);
+  
+  setKeys(keys: Uint8Array[]): void {
+    const list = new wallet.bytes_array(keys);
+    System.putObject(this.varsSpace, this.listKeysKey, list, wallet.bytes_array.encode);
   }
-  getListKeys(): wallet.key_array {
-    const keys = System.getObject<Uint8Array, wallet.key_array>(this.varsSpace, this.listKeysKey, wallet.key_array.decode);
-    return keys ? keys : new wallet.key_array();
+
+  setKeysS(keys: string[]): void {
+    const list = new wallet.string_array(keys as string[]);
+    System.putObject(this.varsSpace, this.listKeysKey, list, wallet.string_array.encode);
   }
-  getItems(): Item[] {
-    const keys = this.getListKeys();
+  
+  getKeys(): Uint8Array[] {
+    const list = System.getObject<Uint8Array, wallet.bytes_array>(this.varsSpace, this.listKeysKey, wallet.bytes_array.decode);
+    return list ? list.keys : [];
+  }
+
+  getKeysS(): string[] {
+    const list = System.getObject<Uint8Array, wallet.string_array>(this.varsSpace, this.listKeysKey, wallet.string_array.decode);
+    return list ? list.keys : [];
+  }
+
+  getAll(): Item[] {
+    // todo: consider using System.get_next_object
     const items: Item[] = [];
-    for (let i = 0; i < keys.keys.length; i++) {
-      const item = this.getItem(keys.keys[i]);
+    
+    if (this.isArrayString) {
+      const keys = this.getKeysS();
+      for (let i = 0; i < keys.length; i++) {
+        const item = this.get<string>(keys[i]);
+        if (item == null)
+          System.log("item does not exist");
+        else
+          items.push(item);
+      }
+      return items;
+    }
+
+    const keys = this.getKeys();
+    for (let i = 0; i < keys.length; i++) {
+      const item = this.get<Uint8Array>(keys[i]);
       if (item == null)
         System.log("item does not exist");
       else
