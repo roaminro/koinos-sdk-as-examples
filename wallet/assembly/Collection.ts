@@ -1,6 +1,7 @@
 import { Reader, Writer } from "as-proto";
 import { chain, System, value as val, Protobuf } from "koinos-as-sdk";
 import { wallet } from "./proto/wallet";
+import { equalBytes } from "./utils";
 
 export class Collection<Item,KeyType> {
   space: chain.object_space;
@@ -38,6 +39,10 @@ export class Collection<Item,KeyType> {
     return item;
   }
 
+  remove(key: KeyType): void {
+    System.removeObject(this.space, key);
+  }
+
   getCounter(): u32 {
     const counter = System.getObject<Uint8Array, val.value_type>(this.varsSpace, this.counterKeysKey, val.value_type.decode);
     return counter ? counter.uint32_value : 0;
@@ -66,6 +71,40 @@ export class Collection<Item,KeyType> {
   getKeysS(): string[] {
     const list = System.getObject<Uint8Array, wallet.string_array>(this.varsSpace, this.listKeysKey, wallet.string_array.decode);
     return list ? list.keys : [];
+  }
+
+  addKey(key: Uint8Array): void {
+    const keys = this.getKeys();
+    keys.push(key);
+    this.setKeys(keys);
+  }
+
+  addKeyS(key: string): void {
+    const keys = this.getKeysS();
+    keys.push(key);
+    this.setKeysS(keys);
+  }
+
+  removeKey(key: Uint8Array): void {
+    const keys = this.getKeys();
+    const keys2: Uint8Array[] = [];
+    for (let i = 0; i < keys.length; i++) {
+      if (!equalBytes(keys[i], key)) {
+        keys2.push(keys[i]);
+      }
+    }
+    this.setKeys(keys2);
+  }
+
+  removeKeyS(key: string): void {
+    const keys = this.getKeysS();
+    const keys2: string[] = [];
+    for (let i = 0; i < keys.length; i++) {
+      if (keys[i] != key) {
+        keys2.push(keys[i]);
+      }
+    }
+    this.setKeysS(keys2);
   }
 
   getAll(): Item[] {

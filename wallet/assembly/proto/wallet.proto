@@ -99,13 +99,16 @@ message add_protection_result {
   bool value = 1;
 }
 
-// @description Updates an existing protection
+// @description Request the update of an existing protection
 // @read-only false
 message request_update_protection_arguments {
   uint32 id = 1;
   protected_contract protected_contract = 2;
-  authority_contract authority = 3;
-  uint64 application_time = 4 [jstype = JS_STRING];
+  oneof type {
+    authority_contract authority = 3;
+    bool remove = 4;
+  }
+  uint64 application_time = 5 [jstype = JS_STRING];
 }
 
 message request_update_protection_result {
@@ -116,7 +119,10 @@ message request_update_protection_result {
 // @read-only false
 message update_protection_arguments {
   protected_contract protected_contract = 1;
-  authority_contract authority = 2;
+  oneof type {
+    authority_contract authority = 2;
+    bool remove = 3;
+  }
 }
 
 message update_protection_result {
