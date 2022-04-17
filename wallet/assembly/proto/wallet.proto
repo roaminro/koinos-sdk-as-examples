@@ -112,6 +112,17 @@ message request_update_protection_result {
   bool value = 1;
 }
 
+// @description Updates a protection to a contract
+// @read-only false
+message update_protection_arguments {
+  protected_contract protected_contract = 1;
+  authority_contract authority = 2;
+}
+
+message update_protection_result {
+  bool value = 1;
+}
+
 // @description require authority by name
 // @read-only false
 message require_authority_arguments {

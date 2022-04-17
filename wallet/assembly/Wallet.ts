@@ -2,6 +2,8 @@ import { authority, value, Protobuf, chain, System, Crypto, SafeMath, Base58 } f
 import { Collection } from "./Collection";
 import { wallet } from "./proto/wallet";
 
+const GRACE_PERIOD_PROTECTION: u64 = 86400; // 1 day
+
 const VARS_SPACE_ID = 0;
 const AUTHORITIES_SPACE_ID = 1;
 const PROTECTED_CONTRACTS_SPACE_ID = 2;
@@ -19,6 +21,14 @@ COUNTER_REQUESTS_UPDATE_PROTECTION_KEY[0] = 3;
 function exit(message: string): void {
   System.log(message);
   System.exitContract(1);
+}
+
+function equalBytes(a: Uint8Array, b: Uint8Array): boolean {
+  if (a.length != b.length) return false;
+  for (let i = 0; i < a.length; i++ ) {
+    if (a[i] != b[i]) return false;
+  }
+  return true;
 }
 
 function fromUint32toUint64(n: u32): u64 {
@@ -50,6 +60,24 @@ function isImpossible(authority: wallet.authority): boolean {
 
   if(hasContract) return false;
   return totalWeightAddresses < authority.weight_threshold;
+}
+
+class ResultVerifyArgumentsProtection {
+  protectionKey: Uint8Array;
+  existingAuthority: wallet.authority_contract | null;
+  constructor(protectionKey: Uint8Array, existingAuthority: wallet.authority_contract | null) {
+    this.protectionKey = protectionKey;
+    this.existingAuthority = existingAuthority;
+  }
+}
+
+class Result {
+  error: boolean;
+  message: string;
+  constructor(error: boolean, message: string) {
+    this.error = error;
+    this.message = message;
+  }
 }
 
 export class Wallet {
@@ -91,14 +119,6 @@ export class Wallet {
     );
   }
 
-  _equalBytes(a: Uint8Array, b: Uint8Array): boolean {
-    if (a.length != b.length) return false;
-    for (let i = 0; i < a.length; i++ ) {
-      if (a[i] != b[i]) return false;
-    }
-    return true;
-  }
-
   _getProtectionByTarget(call: authority.call_target, remainingEntryPoints: bool): wallet.authority_contract | null {
     const protectedContract = new wallet.protected_contract(call.contract_id, call.entry_point, remainingEntryPoints);
     const key = Protobuf.encode(protectedContract, wallet.protected_contract.encode);
@@ -106,9 +126,14 @@ export class Wallet {
   }
 
   _requireAuthority(name: string): void {
+    const result = this._verifyAuthority(name);
+    if (result.error) exit(result.message);
+  }
+
+  _verifyAuthority(name: string): Result {
     const auth = this.authorities.get(name);
     if (auth == null) {
-      exit(`invalid authority '${name}'`);
+      return new Result(true, `invalid authority '${name}'`);
     }
     
     const sigBytes = System.getTransactionField("signatures")!.message_value!.value!;
@@ -124,17 +149,17 @@ export class Wallet {
       const address = Crypto.addressFromPublicKey(publicKey!);
 
       for(let j = 0; j < signers.length; j++) {
-        if(this._equalBytes(address, signers[i])) {
-          exit("Duplicate signature detected");
+        if(equalBytes(address, signers[i])) {
+          return new Result(true, "Duplicate signature detected");
         }
       }
 
       signers.push(address);
 
-      for(let j = 0; j < auth!.key_auths.length; j++) {
-        const keyAddress = auth!.key_auths[j].address;
-        if(keyAddress != null && this._equalBytes(address, keyAddress)) {
-          totalWeight += auth!.key_auths[j].weight;
+      for(let j = 0; j < auth.key_auths.length; j++) {
+        const keyAddress = auth.key_auths[j].address;
+        if(keyAddress != null && equalBytes(address, keyAddress)) {
+          totalWeight += auth.key_auths[j].weight;
         }
       }
     }
@@ -142,17 +167,19 @@ export class Wallet {
     // add weight from the caller
     const caller = System.getCaller().caller;
     if (caller != null) {
-      for(let j = 0; j < auth!.key_auths.length; j++) {
-        const contractId = auth!.key_auths[j].contract_id;
-        if(contractId != null && this._equalBytes(caller, contractId)) {
-          totalWeight += auth!.key_auths[j].weight;
+      for(let j = 0; j < auth.key_auths.length; j++) {
+        const contractId = auth.key_auths[j].contract_id;
+        if(contractId != null && equalBytes(caller, contractId)) {
+          totalWeight += auth.key_auths[j].weight;
         }
       }
     }
     
-    if (totalWeight < auth!.weight_threshold) {
-      exit(`authority ${name} failed`);
+    if (totalWeight < auth.weight_threshold) {
+      return new Result(true, `authority ${name} failed`);
     }
+
+    return new Result(false, "");
   }
 
   add_authority(args: wallet.add_authority_arguments): wallet.add_authority_result {
@@ -189,80 +216,143 @@ export class Wallet {
     return new wallet.add_authority_result(true);
   }
 
-  add_protection(args: wallet.add_protection_arguments): wallet.add_protection_result {
-    if (args.protected_contract == null) {
+  verifyArgumentsProtection(protected_contract: wallet.protected_contract | null, authority: wallet.authority_contract | null, isNewProtection: boolean): ResultVerifyArgumentsProtection {
+    if (protected_contract == null) {
       exit("protected undefined");
     }
-    if (args.authority == null) {
+    if (authority == null) {
       exit("authority undefined");
     }
-    if (args.protected_contract!.contract_id == null) {
+    if (protected_contract!.contract_id == null) {
       exit("protected_contract.contract_id not defined");
     }
-    const protectionKey = Protobuf.encode(args.protected_contract!, wallet.protected_contract.encode);
+    const protectionKey = Protobuf.encode(protected_contract!, wallet.protected_contract.encode);
     const existingAuthority = this.protections.get(protectionKey);
-    if (existingAuthority) {
+    if (isNewProtection && existingAuthority) {
       exit("protected contract already exists");
     }
-    if (args.authority!.native != null) {
-      const auth = this.authorities.get(args.authority!.native!);
+    if (!isNewProtection && !existingAuthority) {
+      exit("protected contract does not exist");
+    }
+    if (authority!.native != null) {
+      const auth = this.authorities.get(authority!.native!);
       if (auth == null) {
-        exit(`authority '${args.authority!.native!}' does not exist`);
+        exit(`authority '${authority!.native!}' does not exist`);
       }
-    } else if (args.authority!.external != null) {
-      if (args.authority!.external!.contract_id == null)
+    } else if (authority!.external != null) {
+      if (authority!.external!.contract_id == null)
         exit("authority.external.contract_id not defined");
     } else {
       exit("authority without native or external");
     }
+    return new ResultVerifyArgumentsProtection(protectionKey, existingAuthority);
+  }
+
+  add_protection(args: wallet.add_protection_arguments): wallet.add_protection_result {
+    const resultVerify = this.verifyArgumentsProtection(args.protected_contract, args.authority, true);
+    
     args.authority!.last_update = System.getHeadInfo().head_block_time;
     this._requireAuthority("owner");
-    this.protections.set(protectionKey, args.authority!);
+    this.protections.set(resultVerify.protectionKey, args.authority!);
 
     const protectedContractKeys = this.protections.getKeys();
-    protectedContractKeys.push(protectionKey);
+    protectedContractKeys.push(resultVerify.protectionKey);
     this.protections.setKeys(protectedContractKeys);
 
     return new wallet.add_protection_result(true);
   }
 
   request_update_protection(args: wallet.request_update_protection_arguments): wallet.request_update_protection_result {
-    if (args.protected_contract == null) {
-      exit("protected undefined");
-    }
-    if (args.authority == null) {
-      exit("authority undefined");
-    }
-    if (args.protected_contract!.contract_id == null) {
-      exit("protected_contract.contract_id not defined");
-    }
-    const protectionKey = Protobuf.encode(args.protected_contract!, wallet.protected_contract.encode);
-    const existingAuthority = this.protections.get(protectionKey);
-    if (!existingAuthority) {
-      exit("protected contract does not exist");
-    }
-    if (args.authority!.native != null) {
-      const auth = this.authorities.get(args.authority!.native!);
-      if (auth == null) {
-        exit(`authority '${args.authority!.native!}' does not exist`);
-      }
-    } else if (args.authority!.external != null) {
-      if (args.authority!.external!.contract_id == null)
-        exit("authority.external.contract_id not defined");
-    } else {
-      exit("authority without native or external");
+    const resultVerify = this.verifyArgumentsProtection(args.protected_contract, args.authority, false);
+
+    const requests = this.requests.getAll();
+    for (let i = 0; i < requests.length; i++) {
+      const pKey = Protobuf.encode(requests[i].protected_contract, wallet.protected_contract.encode);
+      if(equalBytes(resultVerify.protectionKey, pKey))
+        exit(`request ongoing for this protected contract`);
     }
     
     const counter = this.requests.getCounter();
     args.authority!.last_update = 0;
-    args.application_time = System.getHeadInfo().head_block_time + fromUint32toUint64(existingAuthority!.delay_update);
+    args.application_time = System.getHeadInfo().head_block_time + fromUint32toUint64(resultVerify.existingAuthority!.delay_update);
     args.id = counter + 1;
     this._requireAuthority("owner");
 
-    // todo: check if request already exists and in that case reject
     const key = Collection.calcKey(args.id);
     this.requests.set(key, args);
     return new wallet.request_update_protection_result(true);
+  }
+
+  update_protection(args: wallet.update_protection_arguments): wallet.update_protection_result {
+    const resultVerify = this.verifyArgumentsProtection(args.protected_contract, args.authority, false);
+
+    let authorized: boolean = false;
+    let indexRequest: i32 = -1;
+    let requests: wallet.request_update_protection_arguments[];
+    const bytes1 = Protobuf.encode(args.protected_contract, wallet.protected_contract.encode);
+    const bytes2 = Protobuf.encode(args.authority, wallet.authority_contract.encode);
+
+    let verifRecovery = this._verifyAuthority("recovery");
+    if(verifRecovery.error) {
+      System.log(verifRecovery.message);
+      const now = System.getHeadInfo().head_block_time;
+      if(resultVerify.existingAuthority!.last_update < now + GRACE_PERIOD_PROTECTION) {
+        verifRecovery = this._verifyAuthority("owner");
+        if(verifRecovery.error) {
+          System.log(verifRecovery.message);
+        } else {
+          authorized = true;
+        }
+      } else {
+        System.log("not in grace period");
+      }
+
+      if(!authorized) {
+        requests = this.requests.getAll();
+        for (let i = 0; i < requests.length; i++) {
+          const bytes1Req = Protobuf.encode(requests[i].protected_contract, wallet.protected_contract.encode);
+          const bytes2Req = Protobuf.encode(requests[i].authority, wallet.authority_contract.encode);
+          if(equalBytes(bytes1, bytes1Req) && equalBytes(bytes2, bytes2Req)) {
+            indexRequest = i;
+            break;
+          }
+        }
+        if (indexRequest < 0) {
+          exit("the corresponding request to update the protection was not found");
+        }
+        if(requests[indexRequest].application_time > now) {
+          exit("it is not yet the application time");
+        }
+        authorized = true;
+      }
+    } else {
+      authorized = true;
+    }
+
+    if(!authorized) System.exitContract(1);
+    
+    // update protection
+    args.authority!.last_update = System.getHeadInfo().head_block_time;
+    this.protections.set(resultVerify.protectionKey, args.authority!);
+
+    // remove existing request
+    if (indexRequest < 0) {
+      requests = this.requests.getAll();
+      for (let i = 0; i < requests.length; i++) {
+        const bytes1Req = Protobuf.encode(requests[i].protected_contract, wallet.protected_contract.encode);
+        const bytes2Req = Protobuf.encode(requests[i].authority, wallet.authority_contract.encode);
+        if(equalBytes(bytes1, bytes1Req) && equalBytes(bytes2, bytes2Req)) {
+          indexRequest = i;
+          break;
+        }
+      }
+    }
+
+    if (indexRequest >= 0) {
+      // todo: remove request
+    }
+
+    return new wallet.update_protection_result(true);
   }
 
   get_authorities(args: wallet.get_authorities_arguments): wallet.get_authorities_result {
