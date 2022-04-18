@@ -48,6 +48,11 @@ export class Collection<Item,KeyType> {
     return counter ? counter.uint32_value : 0;
   }
 
+  setCounter(n: u32): void {
+    const counter = new val.value_type(null, 0, 0, 0, 0, n);
+    System.putObject(this.varsSpace, this.counterKeysKey, counter, val.value_type.encode);
+  }
+
   static calcKey(n: u32): Uint8Array {
     const value = new val.value_type(null, 0, 0, 0, 0, n);
     return Protobuf.encode(value, val.value_type.encode);

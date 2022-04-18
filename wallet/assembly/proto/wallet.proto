@@ -102,14 +102,14 @@ message request_update_recovery_arguments {
 message request_update_recovery_result {
   bool value = 1;
 }
-/*
+
 // @description Cancel request update recovery authority
 // @read-only false
 message cancel_request_update_recovery_arguments {}
 
 message cancel_request_update_recovery_result {
   bool value = 1;
-}*/
+}
 
 // @description Update authority
 // @read-only false
@@ -152,7 +152,7 @@ message request_update_protection_arguments {
 message request_update_protection_result {
   bool value = 1;
 }
-/*
+
 // @description Cancel the request to update an existing protection
 // @read-only false
 message cancel_request_update_protection_arguments {
@@ -161,7 +161,7 @@ message cancel_request_update_protection_arguments {
 
 message cancel_request_update_protection_result {
   bool value = 1;
-}*/
+}
 
 // @description Updates a protection to a contract
 // @read-only false

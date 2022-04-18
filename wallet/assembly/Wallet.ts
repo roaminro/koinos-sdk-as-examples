@@ -1,6 +1,5 @@
 import { authority, value, Protobuf, chain, System, Crypto, SafeMath, Base58 } from "koinos-as-sdk";
 import { wallet } from "./proto/wallet";
-import { equalBytes, fromUint32toUint64 } from "./utils";
 import { Collection } from "./Collection";
 
 const GRACE_PERIOD_PROTECTION: u64 = 86400; // 1 day
@@ -247,6 +246,15 @@ export class Wallet {
     return new wallet.request_update_recovery_result(true);
   }
 
+  cancel_request_update_recovery(args: wallet.cancel_request_update_recovery_arguments): wallet.cancel_request_update_recovery_result {
+    this._requireAuthority("owner");
+    const request = System.getObject<Uint8Array, wallet.request_update_recovery_arguments>(this.varsSpace, REQUEST_UPDATE_RECOVERY_KEY, wallet.request_update_recovery_arguments.decode);
+    if (!request)
+      exit("request update recovery not found");
+    System.removeObject(this.varsSpace, REQUEST_UPDATE_RECOVERY_KEY);
+    return new wallet.cancel_request_update_recovery_result(true);
+  }
+
   update_authority(args: wallet.update_authority_arguments): wallet.update_authority_result {
     const resultVerify = this.verifyArgumentsAuthority(args.name, args.authority, args.impossible, false, !args.remove);
     let authorized: boolean = false;
@@ -269,7 +277,7 @@ export class Wallet {
         if(!authorized) {
           const request = System.getObject<Uint8Array, wallet.request_update_recovery_arguments>(this.varsSpace, REQUEST_UPDATE_RECOVERY_KEY, wallet.request_update_recovery_arguments.decode);
           if (!request) {
-            exit("no request found to update recovery");
+            exit("request to update recovery not found");
           }
           if (request!.application_time > now) {
             exit("it is not yet the application time");
@@ -370,15 +378,28 @@ export class Wallet {
     }
     
     if(!args.remove) args.authority!.last_update = 0;
-    args.application_time = System.getHeadInfo().head_block_time + fromUint32toUint64(resultVerify.existingAuthority!.delay_update);
-    args.id = this.requests.getCounter() + 1;
+    args.application_time = System.getHeadInfo().head_block_time + resultVerify.existingAuthority!.delay_update;
+    const counter = this.requests.getCounter() + 1;
+    args.id = counter;
     this._requireAuthority("owner");
 
     const key = Collection.calcKey(args.id);
     this.requests.set(key, args);
     this.requests.addKey(key);
+    this.requests.setCounter(counter);
 
     return new wallet.request_update_protection_result(true);
+  }
+
+  cancel_request_update_protection(args: wallet.cancel_request_update_protection_arguments): wallet.cancel_request_update_protection_result {
+    this._requireAuthority("owner");
+    const key = Collection.calcKey(args.id);
+    const request = this.requests.get(key);
+    if(!request)
+      exit("request not found");
+    this.requests.remove(key);
+    this.requests.removeKey(key);
+    return new wallet.cancel_request_update_protection_result(true);
   }
 
   update_protection(args: wallet.update_protection_arguments): wallet.update_protection_result {
@@ -416,7 +437,7 @@ export class Wallet {
           }
         }
         if (indexRequest < 0) {
-          exit("the corresponding request to update the protection was not found");
+          exit("request to update protection not found");
         }
         if(requests[indexRequest].application_time > now) {
           exit("it is not yet the application time");
@@ -539,6 +560,5 @@ export class Wallet {
   }
 
   // todo: authorize update authority protected contract
-  // todo: cancel requests
   // todo: create events
 }
