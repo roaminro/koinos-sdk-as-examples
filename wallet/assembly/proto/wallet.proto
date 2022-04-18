@@ -27,6 +27,7 @@ message key_auth {
 message authority {
   repeated key_auth key_auths = 1;
   uint32 weight_threshold = 2;
+  uint64 last_update = 3 [jstype = JS_STRING];
 }
 
 message authority_names {
@@ -88,6 +89,43 @@ message add_authority_result {
   bool value = 1;
 }
 
+// @description Request update recovery authority
+// @read-only false
+message request_update_recovery_arguments {
+  oneof type {
+    authority authority = 1;
+    bool remove = 2;
+  }
+  uint64 application_time = 3 [jstype = JS_STRING];
+}
+
+message request_update_recovery_result {
+  bool value = 1;
+}
+/*
+// @description Cancel request update recovery authority
+// @read-only false
+message cancel_request_update_recovery_arguments {}
+
+message cancel_request_update_recovery_result {
+  bool value = 1;
+}*/
+
+// @description Update authority
+// @read-only false
+message update_authority_arguments {
+  string name = 1;
+  oneof type {
+    authority authority = 2;
+    bool remove = 3;
+  }
+  bool impossible = 4;
+}
+
+message update_authority_result {
+  bool value = 1;
+}
+
 // @description Adds a new protection to a contract
 // @read-only false
 message add_protection_arguments {
@@ -114,6 +152,16 @@ message request_update_protection_arguments {
 message request_update_protection_result {
   bool value = 1;
 }
+/*
+// @description Cancel the request to update an existing protection
+// @read-only false
+message cancel_request_update_protection_arguments {
+  uint32 id = 1;
+}
+
+message cancel_request_update_protection_result {
+  bool value = 1;
+}*/
 
 // @description Updates a protection to a contract
 // @read-only false
@@ -161,4 +209,12 @@ message get_requests_update_protection_arguments {}
 
 message get_requests_update_protection_result {
   repeated request_update_protection_arguments requests = 1;
+}
+
+// @description Get request update recovery
+// @read-only true
+message get_request_update_recovery_arguments {}
+
+message get_request_update_recovery_result {
+  request_update_recovery_arguments request = 1;
 }
