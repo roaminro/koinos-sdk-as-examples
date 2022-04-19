@@ -1,4 +1,12 @@
-import { authority, value, Protobuf, chain, System, Crypto, Base58 } from "koinos-as-sdk";
+import {
+  authority,
+  value,
+  Protobuf,
+  chain,
+  System,
+  Crypto,
+  Base58,
+} from "koinos-as-sdk";
 import { wallet } from "./proto/wallet";
 import { Collection } from "./Collection";
 import { equalBytes } from "./utils";
@@ -33,17 +41,21 @@ function isImpossible(authority: wallet.authority): boolean {
 
   // add weights from addresses
   let totalWeightAddresses: u32 = 0;
-  for(let i = 0; i < keyAuths.length; i++) {
-    if (keyAuths[i].address != null)
-      totalWeightAddresses += keyAuths[i].weight;
+  for (let i = 0; i < keyAuths.length; i++) {
+    if (keyAuths[i].address != null) totalWeightAddresses += keyAuths[i].weight;
   }
 
   let hasContract = false;
-  for(let i = 0; i < keyAuths.length; i++) {
+  for (let i = 0; i < keyAuths.length; i++) {
     if (keyAuths[i].contract_id != null) {
       hasContract = true;
-      if(totalWeightAddresses + keyAuths[i].weight < authority.weight_threshold) {
-        System.log(`Impossible for contract ${Base58.encode(keyAuths[i].contract_id!)}`);
+      if (
+        totalWeightAddresses + keyAuths[i].weight <
+        authority.weight_threshold
+      ) {
+        System.log(
+          `Impossible for contract ${Base58.encode(keyAuths[i].contract_id!)}`
+        );
         return true;
       }
     } else if (keyAuths[i].address == null) {
@@ -51,7 +63,7 @@ function isImpossible(authority: wallet.authority): boolean {
     }
   }
 
-  if(hasContract) return false;
+  if (hasContract) return false;
   return totalWeightAddresses < authority.weight_threshold;
 }
 
@@ -59,7 +71,11 @@ class ResultVerifyArgumentsAuthority {
   existOwner: boolean;
   names: string[];
   existingAuthority: wallet.authority | null;
-  constructor(existOwner: boolean, names: string[], existingAuthority: wallet.authority | null) {
+  constructor(
+    existOwner: boolean,
+    names: string[],
+    existingAuthority: wallet.authority | null
+  ) {
     this.existOwner = existOwner;
     this.names = names;
     this.existingAuthority = existingAuthority;
@@ -69,7 +85,10 @@ class ResultVerifyArgumentsAuthority {
 class ResultVerifyArgumentsProtection {
   protectionKey: Uint8Array;
   existingAuthority: wallet.authority_contract | null;
-  constructor(protectionKey: Uint8Array, existingAuthority: wallet.authority_contract | null) {
+  constructor(
+    protectionKey: Uint8Array,
+    existingAuthority: wallet.authority_contract | null
+  ) {
     this.protectionKey = protectionKey;
     this.existingAuthority = existingAuthority;
   }
@@ -85,7 +104,6 @@ class Result {
 }
 
 export class Wallet {
-
   contractId: Uint8Array;
   varsSpace: chain.object_space;
   authorities: Collection<wallet.authority, string>;
@@ -94,7 +112,11 @@ export class Wallet {
 
   constructor() {
     this.contractId = System.getContractId();
-    this.varsSpace = new chain.object_space(false, this.contractId, VARS_SPACE_ID);
+    this.varsSpace = new chain.object_space(
+      false,
+      this.contractId,
+      VARS_SPACE_ID
+    );
     this.authorities = new Collection(
       new chain.object_space(false, this.contractId, AUTHORITIES_SPACE_ID),
       this.varsSpace,
@@ -105,7 +127,11 @@ export class Wallet {
       true
     );
     this.protections = new Collection(
-      new chain.object_space(false, this.contractId, PROTECTED_CONTRACTS_SPACE_ID),
+      new chain.object_space(
+        false,
+        this.contractId,
+        PROTECTED_CONTRACTS_SPACE_ID
+      ),
       this.varsSpace,
       PROTECTED_KEYS_KEY,
       new Uint8Array(1), // not used
@@ -114,7 +140,11 @@ export class Wallet {
       false
     );
     this.requests = new Collection(
-      new chain.object_space(false, this.contractId, REQUESTS_UPDATE_PROTECTION_SPACE_ID),
+      new chain.object_space(
+        false,
+        this.contractId,
+        REQUESTS_UPDATE_PROTECTION_SPACE_ID
+      ),
       this.varsSpace,
       REQUESTS_UPDATE_PROTECTION_KEYS_KEY,
       COUNTER_REQUESTS_UPDATE_PROTECTION_KEY,
@@ -124,9 +154,19 @@ export class Wallet {
     );
   }
 
-  _getProtectionByTarget(call: authority.call_target, remainingEntryPoints: bool): wallet.authority_contract | null {
-    const protectedContract = new wallet.protected_contract(call.contract_id, call.entry_point, remainingEntryPoints);
-    const key = Protobuf.encode(protectedContract, wallet.protected_contract.encode);
+  _getProtectionByTarget(
+    call: authority.call_target,
+    remainingEntryPoints: bool
+  ): wallet.authority_contract | null {
+    const protectedContract = new wallet.protected_contract(
+      call.contract_id,
+      call.entry_point,
+      remainingEntryPoints
+    );
+    const key = Protobuf.encode(
+      protectedContract,
+      wallet.protected_contract.encode
+    );
     return this.protections.get(key);
   }
 
@@ -140,30 +180,37 @@ export class Wallet {
     if (auth == null) {
       return new Result(true, `invalid authority '${name}'`);
     }
-    
-    const sigBytes = System.getTransactionField("signatures")!.message_value!.value!;
-    const signatures = Protobuf.decode<value.list_type>(sigBytes, value.list_type.decode);    
+
+    const sigBytes =
+      System.getTransactionField("signatures")!.message_value!.value!;
+    const signatures = Protobuf.decode<value.list_type>(
+      sigBytes,
+      value.list_type.decode
+    );
     const txId = System.getTransactionField("id")!.bytes_value!;
-    
+
     let totalWeight: u32 = 0;
 
     // add weights from signatures
     const signers: Uint8Array[] = [];
-    for(let i = 0; i < signatures.values.length; i++) {
-      const publicKey = System.recoverPublicKey(signatures.values[i].bytes_value!, txId);
+    for (let i = 0; i < signatures.values.length; i++) {
+      const publicKey = System.recoverPublicKey(
+        signatures.values[i].bytes_value!,
+        txId
+      );
       const address = Crypto.addressFromPublicKey(publicKey!);
 
-      for(let j = 0; j < signers.length; j++) {
-        if(equalBytes(address, signers[i])) {
+      for (let j = 0; j < signers.length; j++) {
+        if (equalBytes(address, signers[i])) {
           return new Result(true, "Duplicate signature detected");
         }
       }
 
       signers.push(address);
 
-      for(let j = 0; j < auth.key_auths.length; j++) {
+      for (let j = 0; j < auth.key_auths.length; j++) {
         const keyAddress = auth.key_auths[j].address;
-        if(keyAddress != null && equalBytes(address, keyAddress)) {
+        if (keyAddress != null && equalBytes(address, keyAddress)) {
           totalWeight += auth.key_auths[j].weight;
         }
       }
@@ -172,14 +219,14 @@ export class Wallet {
     // add weight from the caller
     const caller = System.getCaller().caller;
     if (caller != null) {
-      for(let j = 0; j < auth.key_auths.length; j++) {
+      for (let j = 0; j < auth.key_auths.length; j++) {
         const contractId = auth.key_auths[j].contract_id;
-        if(contractId != null && equalBytes(caller, contractId)) {
+        if (contractId != null && equalBytes(caller, contractId)) {
           totalWeight += auth.key_auths[j].weight;
         }
       }
     }
-    
+
     if (totalWeight < auth.weight_threshold) {
       return new Result(true, `authority ${name} failed`);
     }
@@ -187,7 +234,13 @@ export class Wallet {
     return new Result(false, "");
   }
 
-  verifyArgumentsAuthority(name: string | null, authority: wallet.authority | null, argImpossible: bool, isNewAuthority: boolean, checkAuthority: boolean): ResultVerifyArgumentsAuthority {
+  verifyArgumentsAuthority(
+    name: string | null,
+    authority: wallet.authority | null,
+    argImpossible: bool,
+    isNewAuthority: boolean,
+    checkAuthority: boolean
+  ): ResultVerifyArgumentsAuthority {
     let names = this.authorities.getKeysS();
     const existOwner = names.length > 0;
     if (isNewAuthority && !existOwner && name != "owner") {
@@ -214,19 +267,32 @@ export class Wallet {
       const impossible = isImpossible(authority!);
       if (impossible && (name == "owner" || name == "recovery")) {
         exit(`${name!} authority can not be impossible`);
-      }      
+      }
       if (impossible != argImpossible) {
         if (impossible)
-          exit(`Impossible authority: If this is your intention tag it as impossible`);
-        else
-          exit(`The authority was tagged as impossible but it is not`)
-      }      
+          exit(
+            `Impossible authority: If this is your intention tag it as impossible`
+          );
+        else exit(`The authority was tagged as impossible but it is not`);
+      }
     }
-    return new ResultVerifyArgumentsAuthority(existOwner, names, existingAuthority);
+    return new ResultVerifyArgumentsAuthority(
+      existOwner,
+      names,
+      existingAuthority
+    );
   }
 
-  add_authority(args: wallet.add_authority_arguments): wallet.add_authority_result {
-    const resultVerify = this.verifyArgumentsAuthority(args.name, args.authority, args.impossible, true, true);
+  add_authority(
+    args: wallet.add_authority_arguments
+  ): wallet.add_authority_result {
+    const resultVerify = this.verifyArgumentsAuthority(
+      args.name,
+      args.authority,
+      args.impossible,
+      true,
+      true
+    );
     if (resultVerify.existOwner) this._requireAuthority("owner");
     args.authority!.last_update = System.getHeadInfo().head_block_time;
     this.authorities.set(args.name!, args.authority!);
@@ -235,38 +301,78 @@ export class Wallet {
     return new wallet.add_authority_result(true);
   }
 
-  request_update_recovery(args: wallet.request_update_recovery_arguments): wallet.request_update_recovery_result {
-    this.verifyArgumentsAuthority("recovery", args.authority, false, false, !args.remove);
-    const existingRequest = System.getObject<Uint8Array, wallet.request_update_recovery_arguments>(this.varsSpace, REQUEST_UPDATE_RECOVERY_KEY, wallet.request_update_recovery_arguments.decode);
+  request_update_recovery(
+    args: wallet.request_update_recovery_arguments
+  ): wallet.request_update_recovery_result {
+    this.verifyArgumentsAuthority(
+      "recovery",
+      args.authority,
+      false,
+      false,
+      !args.remove
+    );
+    const existingRequest = System.getObject<
+      Uint8Array,
+      wallet.request_update_recovery_arguments
+    >(
+      this.varsSpace,
+      REQUEST_UPDATE_RECOVERY_KEY,
+      wallet.request_update_recovery_arguments.decode
+    );
     if (existingRequest) exit("request ongoing to update recovery");
     if (!args.remove) args.authority!.last_update = 0;
-    args.application_time = System.getHeadInfo().head_block_time + PERIOD_UPDATE_RECOVERY;
+    args.application_time =
+      System.getHeadInfo().head_block_time + PERIOD_UPDATE_RECOVERY;
     this._requireAuthority("owner");
 
-    System.putObject(this.varsSpace, REQUEST_UPDATE_RECOVERY_KEY, args, wallet.request_update_recovery_arguments.encode);
+    System.putObject(
+      this.varsSpace,
+      REQUEST_UPDATE_RECOVERY_KEY,
+      args,
+      wallet.request_update_recovery_arguments.encode
+    );
     return new wallet.request_update_recovery_result(true);
   }
 
-  cancel_request_update_recovery(args: wallet.cancel_request_update_recovery_arguments): wallet.cancel_request_update_recovery_result {
+  cancel_request_update_recovery(
+    args: wallet.cancel_request_update_recovery_arguments
+  ): wallet.cancel_request_update_recovery_result {
     this._requireAuthority("owner");
-    const request = System.getObject<Uint8Array, wallet.request_update_recovery_arguments>(this.varsSpace, REQUEST_UPDATE_RECOVERY_KEY, wallet.request_update_recovery_arguments.decode);
-    if (!request)
-      exit("request update recovery not found");
+    const request = System.getObject<
+      Uint8Array,
+      wallet.request_update_recovery_arguments
+    >(
+      this.varsSpace,
+      REQUEST_UPDATE_RECOVERY_KEY,
+      wallet.request_update_recovery_arguments.decode
+    );
+    if (!request) exit("request update recovery not found");
     System.removeObject(this.varsSpace, REQUEST_UPDATE_RECOVERY_KEY);
     return new wallet.cancel_request_update_recovery_result(true);
   }
 
-  update_authority(args: wallet.update_authority_arguments): wallet.update_authority_result {
-    const resultVerify = this.verifyArgumentsAuthority(args.name, args.authority, args.impossible, false, !args.remove);
+  update_authority(
+    args: wallet.update_authority_arguments
+  ): wallet.update_authority_result {
+    const resultVerify = this.verifyArgumentsAuthority(
+      args.name,
+      args.authority,
+      args.impossible,
+      false,
+      !args.remove
+    );
     let authorized: boolean = false;
     let verifAuthority = this._verifyAuthority("recovery");
-    if(verifAuthority.error) {
+    if (verifAuthority.error) {
       System.log(verifAuthority.message);
       if (args.name == "recovery") {
         const now = System.getHeadInfo().head_block_time;
-        if(resultVerify.existingAuthority!.last_update < now + GRACE_PERIOD_RECOVERY) {
+        if (
+          resultVerify.existingAuthority!.last_update <
+          now + GRACE_PERIOD_RECOVERY
+        ) {
           verifAuthority = this._verifyAuthority("owner");
-          if(verifAuthority.error) {
+          if (verifAuthority.error) {
             System.log(verifAuthority.message);
           } else {
             authorized = true;
@@ -275,24 +381,35 @@ export class Wallet {
           System.log("not in grace period");
         }
 
-        if(!authorized) {
-          const request = System.getObject<Uint8Array, wallet.request_update_recovery_arguments>(this.varsSpace, REQUEST_UPDATE_RECOVERY_KEY, wallet.request_update_recovery_arguments.decode);
+        if (!authorized) {
+          const request = System.getObject<
+            Uint8Array,
+            wallet.request_update_recovery_arguments
+          >(
+            this.varsSpace,
+            REQUEST_UPDATE_RECOVERY_KEY,
+            wallet.request_update_recovery_arguments.decode
+          );
           if (!request) {
             exit("request to update recovery not found");
           }
           if (request!.application_time > now) {
             exit("it is not yet the application time");
           }
-          const bytes1 = args.remove ? new Uint8Array(0) : Protobuf.encode(args.authority, wallet.authority.encode);
-          const bytes1Req = args.remove ? new Uint8Array(0) : Protobuf.encode(request!.authority, wallet.authority.encode);
-          if(!equalBytes(bytes1, bytes1Req)) {
+          const bytes1 = args.remove
+            ? new Uint8Array(0)
+            : Protobuf.encode(args.authority, wallet.authority.encode);
+          const bytes1Req = args.remove
+            ? new Uint8Array(0)
+            : Protobuf.encode(request!.authority, wallet.authority.encode);
+          if (!equalBytes(bytes1, bytes1Req)) {
             exit("arguments does not match with the request");
           }
           authorized = true;
         }
       } else {
         verifAuthority = this._verifyAuthority("owner");
-        if(verifAuthority.error) {
+        if (verifAuthority.error) {
           System.log(verifAuthority.message);
         } else {
           authorized = true;
@@ -302,7 +419,7 @@ export class Wallet {
       authorized = true;
     }
 
-    if(!authorized) System.exitContract(1);
+    if (!authorized) System.exitContract(1);
 
     // update authority
     if (args.remove) {
@@ -315,14 +432,27 @@ export class Wallet {
 
     // remove existing request
     if (args.name == "recovery") {
-      const request = System.getObject<Uint8Array, wallet.request_update_recovery_arguments>(this.varsSpace, REQUEST_UPDATE_RECOVERY_KEY, wallet.request_update_recovery_arguments.decode);
-      if (request) System.removeObject(this.varsSpace, REQUEST_UPDATE_RECOVERY_KEY);
+      const request = System.getObject<
+        Uint8Array,
+        wallet.request_update_recovery_arguments
+      >(
+        this.varsSpace,
+        REQUEST_UPDATE_RECOVERY_KEY,
+        wallet.request_update_recovery_arguments.decode
+      );
+      if (request)
+        System.removeObject(this.varsSpace, REQUEST_UPDATE_RECOVERY_KEY);
     }
 
     return new wallet.update_authority_result(true);
   }
 
-  verifyArgumentsProtection(protected_contract: wallet.protected_contract | null, authority: wallet.authority_contract | null, isNewProtection: boolean, checkAuthority: boolean): ResultVerifyArgumentsProtection {
+  verifyArgumentsProtection(
+    protected_contract: wallet.protected_contract | null,
+    authority: wallet.authority_contract | null,
+    isNewProtection: boolean,
+    checkAuthority: boolean
+  ): ResultVerifyArgumentsProtection {
     if (protected_contract == null) {
       exit("protected undefined");
     }
@@ -332,7 +462,10 @@ export class Wallet {
     if (protected_contract!.contract_id == null) {
       exit("protected_contract.contract_id not defined");
     }
-    const protectionKey = Protobuf.encode(protected_contract!, wallet.protected_contract.encode);
+    const protectionKey = Protobuf.encode(
+      protected_contract!,
+      wallet.protected_contract.encode
+    );
     const existingAuthority = this.protections.get(protectionKey);
     if (isNewProtection && existingAuthority) {
       exit("protected contract already exists");
@@ -354,12 +487,22 @@ export class Wallet {
         exit("authority without native or external");
       }
     }
-    return new ResultVerifyArgumentsProtection(protectionKey, existingAuthority);
+    return new ResultVerifyArgumentsProtection(
+      protectionKey,
+      existingAuthority
+    );
   }
 
-  add_protection(args: wallet.add_protection_arguments): wallet.add_protection_result {
-    const resultVerify = this.verifyArgumentsProtection(args.protected_contract, args.authority, true, true);
-    
+  add_protection(
+    args: wallet.add_protection_arguments
+  ): wallet.add_protection_result {
+    const resultVerify = this.verifyArgumentsProtection(
+      args.protected_contract,
+      args.authority,
+      true,
+      true
+    );
+
     args.authority!.last_update = System.getHeadInfo().head_block_time;
     this._requireAuthority("owner");
     this.protections.set(resultVerify.protectionKey, args.authority!);
@@ -368,18 +511,30 @@ export class Wallet {
     return new wallet.add_protection_result(true);
   }
 
-  request_update_protection(args: wallet.request_update_protection_arguments): wallet.request_update_protection_result {
-    const resultVerify = this.verifyArgumentsProtection(args.protected_contract, args.authority, false, !args.remove);
+  request_update_protection(
+    args: wallet.request_update_protection_arguments
+  ): wallet.request_update_protection_result {
+    const resultVerify = this.verifyArgumentsProtection(
+      args.protected_contract,
+      args.authority,
+      false,
+      !args.remove
+    );
 
     const requests = this.requests.getAll();
     for (let i = 0; i < requests.length; i++) {
-      const pKey = Protobuf.encode(requests[i].protected_contract, wallet.protected_contract.encode);
-      if(equalBytes(resultVerify.protectionKey, pKey))
+      const pKey = Protobuf.encode(
+        requests[i].protected_contract,
+        wallet.protected_contract.encode
+      );
+      if (equalBytes(resultVerify.protectionKey, pKey))
         exit(`request ongoing for this protected contract`);
     }
-    
-    if(!args.remove) args.authority!.last_update = 0;
-    args.application_time = System.getHeadInfo().head_block_time + resultVerify.existingAuthority!.delay_update;
+
+    if (!args.remove) args.authority!.last_update = 0;
+    args.application_time =
+      System.getHeadInfo().head_block_time +
+      resultVerify.existingAuthority!.delay_update;
     const counter = this.requests.getCounter() + 1;
     args.id = counter;
     this._requireAuthority("owner");
@@ -392,33 +547,49 @@ export class Wallet {
     return new wallet.request_update_protection_result(true);
   }
 
-  cancel_request_update_protection(args: wallet.cancel_request_update_protection_arguments): wallet.cancel_request_update_protection_result {
+  cancel_request_update_protection(
+    args: wallet.cancel_request_update_protection_arguments
+  ): wallet.cancel_request_update_protection_result {
     this._requireAuthority("owner");
     const key = Collection.calcKey(args.id);
     const request = this.requests.get(key);
-    if(!request)
-      exit("request not found");
+    if (!request) exit("request not found");
     this.requests.remove(key);
     this.requests.removeKey(key);
     return new wallet.cancel_request_update_protection_result(true);
   }
 
-  update_protection(args: wallet.update_protection_arguments): wallet.update_protection_result {
-    const resultVerify = this.verifyArgumentsProtection(args.protected_contract, args.authority, false, !args.remove);
+  update_protection(
+    args: wallet.update_protection_arguments
+  ): wallet.update_protection_result {
+    const resultVerify = this.verifyArgumentsProtection(
+      args.protected_contract,
+      args.authority,
+      false,
+      !args.remove
+    );
 
     let authorized: boolean = false;
     let indexRequest: i32 = -1;
     let requests: wallet.request_update_protection_arguments[] = [];
-    const bytes1 = Protobuf.encode(args.protected_contract, wallet.protected_contract.encode);
-    const bytes2 = args.remove ? new Uint8Array(0) : Protobuf.encode(args.authority, wallet.authority_contract.encode);
+    const bytes1 = Protobuf.encode(
+      args.protected_contract,
+      wallet.protected_contract.encode
+    );
+    const bytes2 = args.remove
+      ? new Uint8Array(0)
+      : Protobuf.encode(args.authority, wallet.authority_contract.encode);
 
     let verifAuthority = this._verifyAuthority("recovery");
-    if(verifAuthority.error) {
+    if (verifAuthority.error) {
       System.log(verifAuthority.message);
       const now = System.getHeadInfo().head_block_time;
-      if(resultVerify.existingAuthority!.last_update < now + GRACE_PERIOD_PROTECTION) {
+      if (
+        resultVerify.existingAuthority!.last_update <
+        now + GRACE_PERIOD_PROTECTION
+      ) {
         verifAuthority = this._verifyAuthority("owner");
-        if(verifAuthority.error) {
+        if (verifAuthority.error) {
           System.log(verifAuthority.message);
         } else {
           authorized = true;
@@ -427,12 +598,20 @@ export class Wallet {
         System.log("not in grace period");
       }
 
-      if(!authorized) {
+      if (!authorized) {
         requests = this.requests.getAll();
         for (let i = 0; i < requests.length; i++) {
-          const bytes1Req = Protobuf.encode(requests[i].protected_contract, wallet.protected_contract.encode);
-          const bytes2Req = args.remove ? new Uint8Array(0) : Protobuf.encode(requests[i].authority, wallet.authority_contract.encode);
-          if(equalBytes(bytes1, bytes1Req) && equalBytes(bytes2, bytes2Req)) {
+          const bytes1Req = Protobuf.encode(
+            requests[i].protected_contract,
+            wallet.protected_contract.encode
+          );
+          const bytes2Req = args.remove
+            ? new Uint8Array(0)
+            : Protobuf.encode(
+                requests[i].authority,
+                wallet.authority_contract.encode
+              );
+          if (equalBytes(bytes1, bytes1Req) && equalBytes(bytes2, bytes2Req)) {
             indexRequest = i;
             break;
           }
@@ -440,7 +619,7 @@ export class Wallet {
         if (indexRequest < 0) {
           exit("request to update protection not found");
         }
-        if(requests[indexRequest].application_time > now) {
+        if (requests[indexRequest].application_time > now) {
           exit("it is not yet the application time");
         }
         authorized = true;
@@ -449,8 +628,8 @@ export class Wallet {
       authorized = true;
     }
 
-    if(!authorized) System.exitContract(1);
-    
+    if (!authorized) System.exitContract(1);
+
     // update protection
     if (args.remove) {
       this.protections.remove(resultVerify.protectionKey);
@@ -464,9 +643,17 @@ export class Wallet {
     if (indexRequest < 0) {
       requests = this.requests.getAll();
       for (let i = 0; i < requests.length; i++) {
-        const bytes1Req = Protobuf.encode(requests[i].protected_contract, wallet.protected_contract.encode);
-        const bytes2Req = args.remove ? new Uint8Array(0) : Protobuf.encode(requests[i].authority, wallet.authority_contract.encode);
-        if(equalBytes(bytes1, bytes1Req) && equalBytes(bytes2, bytes2Req)) {
+        const bytes1Req = Protobuf.encode(
+          requests[i].protected_contract,
+          wallet.protected_contract.encode
+        );
+        const bytes2Req = args.remove
+          ? new Uint8Array(0)
+          : Protobuf.encode(
+              requests[i].authority,
+              wallet.authority_contract.encode
+            );
+        if (equalBytes(bytes1, bytes1Req) && equalBytes(bytes2, bytes2Req)) {
           indexRequest = i;
           break;
         }
@@ -481,34 +668,59 @@ export class Wallet {
     return new wallet.update_protection_result(true);
   }
 
-  get_authorities(args: wallet.get_authorities_arguments): wallet.get_authorities_result {
+  get_authorities(
+    args: wallet.get_authorities_arguments
+  ): wallet.get_authorities_result {
     const result = new wallet.get_authorities_result();
     const names = this.authorities.getKeysS();
     for (let i = 0; i < names.length; i++) {
       const authority = this.authorities.get(names[i]);
-      result.authorities.push(new wallet.add_authority_arguments(names[i], authority));
+      result.authorities.push(
+        new wallet.add_authority_arguments(names[i], authority)
+      );
     }
     return result;
   }
 
-  get_protections(args: wallet.get_protections_arguments): wallet.get_protections_result {
+  get_protections(
+    args: wallet.get_protections_arguments
+  ): wallet.get_protections_result {
     const result = new wallet.get_protections_result();
     const keys = this.protections.getKeys();
     for (let i = 0; i < keys.length; i++) {
-      const protectedContract = Protobuf.decode<wallet.protected_contract>(keys[i], wallet.protected_contract.decode);
+      const protectedContract = Protobuf.decode<wallet.protected_contract>(
+        keys[i],
+        wallet.protected_contract.decode
+      );
       const authorityContract = this.protections.get(keys[i]);
-      result.protections.push(new wallet.add_protection_arguments(protectedContract, authorityContract));
+      result.protections.push(
+        new wallet.add_protection_arguments(
+          protectedContract,
+          authorityContract
+        )
+      );
     }
     return result;
   }
 
-  get_request_update_recovery(args: wallet.get_request_update_recovery_arguments): wallet.get_request_update_recovery_result {
-    const request = System.getObject<Uint8Array, wallet.request_update_recovery_arguments>(this.varsSpace, REQUEST_UPDATE_RECOVERY_KEY, wallet.request_update_recovery_arguments.decode);
+  get_request_update_recovery(
+    args: wallet.get_request_update_recovery_arguments
+  ): wallet.get_request_update_recovery_result {
+    const request = System.getObject<
+      Uint8Array,
+      wallet.request_update_recovery_arguments
+    >(
+      this.varsSpace,
+      REQUEST_UPDATE_RECOVERY_KEY,
+      wallet.request_update_recovery_arguments.decode
+    );
     const result = new wallet.get_request_update_recovery_result(request);
     return result;
   }
 
-  get_requests_update_protection(args: wallet.get_requests_update_protection_arguments): wallet.get_requests_update_protection_result {
+  get_requests_update_protection(
+    args: wallet.get_requests_update_protection_arguments
+  ): wallet.get_requests_update_protection_result {
     const result = new wallet.get_requests_update_protection_result();
     const keys = this.requests.getKeys();
     for (let i = 0; i < keys.length; i++) {
@@ -543,8 +755,15 @@ export class Wallet {
       if (authContract.external != null) {
         const contractId = authContract.external!.contract_id!;
         const entryPoint = authContract.external!.entry_point;
-        const resBuf = System.callContract(contractId, entryPoint, Protobuf.encode(args, authority.authorize_arguments.encode))!;
-        const authorized = Protobuf.decode<authority.authorize_result>(resBuf, authority.authorize_result.decode);
+        const resBuf = System.callContract(
+          contractId,
+          entryPoint,
+          Protobuf.encode(args, authority.authorize_arguments.encode)
+        )!;
+        const authorized = Protobuf.decode<authority.authorize_result>(
+          resBuf,
+          authority.authorize_result.decode
+        );
         return authorized;
       }
 
@@ -555,7 +774,9 @@ export class Wallet {
     return new authority.authorize_result(false);
   }
 
-  require_authority(args: wallet.require_authority_arguments): wallet.require_authority_result {
+  require_authority(
+    args: wallet.require_authority_arguments
+  ): wallet.require_authority_result {
     this._requireAuthority(args.name!);
     return new wallet.require_authority_result(true);
   }

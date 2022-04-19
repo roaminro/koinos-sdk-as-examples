@@ -1,5 +1,5 @@
-const path = require('path');
-const { MockVM } = require('koinos-mock-vm');
+const path = require("path");
+const { MockVM } = require("koinos-mock-vm");
 
 module.exports = {
   /**
@@ -33,8 +33,8 @@ module.exports = {
     const myImports = {
       // put your web assembly imports here, and return the module
       env: {
-        ...mockVM.getImports()
-      }
+        ...mockVM.getImports(),
+      },
     };
     instance = instantiateSync(binary, createImports(myImports));
     mockVM.setInstance(instance);
@@ -52,9 +52,7 @@ module.exports = {
     returnOnExit: false,
   },
   /** Enable code coverage. */
-  coverage: [
-    `${path.basename(__dirname)}/assembly/*.ts`
-  ],
+  coverage: [`${path.basename(__dirname)}/assembly/*.ts`],
   /**
    * Specify if the binary wasm file should be written to the file system.
    */

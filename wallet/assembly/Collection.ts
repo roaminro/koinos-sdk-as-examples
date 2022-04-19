@@ -3,7 +3,7 @@ import { chain, System, value as val, Protobuf } from "koinos-as-sdk";
 import { wallet } from "./proto/wallet";
 import { equalBytes } from "./utils";
 
-export class Collection<Item,KeyType> {
+export class Collection<Item, KeyType> {
   space: chain.object_space;
   varsSpace: chain.object_space;
   listKeysKey: Uint8Array;
@@ -11,7 +11,7 @@ export class Collection<Item,KeyType> {
   itemEncoder: (message: Item, writer: Writer) => void;
   itemDecoder: (reader: Reader, length: i32) => Item;
   isArrayString: boolean;
-  
+
   constructor(
     space: chain.object_space,
     varsSpace: chain.object_space,
@@ -29,11 +29,11 @@ export class Collection<Item,KeyType> {
     this.itemDecoder = itemDecoder;
     this.isArrayString = isArrayString;
   }
-  
+
   set(key: KeyType, value: Item): void {
     System.putObject(this.space, key, value, this.itemEncoder);
   }
-  
+
   get<T>(key: T): Item | null {
     const item = System.getObject<T, Item>(this.space, key, this.itemDecoder);
     return item;
@@ -44,13 +44,22 @@ export class Collection<Item,KeyType> {
   }
 
   getCounter(): u32 {
-    const counter = System.getObject<Uint8Array, val.value_type>(this.varsSpace, this.counterKeysKey, val.value_type.decode);
+    const counter = System.getObject<Uint8Array, val.value_type>(
+      this.varsSpace,
+      this.counterKeysKey,
+      val.value_type.decode
+    );
     return counter ? counter.uint32_value : 0;
   }
 
   setCounter(n: u32): void {
     const counter = new val.value_type(null, 0, 0, 0, 0, n);
-    System.putObject(this.varsSpace, this.counterKeysKey, counter, val.value_type.encode);
+    System.putObject(
+      this.varsSpace,
+      this.counterKeysKey,
+      counter,
+      val.value_type.encode
+    );
   }
 
   static calcKey(n: u32): Uint8Array {
@@ -60,21 +69,39 @@ export class Collection<Item,KeyType> {
 
   setKeys(keys: Uint8Array[]): void {
     const list = new wallet.bytes_array(keys);
-    System.putObject(this.varsSpace, this.listKeysKey, list, wallet.bytes_array.encode);
+    System.putObject(
+      this.varsSpace,
+      this.listKeysKey,
+      list,
+      wallet.bytes_array.encode
+    );
   }
 
   setKeysS(keys: string[]): void {
     const list = new wallet.string_array(keys as string[]);
-    System.putObject(this.varsSpace, this.listKeysKey, list, wallet.string_array.encode);
+    System.putObject(
+      this.varsSpace,
+      this.listKeysKey,
+      list,
+      wallet.string_array.encode
+    );
   }
-  
+
   getKeys(): Uint8Array[] {
-    const list = System.getObject<Uint8Array, wallet.bytes_array>(this.varsSpace, this.listKeysKey, wallet.bytes_array.decode);
+    const list = System.getObject<Uint8Array, wallet.bytes_array>(
+      this.varsSpace,
+      this.listKeysKey,
+      wallet.bytes_array.decode
+    );
     return list ? list.keys : [];
   }
 
   getKeysS(): string[] {
-    const list = System.getObject<Uint8Array, wallet.string_array>(this.varsSpace, this.listKeysKey, wallet.string_array.decode);
+    const list = System.getObject<Uint8Array, wallet.string_array>(
+      this.varsSpace,
+      this.listKeysKey,
+      wallet.string_array.decode
+    );
     return list ? list.keys : [];
   }
 
@@ -115,15 +142,13 @@ export class Collection<Item,KeyType> {
   getAll(): Item[] {
     // todo: consider using System.get_next_object
     const items: Item[] = [];
-    
+
     if (this.isArrayString) {
       const keys = this.getKeysS();
       for (let i = 0; i < keys.length; i++) {
         const item = this.get<string>(keys[i]);
-        if (item == null)
-          System.log("item does not exist");
-        else
-          items.push(item);
+        if (item == null) System.log("item does not exist");
+        else items.push(item);
       }
       return items;
     }
@@ -131,10 +156,8 @@ export class Collection<Item,KeyType> {
     const keys = this.getKeys();
     for (let i = 0; i < keys.length; i++) {
       const item = this.get<Uint8Array>(keys[i]);
-      if (item == null)
-        System.log("item does not exist");
-      else
-        items.push(item);
+      if (item == null) System.log("item does not exist");
+      else items.push(item);
     }
     return items;
   }
