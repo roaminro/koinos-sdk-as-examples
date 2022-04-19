@@ -1,5 +1,5 @@
-import { Base58, Protobuf, System, SafeMath, authorization_type } from "koinos-sdk-as";
-import * as nft from "./proto/nft";
+import { Base58, Protobuf, System, SafeMath, authority } from "koinos-sdk-as";
+import { nft } from "./proto/nft";
 import { State } from "./State";
 
 export class Nft {
@@ -84,7 +84,7 @@ export class Nft {
     const res = new nft.mint_result(false);
 
     // only this contract can mint new tokens
-    System.requireAuthority(authorization_type.contract_call, this._contractId);
+    System.requireAuthority(authority.authorization_type.contract_call, this._contractId);
 
     let token = this._state.GetToken(token_id);
 
@@ -125,7 +125,7 @@ export class Nft {
     const res = new nft.transfer_result(false);
 
     // require authority of the from address
-    System.requireAuthority(authorization_type.contract_call, from);
+    System.requireAuthority(authority.authorization_type.contract_call, from);
 
     // check that the token exists
     let token = this._state.GetToken(token_id);
@@ -196,7 +196,7 @@ export class Nft {
     const res = new nft.approve_result(false);
 
     // require authority of the approver_address
-    System.requireAuthority(authorization_type.contract_call, approver_address);
+    System.requireAuthority(authority.authorization_type.contract_call, approver_address);
 
     // check that the token exists
     let token = this._state.GetToken(token_id);
@@ -257,7 +257,7 @@ export class Nft {
     const res = new nft.set_approval_for_all_result(false);
 
     // only the owner of approver_address can approve an operator for his account
-    System.requireAuthority(authorization_type.contract_call, approver_address);
+    System.requireAuthority(authority.authorization_type.contract_call, approver_address);
 
     // check that the approver_address is not the address to approve
     if (Base58.encode(approver_address) == Base58.encode(operator_address)) {

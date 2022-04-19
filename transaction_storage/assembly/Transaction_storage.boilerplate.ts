@@ -1,5 +1,5 @@
-import * as authority from "../../koinos-proto-as/koinos/chain/authority";
-import * as transaction_storage from "./proto/transaction_storage";
+import { System, Protobuf, authority } from "koinos-sdk-as";
+import { transaction_storage } from "./proto/transaction_storage";
 
 export class Transaction_storage {
   store_transaction(

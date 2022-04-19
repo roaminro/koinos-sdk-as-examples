@@ -1,137 +1,145 @@
 import { Writer, Reader } from "as-proto";
-import { transaction } from "koinos-sdk-as";
+import { protocol } from "koinos-sdk-as";
 
-export class store_transaction_arguments {
-  static encode(message: store_transaction_arguments, writer: Writer): void {
-    const field_transaction = message.transaction;
-    if (field_transaction !== null) {
-      writer.uint32(10);
-      writer.fork();
-      transaction.encode(field_transaction, writer);
-      writer.ldelim();
-    }
-  }
-
-  static decode(reader: Reader, length: i32): store_transaction_arguments {
-    const end: usize = length < 0 ? reader.end : reader.ptr + length;
-    const message = new store_transaction_arguments();
-
-    while (reader.ptr < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.transaction = transaction.decode(reader, reader.uint32());
-          break;
-
-        default:
-          reader.skipType(tag & 7);
-          break;
+export namespace transaction_storage {
+  export class store_transaction_arguments {
+    static encode(message: store_transaction_arguments, writer: Writer): void {
+      const unique_name_transaction = message.transaction;
+      if (unique_name_transaction !== null) {
+        writer.uint32(10);
+        writer.fork();
+        protocol.transaction.encode(unique_name_transaction, writer);
+        writer.ldelim();
       }
     }
 
-    return message;
+    static decode(reader: Reader, length: i32): store_transaction_arguments {
+      const end: usize = length < 0 ? reader.end : reader.ptr + length;
+      const message = new store_transaction_arguments();
+
+      while (reader.ptr < end) {
+        const tag = reader.uint32();
+        switch (tag >>> 3) {
+          case 1:
+            message.transaction = protocol.transaction.decode(
+              reader,
+              reader.uint32()
+            );
+            break;
+
+          default:
+            reader.skipType(tag & 7);
+            break;
+        }
+      }
+
+      return message;
+    }
+
+    transaction: protocol.transaction | null;
+
+    constructor(transaction: protocol.transaction | null = null) {
+      this.transaction = transaction;
+    }
   }
 
-  transaction: transaction | null;
+  @unmanaged
+  export class store_transaction_result {
+    static encode(message: store_transaction_result, writer: Writer): void {}
 
-  constructor(transaction: transaction | null = null) {
-    this.transaction = transaction;
+    static decode(reader: Reader, length: i32): store_transaction_result {
+      const end: usize = length < 0 ? reader.end : reader.ptr + length;
+      const message = new store_transaction_result();
+
+      while (reader.ptr < end) {
+        const tag = reader.uint32();
+        switch (tag >>> 3) {
+          default:
+            reader.skipType(tag & 7);
+            break;
+        }
+      }
+
+      return message;
+    }
+
+    constructor() {}
   }
-}
 
-@unmanaged
-export class store_transaction_result {
-  static encode(message: store_transaction_result, writer: Writer): void {}
-
-  static decode(reader: Reader, length: i32): store_transaction_result {
-    const end: usize = length < 0 ? reader.end : reader.ptr + length;
-    const message = new store_transaction_result();
-
-    while (reader.ptr < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
+  export class get_transaction_arguments {
+    static encode(message: get_transaction_arguments, writer: Writer): void {
+      const unique_name_id = message.id;
+      if (unique_name_id !== null) {
+        writer.uint32(10);
+        writer.bytes(unique_name_id);
       }
     }
 
-    return message;
-  }
+    static decode(reader: Reader, length: i32): get_transaction_arguments {
+      const end: usize = length < 0 ? reader.end : reader.ptr + length;
+      const message = new get_transaction_arguments();
 
-  constructor() {}
-}
+      while (reader.ptr < end) {
+        const tag = reader.uint32();
+        switch (tag >>> 3) {
+          case 1:
+            message.id = reader.bytes();
+            break;
 
-export class get_transaction_arguments {
-  static encode(message: get_transaction_arguments, writer: Writer): void {
-    const field_id = message.id;
-    if (field_id !== null) {
-      writer.uint32(10);
-      writer.bytes(field_id);
+          default:
+            reader.skipType(tag & 7);
+            break;
+        }
+      }
+
+      return message;
+    }
+
+    id: Uint8Array | null;
+
+    constructor(id: Uint8Array | null = null) {
+      this.id = id;
     }
   }
 
-  static decode(reader: Reader, length: i32): get_transaction_arguments {
-    const end: usize = length < 0 ? reader.end : reader.ptr + length;
-    const message = new get_transaction_arguments();
-
-    while (reader.ptr < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.id = reader.bytes();
-          break;
-
-        default:
-          reader.skipType(tag & 7);
-          break;
+  export class get_transaction_result {
+    static encode(message: get_transaction_result, writer: Writer): void {
+      const unique_name_value = message.value;
+      if (unique_name_value !== null) {
+        writer.uint32(10);
+        writer.fork();
+        protocol.transaction.encode(unique_name_value, writer);
+        writer.ldelim();
       }
     }
 
-    return message;
-  }
+    static decode(reader: Reader, length: i32): get_transaction_result {
+      const end: usize = length < 0 ? reader.end : reader.ptr + length;
+      const message = new get_transaction_result();
 
-  id: Uint8Array | null;
+      while (reader.ptr < end) {
+        const tag = reader.uint32();
+        switch (tag >>> 3) {
+          case 1:
+            message.value = protocol.transaction.decode(
+              reader,
+              reader.uint32()
+            );
+            break;
 
-  constructor(id: Uint8Array | null = null) {
-    this.id = id;
-  }
-}
-
-export class get_transaction_result {
-  static encode(message: get_transaction_result, writer: Writer): void {
-    const field_value = message.value;
-    if (field_value !== null) {
-      writer.uint32(10);
-      writer.fork();
-      transaction.encode(field_value, writer);
-      writer.ldelim();
-    }
-  }
-
-  static decode(reader: Reader, length: i32): get_transaction_result {
-    const end: usize = length < 0 ? reader.end : reader.ptr + length;
-    const message = new get_transaction_result();
-
-    while (reader.ptr < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.value = transaction.decode(reader, reader.uint32());
-          break;
-
-        default:
-          reader.skipType(tag & 7);
-          break;
+          default:
+            reader.skipType(tag & 7);
+            break;
+        }
       }
+
+      return message;
     }
 
-    return message;
-  }
+    value: protocol.transaction | null;
 
-  value: transaction | null;
-
-  constructor(value: transaction | null = null) {
-    this.value = value;
+    constructor(value: protocol.transaction | null = null) {
+      this.value = value;
+    }
   }
 }

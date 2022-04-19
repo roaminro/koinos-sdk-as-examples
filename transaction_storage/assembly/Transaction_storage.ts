@@ -1,11 +1,11 @@
-import { object_space, transaction as koinosTransaction, System } from "koinos-sdk-as";
-import * as transaction_storage from "./proto/transaction_storage";
+import { chain, protocol, System } from "koinos-sdk-as";
+import { transaction_storage } from "./proto/transaction_storage";
 
 export class Transaction_storage {
-  _space: object_space;
+  _space: chain.object_space;
 
   constructor() {
-    this._space = new object_space(false, System.getContractId(), 0);
+    this._space = new chain.object_space(false, System.getContractId(), 0);
 
   }
 
@@ -14,7 +14,7 @@ export class Transaction_storage {
   ): transaction_storage.store_transaction_result {
     const transaction = args.transaction!;
 
-    System.putObject(this._space, transaction.id!, transaction, koinosTransaction.encode);
+    System.putObject(this._space, transaction.id!, transaction, protocol.transaction.encode);
 
     return new transaction_storage.store_transaction_result();
   }
@@ -26,7 +26,7 @@ export class Transaction_storage {
 
     const res = new transaction_storage.get_transaction_result();
 
-    const tx = System.getObject<Uint8Array, koinosTransaction>(this._space, id, koinosTransaction.decode);
+    const tx = System.getObject<Uint8Array, protocol.transaction>(this._space, id, protocol.transaction.decode);
 
     if (tx) {
       res.value = tx;

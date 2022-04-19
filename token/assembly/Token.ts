@@ -1,5 +1,5 @@
-import { Arrays, Protobuf, System, SafeMath, authorization_type } from "koinos-sdk-as";
-import * as token from "./proto/token";
+import { Arrays, Protobuf, System, SafeMath, authority } from "koinos-sdk-as";
+import { token } from "./proto/token";
 import { State } from "./State";
 
 export class Token {
@@ -60,7 +60,7 @@ export class Token {
       return res;
     }
 
-    System.requireAuthority(authorization_type.contract_call, from);
+    System.requireAuthority(authority.authorization_type.contract_call, from);
 
     const fromBalance = this._state.GetBalance(from);
 
@@ -95,7 +95,7 @@ export class Token {
 
     const res = new token.mint_result(false);
 
-    System.requireAuthority(authorization_type.contract_call, this._contractId);
+    System.requireAuthority(authority.authorization_type.contract_call, this._contractId);
 
     const supply = this._state.GetSupply();
 

@@ -1,5 +1,5 @@
-import { Base58, StringBytes, System, value_type } from "koinos-sdk-as";
-import * as chat from "./proto/chat";
+import { Base58, StringBytes, System, value } from "koinos-sdk-as";
+import { chat } from "./proto/chat";
 import { State } from "./State";
 
 
@@ -19,7 +19,7 @@ export class Chat {
     const headInfo = System.getHeadInfo();
 
     // get the sender address
-    const txField = System.getTransactionField('header.payer') as value_type;
+    const txField = System.getTransactionField('header.payer') as value.value_type;
     const sender = txField.bytes_value as Uint8Array;
 
     const newMessage = new chat.chat_message(sender, message, headInfo.head_block_time);

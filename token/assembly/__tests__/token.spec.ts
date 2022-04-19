@@ -1,6 +1,6 @@
-import { Base58, MockVM, Arrays, Protobuf, authorization_type } from "koinos-sdk-as";
+import { Base58, MockVM, Arrays, Protobuf, authority } from "koinos-sdk-as";
 import { Token } from "../Token";
-import * as token from "../proto/token";
+import { token } from "../proto/token";
 
 const CONTRACT_ID = Base58.decode("1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe");
 const MOCK_ACCT1 = Base58.decode("1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG");
@@ -43,7 +43,7 @@ describe("token", () => {
     const tkn = new Token();
 
     // set contract_call authority for CONTRACT_ID to true so that we can mint tokens
-    const auth = new MockVM.MockAuthority(authorization_type.contract_call, CONTRACT_ID, true);
+    const auth = new MockVM.MockAuthority(authority.authorization_type.contract_call, CONTRACT_ID, true);
     MockVM.setAuthorities([auth]);
 
     // check total supply
@@ -83,7 +83,7 @@ describe("token", () => {
     const tkn = new Token();
 
     // set contract_call authority for MOCK_ACCT1 to true so that we cannot mint tokens
-    const auth = new MockVM.MockAuthority(authorization_type.contract_call, MOCK_ACCT1, true);
+    const auth = new MockVM.MockAuthority(authority.authorization_type.contract_call, MOCK_ACCT1, true);
     MockVM.setAuthorities([auth]);
 
     // check total supply
@@ -119,7 +119,7 @@ describe("token", () => {
     const tkn = new Token();
 
     // set contract_call authority for CONTRACT_ID to true so that we can mint tokens
-    const auth = new MockVM.MockAuthority(authorization_type.contract_call, CONTRACT_ID, true);
+    const auth = new MockVM.MockAuthority(authority.authorization_type.contract_call, CONTRACT_ID, true);
     MockVM.setAuthorities([auth]);
 
     let mintArgs = new token.mint_arguments(MOCK_ACCT2, 123);
@@ -149,10 +149,10 @@ describe("token", () => {
     const tkn = new Token();
 
     // set contract_call authority for CONTRACT_ID to true so that we can mint tokens
-    const authContractId = new MockVM.MockAuthority(authorization_type.contract_call, CONTRACT_ID, true);
+    const authContractId = new MockVM.MockAuthority(authority.authorization_type.contract_call, CONTRACT_ID, true);
 
     // set contract_call authority for MOCK_ACCT1 to true so that we can transfer tokens
-    const authMockAcct1 = new MockVM.MockAuthority(authorization_type.contract_call, MOCK_ACCT1, true);
+    const authMockAcct1 = new MockVM.MockAuthority(authority.authorization_type.contract_call, MOCK_ACCT1, true);
     MockVM.setAuthorities([authContractId, authMockAcct1]);
 
     // mint tokens
@@ -195,7 +195,7 @@ describe("token", () => {
     const tkn = new Token();
 
     // set contract_call authority for CONTRACT_ID to true so that we can mint tokens
-    const authContractId = new MockVM.MockAuthority(authorization_type.contract_call, CONTRACT_ID, true);
+    const authContractId = new MockVM.MockAuthority(authority.authorization_type.contract_call, CONTRACT_ID, true);
     // do not set authority for MOCK_ACCT1
     MockVM.setAuthorities([authContractId]);
 
@@ -229,10 +229,10 @@ describe("token", () => {
     const tkn = new Token();
 
     // set contract_call authority for CONTRACT_ID to true so that we can mint tokens
-    const authContractId = new MockVM.MockAuthority(authorization_type.contract_call, CONTRACT_ID, true);
+    const authContractId = new MockVM.MockAuthority(authority.authorization_type.contract_call, CONTRACT_ID, true);
 
     // set contract_call authority for MOCK_ACCT1 to true so that we can transfer tokens
-    const authMockAcct1 = new MockVM.MockAuthority(authorization_type.contract_call, MOCK_ACCT1, true);
+    const authMockAcct1 = new MockVM.MockAuthority(authority.authorization_type.contract_call, MOCK_ACCT1, true);
     MockVM.setAuthorities([authContractId, authMockAcct1]);
 
     // mint tokens
@@ -262,10 +262,10 @@ describe("token", () => {
     const tkn = new Token();
 
     // set contract_call authority for CONTRACT_ID to true so that we can mint tokens
-    const authContractId = new MockVM.MockAuthority(authorization_type.contract_call, CONTRACT_ID, true);
+    const authContractId = new MockVM.MockAuthority(authority.authorization_type.contract_call, CONTRACT_ID, true);
 
     // set contract_call authority for MOCK_ACCT1 to true so that we can transfer tokens
-    const authMockAcct1 = new MockVM.MockAuthority(authorization_type.contract_call, MOCK_ACCT1, true);
+    const authMockAcct1 = new MockVM.MockAuthority(authority.authorization_type.contract_call, MOCK_ACCT1, true);
     MockVM.setAuthorities([authContractId, authMockAcct1]);
 
     // mint tokens

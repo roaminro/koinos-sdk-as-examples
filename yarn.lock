@@ -387,10 +387,10 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha1-p3c2C1s5oaLlEG+OhY8v0tBgxXA=
 
-"@roaminroe/as-proto-gen@^0.3.3":
-  version "0.3.3"
-  resolved "https://registry.yarnpkg.com/@roaminroe/as-proto-gen/-/as-proto-gen-0.3.3.tgz#5d9b2d3d63c06109277443d9cb526a2b28eb441c"
-  integrity sha512-++Y+/ap1db31Yenka750cV2xWA0u9JeY0pP0mutNNwWqQYZmKJtrigSvUE6ixUJU2K2jBpE9UGsJzGJo+R1l0w==
+"@roaminroe/as-proto-gen@^0.4.2":
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/@roaminroe/as-proto-gen/-/as-proto-gen-0.4.2.tgz#d665cd0e37c420eed29e933ace4f7ceec9a5eb0d"
+  integrity sha512-Q5XcyzZOtr7aaIadnGk9s+XiTWUUJ31VLEu09cybgabGeQVqkT1mHdtMDamERdIU2d9o6fZApC1mvIfz89esvA==
   dependencies:
     google-protobuf "^3.19.2"
     prettier "^2.5.0"
@@ -1487,10 +1487,10 @@ koinos-abi-proto-gen@^0.1.11:
     google-protobuf "^3.19.4"
     protobufjs "^6.11.2"
 
-koinos-as-gen@^0.4.6:
-  version "0.4.6"
-  resolved "https://registry.yarnpkg.com/koinos-as-gen/-/koinos-as-gen-0.4.6.tgz#90978badf70052a29111ca1512ad45b21af97354"
-  integrity sha512-IKVtQLDO+wBH9eBN1G4Z6HzVzeZg6Dc/swPBMo+43TqUQBpio7jMv/j4k3sINp8vb7MjGtVPNwQ5xLFsvZmk4w==
+koinos-as-gen@^0.4.8:
+  version "0.4.8"
+  resolved "https://registry.yarnpkg.com/koinos-as-gen/-/koinos-as-gen-0.4.8.tgz#b20893f1c6870ced7e48fa65a81d3e0b2676a670"
+  integrity sha512-Bbpp9Wr4SgFxP4QfoXAW3BRY3hBOH/+jgJAXlFlleJ9RYW9b96x0eM+gs9X/hsu1jBqAcVdXVK52y3VeNO0qmQ==
   dependencies:
     google-protobuf "^3.19.4"
 
@@ -1506,13 +1506,20 @@ koinos-mock-vm@^1.0.3:
     protobufjs "^6.11.2"
     somap "^0.5.14"
 
-koinos-sdk-as@^0.4.5:
-  version "0.4.5"
-  resolved "https://registry.yarnpkg.com/koinos-sdk-as/-/koinos-sdk-as-0.4.5.tgz#6b68614c349c0ae3019d661ff74f5d4c3a32e25b"
-  integrity sha512-gDBAGqeD0Hw7+uMB1DgGqZzLRizZgRcKGzUZy2xn0EGwiCgmvqcFlT1y8wQ1/MbSz2n2uXvnQrC9pOFtXgfZhw==
+koinos-proto-as@0.4.0, koinos-proto-as@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/koinos-proto-as/-/koinos-proto-as-0.4.0.tgz#908e803b6168f8267e18dd65e85d96a2a905ae90"
+  integrity sha512-rLvRlSz+CaiDsXi23w2oghopBeC9OeYr4w7Mt/ON/v6FUcZ5EHdV81K3utGGwC+HmnYi0Ul/3GQgWU5vDXk8Rg==
+  dependencies:
+    as-proto "^0.2.2"
+
+koinos-sdk-as@koinos/koinos-sdk-as:
+  version "0.4.6"
+  resolved "https://codeload.github.com/koinos/koinos-sdk-as/tar.gz/266a48136a648a3ae89c2f79268d612177ead549"
   dependencies:
     as-bignum "^0.2.18"
     as-proto "^0.2.2"
+    koinos-proto-as "0.4.0"
 
 levn@^0.4.1:
   version "0.4.1"

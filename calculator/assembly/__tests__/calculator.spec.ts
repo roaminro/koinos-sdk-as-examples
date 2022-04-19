@@ -1,5 +1,5 @@
 import { Calculator } from "../Calculator";
-import * as calculator from "../proto/calculator";
+import { calculator } from "../proto/calculator";
 
 describe("calculator", () => {
   it("should add", () => {

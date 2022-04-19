@@ -1,5 +1,5 @@
 import { SafeMath } from "koinos-sdk-as";
-import * as calculator from "./proto/calculator";
+import { calculator } from "./proto/calculator";
 
 export class Calculator {
   add(args: calculator.add_arguments): calculator.add_result {

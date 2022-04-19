@@ -1,5 +1,5 @@
-import { object_space, System } from "koinos-sdk-as";
-import * as token from "./proto/token";
+import { chain, System } from "koinos-sdk-as";
+import { token } from "./proto/token";
 
 const SUPPLY_SPACE_ID = 0;
 const SUPPLY_KEY = new Uint8Array(0);
@@ -7,14 +7,14 @@ const BALANCE_SPACE_ID = 1;
 
 export class State {
   contractId: Uint8Array;
-  supplySpace: object_space;
-  balanceSpace: object_space;
+  supplySpace: chain.object_space;
+  balanceSpace: chain.object_space;
 
   constructor(contractId: Uint8Array) {
     this.contractId = contractId;
 
-    this.supplySpace = new object_space(false, contractId,SUPPLY_SPACE_ID);
-    this.balanceSpace = new object_space(false, contractId, BALANCE_SPACE_ID);
+    this.supplySpace = new chain.object_space(false, contractId,SUPPLY_SPACE_ID);
+    this.balanceSpace = new chain.object_space(false, contractId, BALANCE_SPACE_ID);
   }
 
   GetSupply(): token.balance_object {
