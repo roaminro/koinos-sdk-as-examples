@@ -1,6 +1,7 @@
-import { authority, value, Protobuf, chain, System, Crypto, SafeMath, Base58 } from "koinos-as-sdk";
+import { authority, value, Protobuf, chain, System, Crypto, Base58 } from "koinos-as-sdk";
 import { wallet } from "./proto/wallet";
 import { Collection } from "./Collection";
+import { equalBytes } from "./utils";
 
 const GRACE_PERIOD_PROTECTION: u64 = 86400; // 1 day
 const GRACE_PERIOD_RECOVERY: u64 = 86400; // 1 day

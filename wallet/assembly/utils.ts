@@ -6,7 +6,3 @@ export function equalBytes(a: Uint8Array, b: Uint8Array): boolean {
   return true;
 }
   
-export function fromUint32toUint64(n: u32): u64 {
-  return (n as u64) - u64.MAX_VALUE + u32.MAX_VALUE;
-}
-  
