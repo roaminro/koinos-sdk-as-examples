@@ -202,7 +202,7 @@ export class Wallet {
       const address = Crypto.addressFromPublicKey(publicKey!);
       for (let j = 0; j < signers.length; j++) {
         if (equalBytes(address, signers[j]!)) {
-          return new Result(true, "Duplicate signature detected");
+          return new Result(true, "duplicate signature detected");
         }
       }
 

@@ -1,4 +1,4 @@
-import { Base58, Base64, chain, MockVM, protocol, System } from "koinos-as-sdk";
+import { Base58, Base64, chain, MockVM, Protobuf, protocol, System, value } from "koinos-as-sdk";
 import { Wallet, Result } from "../Wallet";
 import { wallet as w } from "../proto/wallet";
 
@@ -213,7 +213,6 @@ describe("wallet", () => {
             new w.key_auth(null, ACCOUNT6, 7),
             new w.key_auth(ACCOUNT7, null, 1),
             new w.key_auth(ACCOUNT8, null, 1),
-            new w.key_auth(ACCOUNT9, null, 1),
           ],
           8
         ),
@@ -232,26 +231,54 @@ describe("wallet", () => {
     expect(myWallet._verifyAuthority("multisig")).toStrictEqual(
       new Result(true, "authority multisig failed")
     );
+
     tx.signatures = [SIG_ACCOUNT2, SIG_ACCOUNT3];
     MockVM.setTransaction(tx);
     expect(myWallet._verifyAuthority("multisig")).toStrictEqual(
       new Result(false, "")
     );
 
-    MockVM.commitTransaction();
+    tx.signatures = [SIG_ACCOUNT3, SIG_ACCOUNT4];
+    MockVM.setTransaction(tx);
+    expect(myWallet._verifyAuthority("multisig")).toStrictEqual(
+      new Result(true, "authority multisig failed")
+    );
 
-    expect(() => {
-      myWallet._requireAuthority("owner");
-    }).toThrow();
+    tx.signatures = [SIG_ACCOUNT3, SIG_ACCOUNT3, SIG_ACCOUNT4];
+    MockVM.setTransaction(tx);
+    expect(myWallet._verifyAuthority("multisig")).toStrictEqual(
+      new Result(true, "duplicate signature detected")
+    );
 
-    expect(() => {
-      myWallet._requireAuthority("owner");
-    }).toThrow();
+    tx.signatures = [SIG_ACCOUNT1];
+    MockVM.setTransaction(tx);
+    expect(myWallet._verifyAuthority("contractCaller")).toStrictEqual(
+      new Result(true, "authority contractCaller failed")
+    );
 
-    expect(() => {
-      myWallet._requireAuthority("owner");
-    }).toThrow();
+    tx.signatures = [SIG_ACCOUNT9];
+    MockVM.setTransaction(tx);
+    MockVM.setCaller(new chain.caller_data(ACCOUNT6, chain.privilege.user_mode));
+    expect(myWallet._verifyAuthority("contractCaller")).toStrictEqual(
+      new Result(false, "")
+    );
 
+    /*expect(myWallet._verifyAuthority("caller+multisig")).toStrictEqual(
+      new Result(true, "authority caller+multisig failed")
+    );
+
+    /*tx.signatures = [SIG_ACCOUNT7];
+    MockVM.setTransaction(tx);
+    expect(myWallet._verifyAuthority("caller+multisig")).toStrictEqual(
+      new Result(false, "")
+    );
+
+    /*tx.signatures = [SIG_ACCOUNT7, SIG_ACCOUNT8];
+    MockVM.setTransaction(tx);
+    expect(myWallet._verifyAuthority("caller+multisig")).toStrictEqual(
+      new Result(false, "")
+    );*/
+        
     expect(MockVM.getLogs()).toStrictEqual([]);
   });
 });
