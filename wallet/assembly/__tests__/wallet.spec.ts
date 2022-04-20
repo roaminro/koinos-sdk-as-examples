@@ -1,12 +1,5 @@
-import {
-  Base58,
-  Base64,
-  chain,
-  MockVM,
-  protocol,
-  StringBytes,
-} from "koinos-as-sdk";
-import { Wallet } from "../Wallet";
+import { Base58, Base64, chain, MockVM, protocol, System } from "koinos-as-sdk";
+import { Wallet, Result } from "../Wallet";
 import { wallet as w } from "../proto/wallet";
 
 const CONTRACT_ID = Base58.decode("1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe");
@@ -165,5 +158,100 @@ describe("wallet", () => {
     expect(authorities).toStrictEqual(
       new w.get_authorities_result([addAuthArgs, addAuthArgs2])
     );
+  });
+
+  it("should handle verify authority", () => {
+    const tx = new protocol.transaction();
+    tx.id = TX_ID;
+    tx.signatures = [SIG_ACCOUNT1];
+    MockVM.setTransaction(tx);
+    MockVM.setCaller(new chain.caller_data());
+
+    myWallet = new Wallet();
+
+    // owner
+    myWallet.add_authority(
+      new w.add_authority_arguments(
+        "owner",
+        new w.authority([new w.key_auth(ACCOUNT1, null, 1)], 1),
+        false
+      )
+    );
+
+    // multisig: require several signatures with different weights
+    myWallet.add_authority(
+      new w.add_authority_arguments(
+        "multisig",
+        new w.authority(
+          [
+            new w.key_auth(ACCOUNT2, null, 2),
+            new w.key_auth(ACCOUNT3, null, 1),
+            new w.key_auth(ACCOUNT4, null, 1),
+            new w.key_auth(ACCOUNT5, null, 1),
+          ],
+          3
+        ),
+        false
+      )
+    );
+
+    // contractCaller: require to be called by a contract
+    myWallet.add_authority(
+      new w.add_authority_arguments(
+        "contractCaller",
+        new w.authority([new w.key_auth(null, ACCOUNT6, 1)], 1),
+        false
+      )
+    );
+
+    // caller+multisig: require signatures and to be called by a contract
+    myWallet.add_authority(
+      new w.add_authority_arguments(
+        "caller+multisig",
+        new w.authority(
+          [
+            new w.key_auth(null, ACCOUNT6, 7),
+            new w.key_auth(ACCOUNT7, null, 1),
+            new w.key_auth(ACCOUNT8, null, 1),
+            new w.key_auth(ACCOUNT9, null, 1),
+          ],
+          8
+        ),
+        false
+      )
+    );
+
+    MockVM.commitTransaction();
+
+    expect(myWallet._verifyAuthority("asdfg")).toStrictEqual(
+      new Result(true, "invalid authority 'asdfg'")
+    );
+    expect(myWallet._verifyAuthority("owner")).toStrictEqual(
+      new Result(false, "")
+    );
+    expect(myWallet._verifyAuthority("multisig")).toStrictEqual(
+      new Result(true, "authority multisig failed")
+    );
+    tx.signatures = [SIG_ACCOUNT2, SIG_ACCOUNT3];
+    MockVM.setTransaction(tx);
+    expect(myWallet._verifyAuthority("multisig")).toStrictEqual(
+      new Result(false, "")
+    );
+
+    MockVM.commitTransaction();
+
+    expect(() => {
+      myWallet._requireAuthority("owner");
+    }).toThrow();
+
+    expect(() => {
+      myWallet._requireAuthority("owner");
+    }).toThrow();
+
+    expect(() => {
+      myWallet._requireAuthority("owner");
+    }).toThrow();
+
+    expect(MockVM.getLogs()).toStrictEqual([]);
   });
 });

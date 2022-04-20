@@ -6,6 +6,7 @@ import {
   System,
   Crypto,
   Base58,
+  Base64,
 } from "koinos-as-sdk";
 import { wallet } from "./proto/wallet";
 import { Collection } from "./Collection";
@@ -94,7 +95,7 @@ class ResultVerifyArgumentsProtection {
   }
 }
 
-class Result {
+export class Result {
   error: boolean;
   message: string;
   constructor(error: boolean, message: string) {
@@ -192,16 +193,15 @@ export class Wallet {
     let totalWeight: u32 = 0;
 
     // add weights from signatures
-    const signers: Uint8Array[] = [];
+    const signers: Array<Uint8Array | null> = [];
     for (let i = 0; i < signatures.values.length; i++) {
       const publicKey = System.recoverPublicKey(
         signatures.values[i].bytes_value!,
         txId
       );
       const address = Crypto.addressFromPublicKey(publicKey!);
-
       for (let j = 0; j < signers.length; j++) {
-        if (equalBytes(address, signers[i])) {
+        if (equalBytes(address, signers[j]!)) {
           return new Result(true, "Duplicate signature detected");
         }
       }
