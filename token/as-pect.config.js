@@ -31,26 +31,31 @@ module.exports = {
     const mockVM = new MockVM();
 
     const myImports = {
+      wasi_snapshot_preview1: {
+        fd_write: () => { },
+        proc_exit: () => { }
+      },
       // put your web assembly imports here, and return the module
       env: {
         ...mockVM.getImports()
       }
     };
     instance = instantiateSync(binary, createImports(myImports));
+    instance.exports.memory.grow(512);
     mockVM.setInstance(instance);
     return instance;
   },
-  wasi: {
-    // pass args here
-    args: [],
-    // inherit from env
-    env: process.env,
-    preopens: {
-      // put your preopen's here
-    },
-    // let as-pect finish what it needs to finish
-    returnOnExit: false,
-  },
+  // wasi: {
+  //   // pass args here
+  //   args: [],
+  //   // inherit from env
+  //   env: process.env,
+  //   preopens: {
+  //     // put your preopen's here
+  //   },
+  //   // let as-pect finish what it needs to finish
+  //   returnOnExit: false,
+  // },
   /** Enable code coverage. */
   coverage: [
     `${path.basename(__dirname)}/assembly/*.ts`
