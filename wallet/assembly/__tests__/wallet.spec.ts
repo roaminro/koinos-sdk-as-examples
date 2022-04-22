@@ -2,7 +2,7 @@ import { Base58, Base64, chain, MockVM, protocol, System } from "koinos-as-sdk";
 import { Wallet, Result } from "../Wallet";
 import { wallet as w } from "../proto/wallet";
 
-System.MAX_BUFFER_SIZE = 10024;
+System.MAX_BUFFER_SIZE = 4096;
 const CONTRACT_ID = Base58.decode("1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe");
 const TX_ID = Base64.decode("EiDzPCOIvAo2wEZiM8JYpL5syByokxC0kTQraOw4OVmSYA==");
 const ACCOUNT1 = Base58.decode("1MaqFT7kZdTBypYFeiXvZketbPwbzdJrHd");
@@ -283,5 +283,112 @@ describe("wallet", () => {
     );
 
     expect(MockVM.getLogs()).toStrictEqual([]);
+  });
+
+  it("should reject when is impossible", () => {
+    myWallet = new Wallet();
+
+    expect(() => {
+      myWallet.add_authority(
+        new w.add_authority_arguments(
+          "owner",
+          new w.authority([new w.key_auth(ACCOUNT1, null, 1)], 2)
+        )
+      );
+    }).toThrow();
+    expect(MockVM.getLogs()).toStrictEqual([
+      "owner authority can not be impossible",
+    ]);
+    MockVM.clearLogs();
+
+    expect(() => {
+      myWallet.add_authority(
+        new w.add_authority_arguments(
+          "owner",
+          new w.authority(
+            [
+              new w.key_auth(ACCOUNT1, null, 1),
+              new w.key_auth(ACCOUNT1, null, 1),
+            ],
+            2
+          )
+        )
+      );
+    }).toThrow();
+    expect(MockVM.getLogs()).toStrictEqual(["duplicate address detected"]);
+    MockVM.clearLogs();
+
+    // add owner
+    myWallet.add_authority(
+      new w.add_authority_arguments(
+        "owner",
+        new w.authority([new w.key_auth(ACCOUNT1, null, 1)], 1)
+      )
+    );
+    MockVM.commitTransaction();
+
+    expect(() => {
+      myWallet.add_authority(
+        new w.add_authority_arguments(
+          "active",
+          new w.authority([new w.key_auth(ACCOUNT1, null, 1)], 2)
+        )
+      );
+    }).toThrow();
+    expect(MockVM.getLogs()).toStrictEqual([
+      "Impossible authority: If this is your intention tag it as impossible",
+    ]);
+    MockVM.clearLogs();
+
+    expect(() => {
+      myWallet.add_authority(
+        new w.add_authority_arguments(
+          "active",
+          new w.authority([new w.key_auth(ACCOUNT1, null, 1)], 1),
+          true
+        )
+      );
+    }).toThrow();
+    expect(MockVM.getLogs()).toStrictEqual([
+      "The authority was tagged as impossible but it is not",
+    ]);
+    MockVM.clearLogs();
+
+    expect(() => {
+      myWallet.add_authority(
+        new w.add_authority_arguments(
+          "active",
+          new w.authority(
+            [
+              new w.key_auth(null, ACCOUNT1, 1),
+              new w.key_auth(null, ACCOUNT1, 1),
+            ],
+            2
+          )
+        )
+      );
+    }).toThrow();
+    expect(MockVM.getLogs()).toStrictEqual(["duplicate address detected"]);
+    MockVM.clearLogs();
+
+    expect(() => {
+      myWallet.add_authority(
+        new w.add_authority_arguments(
+          "active",
+          new w.authority(
+            [
+              new w.key_auth(null, ACCOUNT1, 1),
+              new w.key_auth(null, ACCOUNT2, 1),
+            ],
+            2
+          )
+        )
+      );
+    }).toThrow();
+    expect(MockVM.getLogs()).toStrictEqual([
+      `Impossible for contract ${Base58.encode(ACCOUNT1)}`,
+      "Impossible authority: If this is your intention tag it as impossible",
+    ]);
+    MockVM.clearLogs();
   });
 });

@@ -41,8 +41,23 @@ function isImpossible(authority: wallet.authority): boolean {
 
   // add weights from addresses
   let totalWeightAddresses: u32 = 0;
+  const addresses: Array<Uint8Array> = [];
   for (let i = 0; i < keyAuths.length; i++) {
-    if (keyAuths[i].address != null) totalWeightAddresses += keyAuths[i].weight;
+    const address = keyAuths[i].address
+      ? keyAuths[i].address
+      : keyAuths[i].contract_id;
+    if (address == null) exit(`No address or contract_id in key_auth ${i}`);
+
+    for (let j = 0; j < addresses.length; j++) {
+      if (equalBytes(address!, addresses[j])) {
+        exit("duplicate address detected");
+      }
+    }
+    addresses.push(address!);
+
+    if (keyAuths[i].address != null) {
+      totalWeightAddresses += keyAuths[i].weight;
+    }
   }
 
   let hasContract = false;
@@ -58,8 +73,6 @@ function isImpossible(authority: wallet.authority): boolean {
         );
         return true;
       }
-    } else if (keyAuths[i].address == null) {
-      exit(`No address or contract_id in key_auth ${i}`);
     }
   }
 
@@ -270,9 +283,9 @@ export class Wallet {
       if (impossible != argImpossible) {
         if (impossible)
           exit(
-            `Impossible authority: If this is your intention tag it as impossible`
+            "Impossible authority: If this is your intention tag it as impossible"
           );
-        else exit(`The authority was tagged as impossible but it is not`);
+        else exit("The authority was tagged as impossible but it is not");
       }
     }
     return new ResultVerifyArgumentsAuthority(
