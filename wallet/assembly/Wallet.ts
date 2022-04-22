@@ -6,7 +6,6 @@ import {
   System,
   Crypto,
   Base58,
-  Base64,
 } from "koinos-as-sdk";
 import { wallet } from "./proto/wallet";
 import { Collection } from "./Collection";
