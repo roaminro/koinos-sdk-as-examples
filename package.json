@@ -19,9 +19,9 @@
     "eslint": "^8.7.0",
     "koinos-abi-proto-gen": "^0.1.11",
     "koinos-as-gen": "^0.4.8",
-    "koinos-mock-vm": "^1.0.3",
-    "koinos-proto-as": "^0.4.0",
-    "koinos-sdk-as": "koinos/koinos-sdk-as",
+    "koinos-mock-vm": "^1.1.0",
+    "koinos-proto-as": "^0.4.1",
+    "koinos-sdk-as": "^0.4.10",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.5",
     "yaml": "^2.0.0-11"

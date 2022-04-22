@@ -1487,17 +1487,17 @@ koinos-abi-proto-gen@^0.1.11:
     google-protobuf "^3.19.4"
     protobufjs "^6.11.2"
 
-koinos-as-gen@^0.4.8:
+koinos-as-gen@0.4.8, koinos-as-gen@^0.4.8:
   version "0.4.8"
   resolved "https://registry.yarnpkg.com/koinos-as-gen/-/koinos-as-gen-0.4.8.tgz#b20893f1c6870ced7e48fa65a81d3e0b2676a670"
   integrity sha512-Bbpp9Wr4SgFxP4QfoXAW3BRY3hBOH/+jgJAXlFlleJ9RYW9b96x0eM+gs9X/hsu1jBqAcVdXVK52y3VeNO0qmQ==
   dependencies:
     google-protobuf "^3.19.4"
 
-koinos-mock-vm@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/koinos-mock-vm/-/koinos-mock-vm-1.0.3.tgz#60af97d473f1b47d8582dba92e5f59d399c554ff"
-  integrity sha512-mA3ZZx0euNn3Nqu3G0/X4U/LLk56ekI9aWlvCtM6KJRr5LMdlOm97FitRwoJ7mc0G1rpKLJbTy/Ba8SM7bRlvA==
+koinos-mock-vm@^1.1.0:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/koinos-mock-vm/-/koinos-mock-vm-1.1.1.tgz#187da036beb7c12307ee3579ee616a3f7e8e2177"
+  integrity sha512-jbGUflqb4zA1Owm2NXlX8pIVtfijbGwHKZh/dyMmFRK6guCjdgn+xnFv0UotRJDitdRnCufF+zALrqbi9lwB0Q==
   dependencies:
     "@noble/hashes" "^1.0.0"
     "@noble/secp256k1" "^1.5.5"
@@ -1506,20 +1506,22 @@ koinos-mock-vm@^1.0.3:
     protobufjs "^6.11.2"
     somap "^0.5.14"
 
-koinos-proto-as@0.4.0, koinos-proto-as@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/koinos-proto-as/-/koinos-proto-as-0.4.0.tgz#908e803b6168f8267e18dd65e85d96a2a905ae90"
-  integrity sha512-rLvRlSz+CaiDsXi23w2oghopBeC9OeYr4w7Mt/ON/v6FUcZ5EHdV81K3utGGwC+HmnYi0Ul/3GQgWU5vDXk8Rg==
+koinos-proto-as@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/koinos-proto-as/-/koinos-proto-as-0.4.1.tgz#8bfc1d5372ffd5a80c29df83f75100774d201463"
+  integrity sha512-U9Ek0qkYhcVQ9O0TyEfFYeFkfw/lFAT67IIS8uP339lUeGIReVZJlTp9Oqg1pC0+UUhULXNE8JLNaIrxuosesA==
   dependencies:
     as-proto "^0.2.2"
 
-koinos-sdk-as@koinos/koinos-sdk-as:
-  version "0.4.6"
-  resolved "https://codeload.github.com/koinos/koinos-sdk-as/tar.gz/266a48136a648a3ae89c2f79268d612177ead549"
+koinos-sdk-as@^0.4.10:
+  version "0.4.10"
+  resolved "https://registry.yarnpkg.com/koinos-sdk-as/-/koinos-sdk-as-0.4.10.tgz#91c95794f77f62ac54084464037835811b2b6f8b"
+  integrity sha512-uZHTvwfUbNS4KROJtFfsOia9AAolD8uoh3zziDqXc7jfLxHJ87zOBMjKQEINRwhsAPmKnbRiG12RszO/DSjOXg==
   dependencies:
     as-bignum "^0.2.18"
     as-proto "^0.2.2"
-    koinos-proto-as "0.4.0"
+    koinos-as-gen "0.4.8"
+    koinos-proto-as "^0.4.1"
 
 levn@^0.4.1:
   version "0.4.1"

@@ -103,7 +103,7 @@ describe("token", () => {
     MockVM.setAuthorities([]);
 
     // save the MockVM state because the burn is going to revert the transaction
-    MockVM.beginTransaction();
+    MockVM.commitTransaction();
 
     expect(() => {
       // try to burn tokens
@@ -179,7 +179,7 @@ describe("token", () => {
     expect(balanceRes.value).toBe(0);
 
     // save the MockVM state because the mint is going to revert the transaction
-    MockVM.beginTransaction();
+    MockVM.commitTransaction();
 
     expect(() => {
       // try to mint tokens
@@ -288,7 +288,7 @@ describe("token", () => {
     expect(mintRes.value).toBe(true);
 
     // save the MockVM state because the transfer is going to revert the transaction
-    MockVM.beginTransaction();
+    MockVM.commitTransaction();
 
     expect(() => {
       // try to transfer tokens without the proper authorizations for MOCK_ACCT1
