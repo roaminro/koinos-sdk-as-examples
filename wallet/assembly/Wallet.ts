@@ -46,7 +46,7 @@ function isImpossible(authority: wallet.authority): boolean {
     const address = keyAuths[i].address
       ? keyAuths[i].address
       : keyAuths[i].contract_id;
-    if (address == null) exit(`No address or contract_id in key_auth ${i}`);
+    if (address == null) exit(`no address or contract_id in key_auth ${i}`);
 
     for (let j = 0; j < addresses.length; j++) {
       if (equalBytes(address!, addresses[j])) {
@@ -69,7 +69,7 @@ function isImpossible(authority: wallet.authority): boolean {
         authority.weight_threshold
       ) {
         System.log(
-          `Impossible for contract ${Base58.encode(keyAuths[i].contract_id!)}`
+          `impossible for contract ${Base58.encode(keyAuths[i].contract_id!)}`
         );
         return true;
       }
@@ -283,9 +283,9 @@ export class Wallet {
       if (impossible != argImpossible) {
         if (impossible)
           exit(
-            "Impossible authority: If this is your intention tag it as impossible"
+            "impossible authority: If this is your intention tag it as impossible"
           );
-        else exit("The authority was tagged as impossible but it is not");
+        else exit("the authority was tagged as impossible but it is not");
       }
     }
     return new ResultVerifyArgumentsAuthority(

@@ -285,7 +285,7 @@ describe("wallet", () => {
     expect(MockVM.getLogs()).toStrictEqual([]);
   });
 
-  it("should reject when is impossible", () => {
+  it("should reject bad request of add authority", () => {
     myWallet = new Wallet();
 
     expect(() => {
@@ -330,13 +330,54 @@ describe("wallet", () => {
     expect(() => {
       myWallet.add_authority(
         new w.add_authority_arguments(
+          null,
+          new w.authority([new w.key_auth(ACCOUNT1, null, 1)], 2)
+        )
+      );
+    }).toThrow();
+    expect(MockVM.getLogs()).toStrictEqual(["name undefined"]);
+    MockVM.clearLogs();
+
+    expect(() => {
+      myWallet.add_authority(new w.add_authority_arguments("recovery", null));
+    }).toThrow();
+    expect(MockVM.getLogs()).toStrictEqual(["authority undefined"]);
+    MockVM.clearLogs();
+
+    expect(() => {
+      myWallet.add_authority(
+        new w.add_authority_arguments(
+          "owner",
+          new w.authority([new w.key_auth(ACCOUNT3, null, 1)], 1)
+        )
+      );
+    }).toThrow();
+    expect(MockVM.getLogs()).toStrictEqual(["authority owner already exists"]);
+    MockVM.clearLogs();
+
+    expect(() => {
+      myWallet.add_authority(
+        new w.add_authority_arguments(
+          "recovery",
+          new w.authority([new w.key_auth(ACCOUNT1, null, 1)], 2)
+        )
+      );
+    }).toThrow();
+    expect(MockVM.getLogs()).toStrictEqual([
+      "recovery authority can not be impossible",
+    ]);
+    MockVM.clearLogs();
+
+    expect(() => {
+      myWallet.add_authority(
+        new w.add_authority_arguments(
           "active",
           new w.authority([new w.key_auth(ACCOUNT1, null, 1)], 2)
         )
       );
     }).toThrow();
     expect(MockVM.getLogs()).toStrictEqual([
-      "Impossible authority: If this is your intention tag it as impossible",
+      "impossible authority: If this is your intention tag it as impossible",
     ]);
     MockVM.clearLogs();
 
@@ -350,7 +391,7 @@ describe("wallet", () => {
       );
     }).toThrow();
     expect(MockVM.getLogs()).toStrictEqual([
-      "The authority was tagged as impossible but it is not",
+      "the authority was tagged as impossible but it is not",
     ]);
     MockVM.clearLogs();
 
@@ -386,8 +427,28 @@ describe("wallet", () => {
       );
     }).toThrow();
     expect(MockVM.getLogs()).toStrictEqual([
-      `Impossible for contract ${Base58.encode(ACCOUNT1)}`,
-      "Impossible authority: If this is your intention tag it as impossible",
+      `impossible for contract ${Base58.encode(ACCOUNT1)}`,
+      "impossible authority: If this is your intention tag it as impossible",
+    ]);
+    MockVM.clearLogs();
+
+    expect(() => {
+      myWallet.add_authority(
+        new w.add_authority_arguments(
+          "active",
+          new w.authority(
+            [
+              new w.key_auth(null, ACCOUNT1, 1),
+              new w.key_auth(null, null, 1),
+              new w.key_auth(ACCOUNT3, null, 1),
+            ],
+            2
+          )
+        )
+      );
+    }).toThrow();
+    expect(MockVM.getLogs()).toStrictEqual([
+      "no address or contract_id in key_auth 1",
     ]);
     MockVM.clearLogs();
   });
