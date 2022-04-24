@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+package koinos.rpc.block_store;
+option go_package = "github.com/koinos/koinos-proto-golang/koinos/rpc/block_store";
+
+import "koinos/block_store/block_store.proto";
+import "koinos/options.proto";
+import "koinos/common.proto";
+import "koinos/protocol/protocol.proto";
+import "koinos/rpc/rpc.proto";
+
+message get_blocks_by_id_request {
+   repeated bytes block_ids = 1 [(btype) = BLOCK_ID];
+   bool return_block = 2;
+   bool return_receipt = 3;
+}
+
+message get_blocks_by_id_response {
+   repeated .koinos.block_store.block_item block_items = 1;
+}
+
+message get_blocks_by_height_request {
+   bytes head_block_id = 1 [(btype) = BLOCK_ID];
+   uint64 ancestor_start_height = 2 [jstype = JS_STRING];
+   uint32 num_blocks = 3;
+   bool return_block = 4;
+   bool return_receipt = 5;
+}
+
+message get_blocks_by_height_response {
+   repeated .koinos.block_store.block_item block_items = 1;
+}
+
+message add_block_request {
+   protocol.block block_to_add = 1;
+   protocol.block_receipt receipt_to_add = 2;
+}
+
+message add_block_response {}
+
+message get_highest_block_request {}
+
+message get_highest_block_response {
+   block_topology topology = 1;
+}
+
+message block_store_request {
+   oneof request {
+      rpc.reserved_rpc reserved = 1;
+      get_blocks_by_id_request get_blocks_by_id = 2;
+      get_blocks_by_height_request get_blocks_by_height = 3;
+      add_block_request add_block = 4;
+      get_highest_block_request get_highest_block = 5;
+   }
+}
+
+message block_store_response {
+   oneof response {
+      rpc.reserved_rpc reserved = 1;
+      rpc.error_response error = 2;
+      get_blocks_by_id_response get_blocks_by_id = 3;
+      get_blocks_by_height_response get_blocks_by_height = 4;
+      add_block_response add_block = 5;
+      get_highest_block_response get_highest_block = 6;
+   }
+}

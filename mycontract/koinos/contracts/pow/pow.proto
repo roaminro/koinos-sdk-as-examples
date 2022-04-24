@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package koinos.contracts.pow;
+option go_package = "github.com/koinos/koinos-proto-golang/koinos/contracts/pow";
+
+message difficulty_metadata {
+   bytes target = 1;
+   uint64 last_block_time = 2 [jstype = JS_STRING];
+   bytes difficulty = 3;
+   uint64 target_block_interval = 4 [jstype = JS_STRING];
+}
+
+message get_difficulty_metadata_arguments{}
+
+message get_difficulty_metadata_result {
+   difficulty_metadata value = 1;
+}
+
+message pow_signature_data {
+   bytes nonce = 1;
+   bytes recoverable_signature = 2;
+}

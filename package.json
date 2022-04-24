@@ -10,7 +10,7 @@
     "@typescript-eslint/eslint-plugin": "^5.10.0",
     "@typescript-eslint/parser": "^5.10.0",
     "eslint": "^8.7.0",
-    "koinos-sdk-as-cli": "^0.1.8",
+    "koinos-sdk-as-cli": "^0.1.9",
     "typescript": "^4.6.3"
   },
   "scripts": {

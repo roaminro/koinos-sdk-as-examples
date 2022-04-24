@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package mycontract;
+
+// @description Says Hello!
+// @read-only true
+message hello_arguments {
+  string name = 1;
+}
+
+message hello_result {
+  string value = 1;
+}
