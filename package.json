@@ -22,20 +22,21 @@
     "koinos-mock-vm": "^1.1.0",
     "koinos-proto-as": "^0.4.1",
     "koinos-sdk-as": "^0.4.10",
+    "koinos-sdk-as-cli": "^0.1.1",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.5",
     "yaml": "^2.0.0-11"
   },
   "scripts": {
     "lint": "eslint --max-warnings 0 --ext ts \"*/assembly/**/*.ts\"",
-    "buildCalculator": "node cli.js build-all calculator release calculator.proto && node cli.js run-tests calculator",
-    "buildChat": "node cli.js build-all chat release chat.proto",
-    "buildControlledContractUpdate": "node cli.js build-all --generate_authorize controlled_contract_update release update.proto",
-    "buildImmutable": "node cli.js build-all immutable release immutable.proto",
-    "buildNft": "node cli.js build-all nft release nft.proto",
-    "buildStaking": "node cli.js build-all staking release staking.proto",
-    "buildToken": "node cli.js build-all token release token.proto && node cli.js run-tests token",
-    "buildTransactionStorage": "node cli.js build transaction_storage release && node cli.js run-tests transaction_storage",
+    "buildCalculator": "koinos-sdk-as-cli build-all calculator release calculator.proto && koinos-sdk-as-cli run-tests calculator",
+    "buildChat": "koinos-sdk-as-cli build-all chat release chat.proto",
+    "buildControlledContractUpdate": "koinos-sdk-as-cli build-all --generate_authorize controlled_contract_update release update.proto",
+    "buildImmutable": "koinos-sdk-as-cli build-all immutable release immutable.proto",
+    "buildNft": "koinos-sdk-as-cli build-all nft release nft.proto",
+    "buildStaking": "koinos-sdk-as-cli build-all staking release staking.proto",
+    "buildToken": "koinos-sdk-as-cli build-all token release token.proto && koinos-sdk-as-cli run-tests token",
+    "buildTransactionStorage": "koinos-sdk-as-cli build transaction_storage release && koinos-sdk-as-cli run-tests transaction_storage",
     "buildAll": "yarn lint && yarn buildCalculator && yarn buildChat && yarn buildControlledContractUpdate && yarn buildImmutable && yarn buildNft && yarn buildStaking && yarn buildToken && yarn buildTransactionStorage"
   }
 }

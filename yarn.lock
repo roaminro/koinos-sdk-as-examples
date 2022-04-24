@@ -1513,6 +1513,14 @@ koinos-proto-as@^0.4.1:
   dependencies:
     as-proto "^0.2.2"
 
+koinos-sdk-as-cli@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/koinos-sdk-as-cli/-/koinos-sdk-as-cli-0.1.1.tgz#5e0808ae36e098a23d2e8477769baf33c92aa1ed"
+  integrity sha512-qZgfn7k9JrIygAtGf4jdQKa+PdYGUtRm3XCZYVYg6H0LSxtxNbifxSbLJ6KAouoSCLj6ewAhzfzhiCUtdWJRlg==
+  dependencies:
+    chalk "4.1.2"
+    commander "^9.0.0"
+
 koinos-sdk-as@^0.4.10:
   version "0.4.10"
   resolved "https://registry.yarnpkg.com/koinos-sdk-as/-/koinos-sdk-as-0.4.10.tgz#91c95794f77f62ac54084464037835811b2b6f8b"

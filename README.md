@@ -29,19 +29,19 @@ yarn install
 - And, it is also important that your `proto` files live in the `assembly/proto/` folder of your project. (i.e.: `./calculator/assembly/proto/calculator.proto`)
 
 ## Build examples
-To build a Smart Contract you can use the cli.js script. This script will help you generate all the files required to build your smart contract.
+To build a Smart Contract you can use the CLI `koinos-sdk-as-cli`. It will help you generate all the files required to build your smart contract.
 ```sh
 # see the cli help
-node cli.js help
+koinos-sdk-as-cli help
 ```
 
 ```sh
 # example for building the calculator contract
 # build the debug version
-node cli.js build-all calculator debug calculator.proto 
+koinos-sdk-as-cli build-all calculator debug calculator.proto 
 
 # build the release version
-node cli.js build-all calculator release calculator.proto 
+koinos-sdk-as-cli build-all calculator release calculator.proto 
 ```
 
 This will result in the generation of:
@@ -55,20 +55,20 @@ This will result in the generation of:
 ## Generate AssemblyScript files for all the proto files of a contract
 ```sh
 # example for the calculator contract
-node cli.js generate-contract-proto calculator
+koinos-sdk-as-cli generate-contract-proto calculator
 ```
 
 ## Generate ABI file
 ```sh
 # example for the calculator contract
-node cli.js generate-abi calculator calculator.proto
+koinos-sdk-as-cli generate-abi calculator calculator.proto
 ```
 This will generate a calculator.abi file in the folder `calculator/abi/`
 
 ## Generate contract.boilerplate.ts and index.ts files
 ```sh
 # example for the calculator contract
-node cli.js generate-contract-as calculator calculator.proto
+koinos-sdk-as-cli generate-contract-as calculator calculator.proto
 ```
 
 This will generate a `Calculator.boilerplate.ts`file and `index.ts` file in the folder `calculator/assembly/`
@@ -76,5 +76,5 @@ This will generate a `Calculator.boilerplate.ts`file and `index.ts` file in the 
 ## Run tests
 ```sh
 # example for the calculator contract
-node cli.js run-tests calculator
+koinos-sdk-as-cli run-tests calculator
 ```
