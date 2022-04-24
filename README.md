@@ -13,7 +13,7 @@ Link to the Koinos AssemblyScript SDK documentation: https://roaminroe.github.io
 
 ```sh
 # clone this repo
-git clone --recursive https://github.com/roaminroe/koinos-sdk-as-examples
+git clone https://github.com/roaminroe/koinos-sdk-as-examples
 
 # with npm
 npm install
@@ -55,20 +55,20 @@ This will result in the generation of:
 ## Generate AssemblyScript files for all the proto files of a contract
 ```sh
 # example for the calculator contract
-koinos-sdk-as-cli generate-contract-proto calculator
+yarn exec koinos-sdk-as-cli generate-contract-proto calculator
 ```
 
 ## Generate ABI file
 ```sh
 # example for the calculator contract
-koinos-sdk-as-cli generate-abi calculator calculator.proto
+yarn exec koinos-sdk-as-cli generate-abi calculator calculator.proto
 ```
 This will generate a calculator.abi file in the folder `calculator/abi/`
 
 ## Generate contract.boilerplate.ts and index.ts files
 ```sh
 # example for the calculator contract
-koinos-sdk-as-cli generate-contract-as calculator calculator.proto
+yarn exec koinos-sdk-as-cli generate-contract-as calculator calculator.proto
 ```
 
 This will generate a `Calculator.boilerplate.ts`file and `index.ts` file in the folder `calculator/assembly/`
@@ -76,5 +76,5 @@ This will generate a `Calculator.boilerplate.ts`file and `index.ts` file in the 
 ## Run tests
 ```sh
 # example for the calculator contract
-koinos-sdk-as-cli run-tests calculator
+yarn exec koinos-sdk-as-cli run-tests calculator
 ```
