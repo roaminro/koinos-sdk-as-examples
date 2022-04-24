@@ -11,9 +11,9 @@ import { wallet } from "./proto/wallet";
 import { Collection } from "./Collection";
 import { equalBytes } from "./utils";
 
-const GRACE_PERIOD_PROTECTION: u64 = 86400; // 1 day
-const GRACE_PERIOD_RECOVERY: u64 = 86400; // 1 day
-const PERIOD_UPDATE_RECOVERY: u64 = 86400 * 30; // 30 days
+export const GRACE_PERIOD_PROTECTION: u64 = 86400; // 1 day
+export const GRACE_PERIOD_RECOVERY: u64 = 86400; // 1 day
+export const PERIOD_UPDATE_RECOVERY: u64 = 86400 * 30; // 30 days
 
 const VARS_SPACE_ID = 0;
 const AUTHORITIES_SPACE_ID = 1;
@@ -251,7 +251,7 @@ export class Wallet {
     authority: wallet.authority | null,
     argImpossible: bool,
     isNewAuthority: boolean,
-    checkAuthority: boolean
+    remove: bool
   ): ResultVerifyArgumentsAuthority {
     let names = this.authorities.getKeysS();
     const existOwner = names.length > 0;
@@ -263,7 +263,9 @@ export class Wallet {
       exit("name undefined");
     }
 
-    if (checkAuthority && authority == null) {
+    if (remove && name == "owner") exit("owner authority can not be removed");
+
+    if (!remove && authority == null) {
       exit("authority undefined");
     }
 
@@ -275,7 +277,7 @@ export class Wallet {
       exit(`authority ${name!} does not exist`);
     }
 
-    if (checkAuthority) {
+    if (!remove) {
       const impossible = isImpossible(authority!);
       if (impossible && (name == "owner" || name == "recovery")) {
         exit(`${name!} authority can not be impossible`);
@@ -303,7 +305,7 @@ export class Wallet {
       args.authority,
       args.impossible,
       true,
-      true
+      false
     );
     if (resultVerify.existOwner) this._requireAuthority("owner");
     args.authority!.last_update = System.getHeadInfo().head_block_time;
@@ -321,7 +323,7 @@ export class Wallet {
       args.authority,
       false,
       false,
-      !args.remove
+      args.remove
     );
     const existingRequest = System.getObject<
       Uint8Array,
@@ -371,7 +373,7 @@ export class Wallet {
       args.authority,
       args.impossible,
       false,
-      !args.remove
+      args.remove
     );
     let authorized: boolean = false;
     let verifAuthority = this._verifyAuthority("recovery");
@@ -380,8 +382,8 @@ export class Wallet {
       if (args.name == "recovery") {
         const now = System.getHeadInfo().head_block_time;
         if (
-          resultVerify.existingAuthority!.last_update <
-          now + GRACE_PERIOD_RECOVERY
+          resultVerify.existingAuthority!.last_update + GRACE_PERIOD_RECOVERY >
+          now
         ) {
           verifAuthority = this._verifyAuthority("owner");
           if (verifAuthority.error) {
@@ -463,12 +465,12 @@ export class Wallet {
     protected_contract: wallet.protected_contract | null,
     authority: wallet.authority_contract | null,
     isNewProtection: boolean,
-    checkAuthority: boolean
+    remove: bool
   ): ResultVerifyArgumentsProtection {
     if (protected_contract == null) {
       exit("protected undefined");
     }
-    if (checkAuthority && authority == null) {
+    if (!remove && authority == null) {
       exit("authority undefined");
     }
     if (protected_contract!.contract_id == null) {
@@ -486,7 +488,7 @@ export class Wallet {
       exit("protected contract does not exist");
     }
 
-    if (checkAuthority) {
+    if (!remove) {
       if (authority!.native != null) {
         const auth = this.authorities.get(authority!.native!);
         if (auth == null) {
@@ -512,7 +514,7 @@ export class Wallet {
       args.protected_contract,
       args.authority,
       true,
-      true
+      false
     );
 
     args.authority!.last_update = System.getHeadInfo().head_block_time;
@@ -530,7 +532,7 @@ export class Wallet {
       args.protected_contract,
       args.authority,
       false,
-      !args.remove
+      args.remove
     );
 
     const requests = this.requests.getAll();
@@ -578,7 +580,7 @@ export class Wallet {
       args.protected_contract,
       args.authority,
       false,
-      !args.remove
+      args.remove
     );
 
     let authorized: boolean = false;
@@ -597,8 +599,8 @@ export class Wallet {
       System.log(verifAuthority.message);
       const now = System.getHeadInfo().head_block_time;
       if (
-        resultVerify.existingAuthority!.last_update <
-        now + GRACE_PERIOD_PROTECTION
+        resultVerify.existingAuthority!.last_update + GRACE_PERIOD_PROTECTION >
+        now
       ) {
         verifAuthority = this._verifyAuthority("owner");
         if (verifAuthority.error) {

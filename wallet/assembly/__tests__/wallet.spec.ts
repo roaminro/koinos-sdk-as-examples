@@ -1,5 +1,5 @@
 import { Base58, Base64, chain, MockVM, protocol, System } from "koinos-as-sdk";
-import { Wallet, Result } from "../Wallet";
+import { Wallet, Result, GRACE_PERIOD_RECOVERY } from "../Wallet";
 import { wallet as w } from "../proto/wallet";
 
 System.MAX_BUFFER_SIZE = 4096;
@@ -44,16 +44,6 @@ const SIG_ACCOUNT9 = Base64.decode(
 const TIME_0: u64 = 86400;
 
 let myWallet: Wallet;
-
-function ownerAuthority(): w.add_authority_arguments {
-  const authority = new w.authority([new w.key_auth(ACCOUNT1, null, 1)], 1);
-  const addAuthArgs = new w.add_authority_arguments("owner", authority, false);
-  return addAuthArgs;
-}
-
-function addOwner(): w.add_authority_result {
-  return myWallet.add_authority(ownerAuthority());
-}
 
 describe("wallet", () => {
   beforeEach(() => {
@@ -451,5 +441,112 @@ describe("wallet", () => {
       "no address or contract_id in key_auth 1",
     ]);
     MockVM.clearLogs();
+  });
+
+  it("should be able to update any authority with owner authority, recovery is a special case", () => {
+    const tx = new protocol.transaction();
+    tx.id = TX_ID;
+    tx.signatures = [SIG_ACCOUNT1];
+    MockVM.setTransaction(tx);
+    MockVM.setCaller(new chain.caller_data());
+
+    // add owner
+    myWallet.add_authority(
+      new w.add_authority_arguments(
+        "owner",
+        new w.authority([new w.key_auth(ACCOUNT1, null, 1)], 1)
+      )
+    );
+
+    // add posting key
+    myWallet.add_authority(
+      new w.add_authority_arguments(
+        "posting",
+        new w.authority([new w.key_auth(ACCOUNT2, null, 1)], 1)
+      )
+    );
+
+    // add recovery
+    myWallet.add_authority(
+      new w.add_authority_arguments(
+        "recovery",
+        new w.authority([new w.key_auth(ACCOUNT3, null, 1)], 1)
+      )
+    );
+    MockVM.commitTransaction();
+
+    // time passes
+    MockVM.setHeadInfo(
+      new chain.head_info(null, TIME_0 + GRACE_PERIOD_RECOVERY)
+    );
+
+    // owner can not update recovery
+    expect(() => {
+      myWallet.update_authority(
+        new w.update_authority_arguments(
+          "recovery",
+          new w.authority([new w.key_auth(ACCOUNT4, null, 1)], 1),
+          false
+        )
+      );
+    }).toThrow();
+    expect(MockVM.getLogs()).toStrictEqual([
+      "authority recovery failed",
+      "not in grace period",
+      "request to update recovery not found",
+    ]);
+    MockVM.clearLogs();
+
+    // owner can update posting key
+    myWallet.update_authority(
+      new w.update_authority_arguments(
+        "posting",
+        new w.authority([new w.key_auth(ACCOUNT4, null, 1)], 1),
+        false
+      )
+    );
+    expect(MockVM.getLogs()).toStrictEqual(["authority recovery failed"]);
+    MockVM.clearLogs();
+
+    // recovery account can update authorities
+    tx.signatures = [SIG_ACCOUNT3];
+    MockVM.setTransaction(tx);
+    myWallet.update_authority(
+      new w.update_authority_arguments(
+        "posting",
+        new w.authority([new w.key_auth(ACCOUNT5, null, 1)], 1),
+        false
+      )
+    );
+    expect(MockVM.getLogs()).toStrictEqual([]);
+    MockVM.clearLogs();
+
+    // recovery can update the owner
+    myWallet.update_authority(
+      new w.update_authority_arguments(
+        "owner",
+        new w.authority([new w.key_auth(ACCOUNT6, null, 1)], 1),
+        false
+      )
+    );
+    expect(MockVM.getLogs()).toStrictEqual([]);
+    MockVM.clearLogs();
+
+    // other authorities can not update authorities
+    tx.signatures = [SIG_ACCOUNT5];
+    MockVM.setTransaction(tx);
+    expect(() => {
+      myWallet.update_authority(
+        new w.update_authority_arguments(
+          "posting",
+          new w.authority([new w.key_auth(ACCOUNT6, null, 1)], 1),
+          false
+        )
+      );
+    }).toThrow();
+    expect(MockVM.getLogs()).toStrictEqual([
+      "authority recovery failed",
+      "authority owner failed",
+    ]);
   });
 });
