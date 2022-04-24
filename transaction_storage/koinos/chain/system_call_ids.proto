@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package koinos.chain;
+option go_package = "github.com/koinos/koinos-proto-golang/koinos/chain";
+
+enum system_call_id {
+   reserved_id = 0;
+
+   // General Blockchain Management
+   get_head_info = 1;
+   apply_block = 2;
+   apply_transaction = 3;
+   apply_upload_contract_operation = 4;
+   apply_call_contract_operation = 5;
+   apply_set_system_call_operation = 6;
+   apply_set_system_contract_operation = 7;
+   pre_block_callback = 8;
+   post_block_callback = 9;
+   pre_transaction_callback = 10;
+   post_transaction_callback = 11;
+
+   // System Helpers
+   process_block_signature = 101;
+   get_transaction = 102;
+   get_transaction_field = 103;
+   get_block = 104;
+   get_block_field = 105;
+   get_last_irreversible_block = 106;
+   get_account_nonce = 107;
+   verify_account_nonce = 108;
+   set_account_nonce = 109;
+   require_system_authority = 110;
+
+   // Resource Subsystem
+   get_account_rc = 201;
+   consume_account_rc = 202;
+   get_resource_limits = 203;
+   consume_block_resources = 204;
+
+   // Database
+   put_object = 301;
+   remove_object = 302;
+   get_object = 303;
+   get_next_object = 304;
+   get_prev_object = 305;
+
+   // Logging
+   log = 401;
+   event = 402;
+
+   // Cryptography
+   hash = 501;
+   recover_public_key = 502;
+   verify_merkle_root = 503;
+   verify_signature = 504;
+   verify_vrf_proof = 505;
+
+   // Contract Management
+   call_contract = 601;
+   get_entry_point = 602;
+   get_contract_arguments = 603;
+   set_contract_result = 604;
+   exit_contract = 605;
+   get_contract_id = 606;
+   get_caller = 607;
+   require_authority = 608;
+}

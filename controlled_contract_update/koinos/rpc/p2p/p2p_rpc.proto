@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package koinos.rpc.p2p;
+option go_package = "github.com/koinos/koinos-proto-golang/koinos/rpc/p2p";
+
+import "koinos/rpc/rpc.proto";
+
+message get_gossip_status_request {
+}
+
+message get_gossip_status_response {
+   bool enabled = 1;
+}
+
+message p2p_request {
+   oneof request {
+      rpc.reserved_rpc reserved = 1;
+      get_gossip_status_request get_gossip_status = 2;
+   }
+}
+
+message p2p_response {
+   oneof response {
+      rpc.reserved_rpc reserved = 1;
+      rpc.error_response error = 2;
+      get_gossip_status_response get_gossip_status = 3;
+   }
+}

@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package koinos.transaction_store;
+option go_package = "github.com/koinos/koinos-proto-golang/koinos/transaction_store";
+
+import "koinos/options.proto";
+import "koinos/protocol/protocol.proto";
+
+message transaction_item {
+   protocol.transaction transaction = 1;
+   repeated bytes containing_blocks = 2 [(btype) = BLOCK_ID];
+}

@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+package koinos.chain;
+option go_package = "github.com/koinos/koinos-proto-golang/koinos/chain";
+
+import "koinos/options.proto";
+import "koinos/common.proto";
+
+message object_space {
+   bool system = 1;
+   bytes zone = 2;
+   uint32 id = 3;
+}
+
+message database_key {
+   object_space space = 1;
+   bytes key = 2;
+}
+
+message max_account_resources {
+   uint64 value = 1 [jstype = JS_STRING];
+}
+
+enum privilege {
+   kernel_mode = 0;
+   user_mode = 1;
+}
+
+message head_info {
+   block_topology head_topology = 1;
+   uint64 head_block_time = 2 [jstype = JS_STRING];
+   uint64 last_irreversible_block = 3 [jstype = JS_STRING];
+}
+
+message caller_data {
+   bytes caller = 1 [(btype) = ADDRESS];
+   privilege caller_privilege = 2;
+}
+
+message resource_limit_data {
+   uint64 disk_storage_limit = 1 [jstype = JS_STRING];
+   uint64 disk_storage_cost = 2 [jstype = JS_STRING];
+   uint64 network_bandwidth_limit = 3 [jstype = JS_STRING];
+   uint64 network_bandwidth_cost = 4 [jstype = JS_STRING];
+   uint64 compute_bandwidth_limit = 5 [jstype = JS_STRING];
+   uint64 compute_bandwidth_cost = 6 [jstype = JS_STRING];
+}
+
+message contract_metadata_object {
+   bytes hash = 1;
+   bool  system = 2;
+   bool  authorizes_call_contract = 3;
+   bool  authorizes_transaction_application = 4;
+   bool  authorizes_upload_contract = 5;
+}
+
+message compute_bandwidth_entry {
+   string name = 1;
+   uint64 compute = 2;
+}
+
+message compute_bandwidth_registry {
+   repeated compute_bandwidth_entry entries = 1;
+}
+
+message genesis_entry {
+   object_space space = 1;
+   bytes key = 2;
+   bytes value = 3;
+}
+
+message genesis_data {
+   repeated genesis_entry entries = 1;
+}
+
+enum dsa {
+   ecdsa_secp256k1 = 0;
+}

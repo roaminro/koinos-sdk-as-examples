@@ -5,11 +5,11 @@ module.exports = {
   /**
    * A set of globs passed to the glob package that qualify typescript files for testing.
    */
-  include: [__dirname + "/assembly/__tests__/**/*.spec.ts"],
+  include: ["assembly/__tests__/**/*.spec.ts"],
   /**
    * A set of globs passed to the glob package that quality files to be added to each test.
    */
-  add: [__dirname + "/assembly/__tests__/**/*.include.ts"],
+  add: ["assembly/__tests__/**/*.include.ts"],
   /**
    * All the compiler flags needed for this test suite. Make sure that a binary file is output.
    */
@@ -58,7 +58,7 @@ module.exports = {
   // },
   /** Enable code coverage. */
   coverage: [
-    `${path.basename(__dirname)}/assembly/*.ts`
+    'assembly/*.ts'
   ],
   /**
    * Specify if the binary wasm file should be written to the file system.
