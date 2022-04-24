@@ -32,16 +32,16 @@ yarn install
 To build a Smart Contract you can use the CLI `koinos-sdk-as-cli`. It will help you generate all the files required to build your smart contract.
 ```sh
 # see the cli help
-koinos-sdk-as-cli help
+yarn exec koinos-sdk-as-cli help
 ```
 
 ```sh
 # example for building the calculator contract
-# build the debug version
-koinos-sdk-as-cli build-all calculator debug calculator.proto 
+# build the debug version (execute command in the "calculator" folder)
+yarn exec koinos-sdk-as-cli build-all debug calculator.proto 
 
-# build the release version
-koinos-sdk-as-cli build-all calculator release calculator.proto 
+# build the release version (execute command in the "calculator" folder)
+yarn exec koinos-sdk-as-cli build-all release calculator.proto 
 ```
 
 This will result in the generation of:
@@ -54,27 +54,27 @@ This will result in the generation of:
   
 ## Generate AssemblyScript files for all the proto files of a contract
 ```sh
-# example for the calculator contract
-yarn exec koinos-sdk-as-cli generate-contract-proto calculator
+# example for the calculator contract (execute command in the "calculator" folder)
+yarn exec koinos-sdk-as-cli generate-contract-proto
 ```
 
 ## Generate ABI file
 ```sh
-# example for the calculator contract
-yarn exec koinos-sdk-as-cli generate-abi calculator calculator.proto
+# example for the calculator contract (execute command in the "calculator" folder)
+yarn exec koinos-sdk-as-cli generate-abi calculator.proto
 ```
 This will generate a calculator.abi file in the folder `calculator/abi/`
 
 ## Generate contract.boilerplate.ts and index.ts files
 ```sh
-# example for the calculator contract
-yarn exec koinos-sdk-as-cli generate-contract-as calculator calculator.proto
+# example for the calculator contract (execute command in the "calculator" folder)
+yarn exec koinos-sdk-as-cli generate-contract-as calculator.proto
 ```
 
 This will generate a `Calculator.boilerplate.ts`file and `index.ts` file in the folder `calculator/assembly/`
 
 ## Run tests
 ```sh
-# example for the calculator contract
-yarn exec koinos-sdk-as-cli run-tests calculator
+# example for the calculator contract (execute command in the "calculator" folder)
+yarn exec koinos-sdk-as-cli run-tests
 ```

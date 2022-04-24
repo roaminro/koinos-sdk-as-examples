@@ -6,8 +6,8 @@ Update the `TOKEN_CONTRACT_ID` in `Staking.ts` constant with the address of the 
 ## Build
 ```sh
 # build the debug version
-node cli.js build-all staking debug staking.proto 
+node cli.js build-all debug staking.proto 
 
 # build the release version
-node cli.js build-all staking release staking.proto 
+node cli.js build-all release staking.proto 
 ```
