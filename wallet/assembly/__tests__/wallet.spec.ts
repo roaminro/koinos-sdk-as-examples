@@ -1,5 +1,10 @@
 import { Base58, Base64, chain, MockVM, protocol, System } from "koinos-as-sdk";
-import { Wallet, Result, GRACE_PERIOD_RECOVERY } from "../Wallet";
+import {
+  Wallet,
+  Result,
+  GRACE_PERIOD_RECOVERY,
+  PERIOD_UPDATE_RECOVERY,
+} from "../Wallet";
 import { wallet as w } from "../proto/wallet";
 
 System.MAX_BUFFER_SIZE = 4096;
@@ -548,5 +553,187 @@ describe("wallet", () => {
       "authority recovery failed",
       "authority owner failed",
     ]);
+  });
+
+  it("should be able to update recovery authority", () => {
+    const tx = new protocol.transaction();
+    tx.id = TX_ID;
+    tx.signatures = [SIG_ACCOUNT1];
+    MockVM.setTransaction(tx);
+    MockVM.setCaller(new chain.caller_data());
+
+    // add owner
+    myWallet.add_authority(
+      new w.add_authority_arguments(
+        "owner",
+        new w.authority([new w.key_auth(ACCOUNT1, null, 1)], 1)
+      )
+    );
+
+    // add posting key
+    myWallet.add_authority(
+      new w.add_authority_arguments(
+        "posting",
+        new w.authority([new w.key_auth(ACCOUNT2, null, 1)], 1)
+      )
+    );
+
+    // add recovery
+    myWallet.add_authority(
+      new w.add_authority_arguments(
+        "recovery",
+        new w.authority([new w.key_auth(ACCOUNT3, null, 1)], 1)
+      )
+    );
+    MockVM.commitTransaction();
+
+    // time passes, the grace period is not finished
+    MockVM.setHeadInfo(
+      new chain.head_info(null, TIME_0 + GRACE_PERIOD_RECOVERY - 1)
+    );
+
+    // owner can update recovery
+    myWallet.update_authority(
+      new w.update_authority_arguments(
+        "recovery",
+        new w.authority([new w.key_auth(ACCOUNT4, null, 1)], 1),
+        false
+      )
+    );
+    expect(MockVM.getLogs()).toStrictEqual(["authority recovery failed"]);
+    MockVM.clearLogs();
+
+    MockVM.commitTransaction();
+
+    // time passes, the grace period is finished
+    let currentTime = System.getHeadInfo().head_block_time;
+    MockVM.setHeadInfo(
+      new chain.head_info(null, currentTime + GRACE_PERIOD_RECOVERY)
+    );
+    currentTime = System.getHeadInfo().head_block_time;
+
+    // owner can not update recovery
+    expect(() => {
+      myWallet.update_authority(
+        new w.update_authority_arguments(
+          "recovery",
+          new w.authority([new w.key_auth(ACCOUNT4, null, 1)], 1),
+          false
+        )
+      );
+    }).toThrow();
+    expect(MockVM.getLogs()).toStrictEqual([
+      "authority recovery failed",
+      "not in grace period",
+      "request to update recovery not found",
+    ]);
+    MockVM.clearLogs();
+
+    // the request to update recovery can only be done by the owner
+    tx.signatures = [SIG_ACCOUNT2]; // posting auth
+    MockVM.setTransaction(tx);
+    expect(() => {
+      myWallet.request_update_recovery(
+        new w.request_update_recovery_arguments(
+          new w.authority([new w.key_auth(ACCOUNT5, null, 1)], 1),
+          false
+        )
+      );
+    }).toThrow();
+    expect(MockVM.getLogs()).toStrictEqual(["authority owner failed"]);
+    MockVM.clearLogs();
+
+    tx.signatures = [SIG_ACCOUNT1]; // owner auth
+    MockVM.setTransaction(tx);
+    myWallet.request_update_recovery(
+      new w.request_update_recovery_arguments(
+        new w.authority([new w.key_auth(ACCOUNT5, null, 1)], 1),
+        false
+      )
+    );
+    expect(MockVM.getLogs()).toStrictEqual([]);
+
+    const requestStored = myWallet.get_request_update_recovery(
+      new w.get_request_update_recovery_arguments()
+    );
+    expect(requestStored).toStrictEqual(
+      new w.get_request_update_recovery_result(
+        new w.request_update_recovery_arguments(
+          new w.authority([new w.key_auth(ACCOUNT5, null, 1)], 1),
+          false,
+          currentTime + PERIOD_UPDATE_RECOVERY
+        )
+      )
+    );
+
+    // it is not possible to create several requests
+    expect(() => {
+      myWallet.request_update_recovery(
+        new w.request_update_recovery_arguments(
+          new w.authority([new w.key_auth(ACCOUNT6, null, 1)], 1),
+          false
+        )
+      );
+    }).toThrow();
+    expect(MockVM.getLogs()).toStrictEqual([
+      "request ongoing to update recovery",
+    ]);
+    MockVM.clearLogs();
+
+    // the period to update recovery passes
+    MockVM.setHeadInfo(
+      new chain.head_info(null, currentTime + PERIOD_UPDATE_RECOVERY)
+    );
+    currentTime = System.getHeadInfo().head_block_time;
+
+    // now the owner can update recovery
+    expect(() => {
+      myWallet.update_authority(
+        new w.update_authority_arguments(
+          "recovery",
+          new w.authority([new w.key_auth(ACCOUNT4, null, 1)], 1),
+          false
+        )
+      );
+    }).toThrow();
+    expect(MockVM.getLogs()).toStrictEqual([
+      "authority recovery failed",
+      "not in grace period",
+      "request to update recovery not found",
+    ]);
+    MockVM.clearLogs();
+
+    expect(() => {
+      myWallet.update_authority(
+        new w.update_authority_arguments(
+          "recovery",
+          new w.authority([new w.key_auth(ACCOUNT5, null, 1)], 1),
+          false
+        )
+      );
+    }).toThrow();
+    expect(MockVM.getLogs()).toStrictEqual([
+      "authority recovery failed",
+      "not in grace period",
+    ]);
+    MockVM.clearLogs();
+    /*
+    expect(myWallet.get_authorities(new w.get_authorities_arguments())).toStrictEqual(new w.get_authorities_result([
+      new w.add_authority_arguments(
+        "owner",
+        new w.authority([new w.key_auth(ACCOUNT1, null, 1)], 1)
+      ),
+      new w.add_authority_arguments(
+        "posting",
+        new w.authority([new w.key_auth(ACCOUNT2, null, 1)], 1)
+      ),
+      new w.add_authority_arguments(
+        "recovery",
+        new w.authority([new w.key_auth(ACCOUNT5, null, 1)], 1)
+      )
+    ]));
+    expect(myWallet.get_request_update_recovery(new w.get_request_update_recovery_arguments())).toStrictEqual(
+      new w.get_request_update_recovery_result()
+    );*/
   });
 });
