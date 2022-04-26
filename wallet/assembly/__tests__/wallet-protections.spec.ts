@@ -5,7 +5,7 @@ import {
   GRACE_PERIOD_RECOVERY,
   PERIOD_UPDATE_RECOVERY,
 } from "../Wallet";
-import { wallet as w } from "../proto/wallet";
+import { wallet as w, wallet } from "../proto/wallet";
 
 System.MAX_BUFFER_SIZE = 4096;
 const CONTRACT_ID = Base58.decode("1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe");
@@ -62,6 +62,8 @@ describe("wallet protections", () => {
     MockVM.setTransaction(tx);
     MockVM.setCaller(new chain.caller_data());
 
+    myWallet = new Wallet();
+
     // add owner
     myWallet.add_authority(
       new w.add_authority_arguments(
@@ -86,5 +88,42 @@ describe("wallet protections", () => {
       )
     );
     MockVM.commitTransaction();
+  });
+
+  it("should add a protection", () => {
+    myWallet.add_protection(
+      new w.add_protection_arguments(
+        new w.protected_contract(ACCOUNT6, 1),
+        new w.authority_contract("posting", null, 86400)
+      )
+    );
+    expect(
+      myWallet.get_protections(new w.get_protections_arguments())
+    ).toStrictEqual(
+      new w.get_protections_result([
+        new w.add_protection_arguments(
+          new w.protected_contract(ACCOUNT6, 1),
+          new w.authority_contract("posting", null, 86400, TIME_0)
+        ),
+      ])
+    );
+    expect(MockVM.getLogs()).toStrictEqual([]);
+  });
+
+  it("should add a protection only from owner", () => {
+    const tx = new protocol.transaction();
+    tx.id = TX_ID;
+    tx.signatures = [SIG_ACCOUNT2];
+    MockVM.setTransaction(tx);
+
+    expect(() => {
+      myWallet.add_protection(
+        new w.add_protection_arguments(
+          new w.protected_contract(ACCOUNT6, 1),
+          new w.authority_contract("posting", null, 86400)
+        )
+      );
+    }).toThrow();
+    expect(MockVM.getLogs()).toStrictEqual(["authority owner failed"]);
   });
 });
