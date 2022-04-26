@@ -50,7 +50,7 @@ const TIME_0: u64 = 86400;
 
 let myWallet: Wallet;
 
-describe("wallet", () => {
+describe("wallet authorities", () => {
   beforeEach(() => {
     MockVM.reset();
     MockVM.setContractId(CONTRACT_ID);
@@ -682,6 +682,23 @@ describe("wallet", () => {
     ]);
     MockVM.clearLogs();
 
+    // it is not possible to update before the update period
+    expect(() => {
+      myWallet.update_authority(
+        new w.update_authority_arguments(
+          "recovery",
+          new w.authority([new w.key_auth(ACCOUNT5, null, 1)], 1),
+          false
+        )
+      );
+    }).toThrow();
+    expect(MockVM.getLogs()).toStrictEqual([
+      "authority recovery failed",
+      "not in grace period",
+      "it is not yet the application time",
+    ]);
+    MockVM.clearLogs();
+
     // the period to update recovery passes
     MockVM.setHeadInfo(
       new chain.head_info(null, currentTime + PERIOD_UPDATE_RECOVERY)
@@ -738,6 +755,69 @@ describe("wallet", () => {
         ),
       ])
     );
+    expect(
+      myWallet.get_request_update_recovery(
+        new w.get_request_update_recovery_arguments()
+      )
+    ).toStrictEqual(new w.get_request_update_recovery_result());
+  });
+
+  it("should cancel a request to update recovery", () => {
+    const tx = new protocol.transaction();
+    tx.id = TX_ID;
+    tx.signatures = [SIG_ACCOUNT1];
+    MockVM.setTransaction(tx);
+    MockVM.setCaller(new chain.caller_data());
+
+    // add owner
+    myWallet.add_authority(
+      new w.add_authority_arguments(
+        "owner",
+        new w.authority([new w.key_auth(ACCOUNT1, null, 1)], 1)
+      )
+    );
+
+    // add recovery
+    myWallet.add_authority(
+      new w.add_authority_arguments(
+        "recovery",
+        new w.authority([new w.key_auth(ACCOUNT3, null, 1)], 1)
+      )
+    );
+    MockVM.commitTransaction();
+
+    // time passes, the grace period is finished
+    let currentTime = System.getHeadInfo().head_block_time;
+    MockVM.setHeadInfo(
+      new chain.head_info(null, currentTime + GRACE_PERIOD_RECOVERY)
+    );
+    currentTime = System.getHeadInfo().head_block_time;
+
+    myWallet.request_update_recovery(
+      new w.request_update_recovery_arguments(
+        new w.authority([new w.key_auth(ACCOUNT5, null, 1)], 1),
+        false
+      )
+    );
+
+    expect(
+      myWallet.get_request_update_recovery(
+        new w.get_request_update_recovery_arguments()
+      )
+    ).toStrictEqual(
+      new w.get_request_update_recovery_result(
+        new w.request_update_recovery_arguments(
+          new w.authority([new w.key_auth(ACCOUNT5, null, 1)], 1),
+          false,
+          currentTime + PERIOD_UPDATE_RECOVERY
+        )
+      )
+    );
+
+    myWallet.cancel_request_update_recovery(
+      new w.cancel_request_update_recovery_arguments()
+    );
+
     expect(
       myWallet.get_request_update_recovery(
         new w.get_request_update_recovery_arguments()
