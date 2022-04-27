@@ -1,3 +1,5 @@
+/*! wallet - MIT License (c) Julian Gonzalez (joticajulian@gmail.com) */
+
 import {
   authority,
   value,

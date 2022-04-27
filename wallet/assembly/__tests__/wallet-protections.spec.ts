@@ -4,6 +4,7 @@ import {
   Result,
   GRACE_PERIOD_RECOVERY,
   PERIOD_UPDATE_RECOVERY,
+  GRACE_PERIOD_PROTECTION,
 } from "../Wallet";
 import { wallet as w, wallet } from "../proto/wallet";
 
@@ -178,6 +179,28 @@ describe("wallet protections", () => {
     expect(MockVM.getLogs()).toStrictEqual([]);
   });
 
+  it("should accept an update call from owner without additional requests if it is done before the grace period", () => {
+    myWallet.add_protection(
+      new w.add_protection_arguments(
+        new w.protected_contract(ACCOUNT6, 1),
+        new w.authority_contract("posting", null, 86400)
+      )
+    );
+    MockVM.commitTransaction();
+
+    MockVM.setHeadInfo(
+      new chain.head_info(null, TIME_0 + GRACE_PERIOD_PROTECTION - 1, 1)
+    );
+
+    myWallet.update_protection(
+      new w.update_protection_arguments(
+        new w.protected_contract(ACCOUNT6, 1),
+        new w.authority_contract("owner", null, 86400)
+      )
+    );
+    expect(MockVM.getLogs()).toStrictEqual(["authority recovery failed"]);
+  });
+
   it("should accept requests only from owner", () => {
     myWallet.add_protection(
       new w.add_protection_arguments(
@@ -203,5 +226,104 @@ describe("wallet protections", () => {
     }).toThrow();
 
     expect(MockVM.getLogs()).toStrictEqual(["authority owner failed"]);
+  });
+
+  it("should create a request and remove it", () => {
+    myWallet.add_protection(
+      new w.add_protection_arguments(
+        new w.protected_contract(ACCOUNT6, 1),
+        new w.authority_contract("posting", null, 86400)
+      )
+    );
+    MockVM.commitTransaction();
+
+    myWallet.request_update_protection(
+      new w.request_update_protection_arguments(
+        1,
+        new w.protected_contract(ACCOUNT6, 1),
+        new w.authority_contract("owner", null, 86400)
+      )
+    );
+
+    expect(
+      myWallet.get_requests_update_protection(
+        new w.get_requests_update_protection_arguments()
+      )
+    ).toStrictEqual(
+      new w.get_requests_update_protection_result([
+        new w.request_update_protection_arguments(
+          1,
+          new w.protected_contract(ACCOUNT6, 1),
+          new w.authority_contract("owner", null, 86400),
+          false,
+          TIME_0 + 86400
+        ),
+      ])
+    );
+
+    myWallet.cancel_request_update_protection(
+      new w.cancel_request_update_protection_arguments(1)
+    );
+
+    expect(
+      myWallet.get_requests_update_protection(
+        new w.get_requests_update_protection_arguments()
+      )
+    ).toStrictEqual(new w.get_requests_update_protection_result([]));
+
+    expect(MockVM.getLogs()).toStrictEqual([]);
+  });
+
+  it("should reject bad calls to cancel_request_update_protection", () => {
+    expect(() => {
+      myWallet.cancel_request_update_protection(
+        new w.cancel_request_update_protection_arguments(10)
+      );
+    }).toThrow();
+
+    expect(MockVM.getLogs()).toStrictEqual(["request not found"]);
+  });
+
+  it("should update a protection using request", () => {
+    myWallet.add_protection(
+      new w.add_protection_arguments(
+        new w.protected_contract(ACCOUNT6, 1),
+        new w.authority_contract("posting", null, 120000)
+      )
+    );
+    MockVM.commitTransaction();
+
+    // time passes
+    let currentTime = TIME_0 + GRACE_PERIOD_PROTECTION;
+    MockVM.setHeadInfo(new chain.head_info(null, currentTime, 1));
+
+    myWallet.request_update_protection(
+      new w.request_update_protection_arguments(
+        1,
+        new w.protected_contract(ACCOUNT6, 1),
+        new w.authority_contract("owner", null, 125000)
+      )
+    );
+
+    // time passes
+    currentTime += 120000;
+    MockVM.setHeadInfo(new chain.head_info(null, currentTime, 1));
+
+    myWallet.update_protection(
+      new w.update_protection_arguments(
+        new w.protected_contract(ACCOUNT6, 1),
+        new w.authority_contract("owner", null, 125000)
+      )
+    );
+    expect(MockVM.getLogs()).toStrictEqual([
+      "authority recovery failed",
+      "not in grace period",
+    ]);
+
+    expect(
+      myWallet.get_requests_update_protection(
+        new w.get_requests_update_protection_arguments()
+      )
+    ).toStrictEqual(new w.get_requests_update_protection_result([]));
   });
 });
