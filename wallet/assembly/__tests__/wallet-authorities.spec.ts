@@ -760,6 +760,49 @@ describe("wallet authorities", () => {
         new w.get_request_update_recovery_arguments()
       )
     ).toStrictEqual(new w.get_request_update_recovery_result());
+
+    MockVM.commitTransaction();
+
+    // the owner removes the recovery
+    myWallet.request_update_recovery(
+      new w.request_update_recovery_arguments(null, true)
+    );
+    expect(MockVM.getLogs()).toStrictEqual([]);
+
+    MockVM.setHeadInfo(
+      new chain.head_info(null, currentTime + PERIOD_UPDATE_RECOVERY)
+    );
+    currentTime = System.getHeadInfo().head_block_time;
+
+    myWallet.update_authority(
+      new w.update_authority_arguments("recovery", null, true)
+    );
+
+    expect(MockVM.getLogs()).toStrictEqual([
+      "authority recovery failed",
+      "not in grace period",
+    ]);
+    MockVM.clearLogs();
+
+    expect(
+      myWallet.get_authorities(new w.get_authorities_arguments())
+    ).toStrictEqual(
+      new w.get_authorities_result([
+        new w.add_authority_arguments(
+          "owner",
+          new w.authority([new w.key_auth(ACCOUNT1, null, 1)], 1, TIME_0)
+        ),
+        new w.add_authority_arguments(
+          "posting",
+          new w.authority([new w.key_auth(ACCOUNT2, null, 1)], 1, TIME_0)
+        ),
+      ])
+    );
+    expect(
+      myWallet.get_request_update_recovery(
+        new w.get_request_update_recovery_arguments()
+      )
+    ).toStrictEqual(new w.get_request_update_recovery_result());
   });
 
   it("should cancel a request to update recovery", () => {

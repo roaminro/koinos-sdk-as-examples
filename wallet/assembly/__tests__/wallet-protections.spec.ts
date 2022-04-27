@@ -126,4 +126,82 @@ describe("wallet protections", () => {
     }).toThrow();
     expect(MockVM.getLogs()).toStrictEqual(["authority owner failed"]);
   });
+
+  it("should require a request to update a protection", () => {
+    myWallet.add_protection(
+      new w.add_protection_arguments(
+        new w.protected_contract(ACCOUNT6, 1),
+        new w.authority_contract("posting", null, 86400)
+      )
+    );
+    MockVM.commitTransaction();
+
+    MockVM.setHeadInfo(new chain.head_info(null, TIME_0 + 86400, 1));
+
+    expect(() => {
+      myWallet.update_protection(
+        new w.update_protection_arguments(
+          new w.protected_contract(ACCOUNT6, 1),
+          new w.authority_contract("owner", null, 86400)
+        )
+      );
+    }).toThrow();
+    expect(MockVM.getLogs()).toStrictEqual([
+      "authority recovery failed",
+      "not in grace period",
+      "request to update protection not found",
+    ]);
+  });
+
+  it("should accept an update call from recovery without additional requests", () => {
+    myWallet.add_protection(
+      new w.add_protection_arguments(
+        new w.protected_contract(ACCOUNT6, 1),
+        new w.authority_contract("posting", null, 86400)
+      )
+    );
+    MockVM.commitTransaction();
+
+    MockVM.setHeadInfo(new chain.head_info(null, TIME_0 + 86400, 1));
+
+    // recovery signs
+    MockVM.setTransaction(
+      new protocol.transaction(TX_ID, null, [], [SIG_ACCOUNT3])
+    );
+
+    myWallet.update_protection(
+      new w.update_protection_arguments(
+        new w.protected_contract(ACCOUNT6, 1),
+        new w.authority_contract("owner", null, 86400)
+      )
+    );
+    expect(MockVM.getLogs()).toStrictEqual([]);
+  });
+
+  it("should accept requests only from owner", () => {
+    myWallet.add_protection(
+      new w.add_protection_arguments(
+        new w.protected_contract(ACCOUNT6, 1),
+        new w.authority_contract("posting", null, 86400)
+      )
+    );
+    MockVM.commitTransaction();
+
+    // posting signs
+    MockVM.setTransaction(
+      new protocol.transaction(TX_ID, null, [], [SIG_ACCOUNT2])
+    );
+
+    expect(() => {
+      myWallet.request_update_protection(
+        new w.request_update_protection_arguments(
+          1,
+          new w.protected_contract(ACCOUNT6, 1),
+          new w.authority_contract("owner", null, 86400)
+        )
+      );
+    }).toThrow();
+
+    expect(MockVM.getLogs()).toStrictEqual(["authority owner failed"]);
+  });
 });
