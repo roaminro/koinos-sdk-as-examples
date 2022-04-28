@@ -1,5 +1,5 @@
 import { Reader, Writer } from "as-proto";
-import { chain, System, value as val, Protobuf } from "koinos-as-sdk";
+import { chain, System, value as val, Protobuf } from "koinos-sdk-as";
 import { wallet } from "./proto/wallet";
 import { equalBytes } from "./utils";
 

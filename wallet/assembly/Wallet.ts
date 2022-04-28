@@ -8,7 +8,7 @@ import {
   System,
   Crypto,
   Base58,
-} from "koinos-as-sdk";
+} from "koinos-sdk-as";
 import { wallet } from "./proto/wallet";
 import { Collection } from "./Collection";
 import { equalBytes } from "./utils";

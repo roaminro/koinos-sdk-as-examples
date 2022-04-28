@@ -7,7 +7,7 @@ import {
   Protobuf,
   protocol,
   System,
-} from "koinos-as-sdk";
+} from "koinos-sdk-as";
 import {
   Wallet,
   Result,

@@ -1,4 +1,4 @@
-import { Base58, Base64, chain, MockVM, protocol, System } from "koinos-as-sdk";
+import { Base58, Base64, chain, MockVM, protocol, System } from "koinos-sdk-as";
 import {
   Wallet,
   Result,
