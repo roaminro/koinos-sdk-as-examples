@@ -4,6 +4,7 @@ import {
   Base64,
   chain,
   MockVM,
+  Protobuf,
   protocol,
   System,
 } from "koinos-as-sdk";
@@ -137,6 +138,7 @@ describe("wallet authorize", () => {
   });
 
   it("should authorize a call to specific entry point", () => {
+    // sig authority transfer
     MockVM.setTransaction(
       new protocol.transaction(TX_ID, null, [], [SIG_ACCOUNT2])
     );
@@ -148,5 +150,104 @@ describe("wallet authorize", () => {
         )
       )
     ).toStrictEqual(new authority.authorize_result(true));
+  });
+
+  it("should authorize a call to the remaining entry points", () => {
+    // sig authority others
+    MockVM.setTransaction(
+      new protocol.transaction(TX_ID, null, [], [SIG_ACCOUNT3])
+    );
+    expect(
+      myWallet.authorize(
+        new authority.authorize_arguments(
+          authority.authorization_type.contract_call,
+          new authority.call_target(ACCOUNT5, 10)
+        )
+      )
+    ).toStrictEqual(new authority.authorize_result(true));
+  });
+
+  it("should authorize a call by consulting an external contract", () => {
+    // signed by anyone
+    MockVM.setTransaction(
+      new protocol.transaction(TX_ID, null, [], [SIG_ACCOUNT9])
+    );
+
+    const resTrue = new authority.authorize_result(true);
+    MockVM.setCallContractResults([
+      Protobuf.encode(resTrue, authority.authorize_result.encode),
+    ]);
+    expect(
+      myWallet.authorize(
+        new authority.authorize_arguments(
+          authority.authorization_type.contract_call,
+          new authority.call_target(ACCOUNT5, 2)
+        )
+      )
+    ).toStrictEqual(new authority.authorize_result(true));
+  });
+
+  it("should authorize a call using owner when there are no protections", () => {
+    expect(
+      myWallet.authorize(
+        new authority.authorize_arguments(
+          authority.authorization_type.contract_call,
+          new authority.call_target(ACCOUNT7, 20)
+        )
+      )
+    ).toStrictEqual(new authority.authorize_result(true));
+  });
+
+  it("should reject authorizations", () => {
+    expect(() => {
+      myWallet.authorize(
+        new authority.authorize_arguments(
+          authority.authorization_type.contract_call,
+          new authority.call_target(ACCOUNT5, 1)
+        )
+      );
+    }).toThrow();
+    expect(MockVM.getLogs()).toStrictEqual(["authority transfer failed"]);
+    MockVM.clearLogs();
+
+    expect(() => {
+      myWallet.authorize(
+        new authority.authorize_arguments(
+          authority.authorization_type.contract_call,
+          new authority.call_target(ACCOUNT5, 20)
+        )
+      );
+    }).toThrow();
+    expect(MockVM.getLogs()).toStrictEqual(["authority others failed"]);
+    MockVM.clearLogs();
+
+    const resFalse = new authority.authorize_result(false);
+    MockVM.setCallContractResults([
+      Protobuf.encode(resFalse, authority.authorize_result.encode),
+    ]);
+    expect(
+      myWallet.authorize(
+        new authority.authorize_arguments(
+          authority.authorization_type.contract_call,
+          new authority.call_target(ACCOUNT5, 2)
+        )
+      )
+    ).toStrictEqual(new authority.authorize_result(false));
+    expect(MockVM.getLogs()).toStrictEqual([]);
+    MockVM.clearLogs();
+
+    // signed by anyone
+    MockVM.setTransaction(
+      new protocol.transaction(TX_ID, null, [], [SIG_ACCOUNT9])
+    );
+    expect(() => {
+      myWallet.authorize(
+        new authority.authorize_arguments(
+          authority.authorization_type.contract_call,
+          new authority.call_target(ACCOUNT7, 30)
+        )
+      );
+    }).toThrow();
+    expect(MockVM.getLogs()).toStrictEqual(["authority owner failed"]);
   });
 });

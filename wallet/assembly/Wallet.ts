@@ -175,7 +175,7 @@ export class Wallet {
   ): wallet.authority_contract | null {
     const protectedContract = new wallet.protected_contract(
       call.contract_id,
-      call.entry_point,
+      remainingEntryPoints ? 0 : call.entry_point,
       remainingEntryPoints
     );
     const key = Protobuf.encode(
