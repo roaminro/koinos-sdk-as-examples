@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package koinos.chain;
+option go_package = "github.com/koinos/koinos-proto-golang/koinos/chain";
+
+import "koinos/options.proto";
+
+enum authorization_type {
+   contract_call = 0;
+   transaction_application = 1;
+   contract_upload = 2;
+}
+
+message call_target {
+   bytes contract_id = 1 [(btype) = ADDRESS];
+   uint32 entry_point = 2;
+}
+
+message authorize_arguments {
+   authorization_type type = 1;
+   optional call_target call = 2;
+}
+
+message authorize_result {
+   bool value = 1;
+}

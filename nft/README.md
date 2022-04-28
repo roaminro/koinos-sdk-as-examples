@@ -8,8 +8,8 @@ Update the following contract properties with your nft details:
 ## Build
 ```sh
 # build the debug version
-node cli.js build-all nft debug nft.proto 
+node cli.js build-all debug nft.proto 
 
 # build the release version
-node cli.js build-all nft release nft.proto 
+node cli.js build-all release nft.proto 
 ```

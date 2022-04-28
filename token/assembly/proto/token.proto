@@ -69,6 +69,17 @@ message mint_result {
    bool value = 1;
 }
 
+// @description Burns the token
+// @read-only false
+message burn_arguments {
+   bytes from = 1 [(koinos.btype) = ADDRESS];
+   uint64 value = 2 [jstype = JS_STRING];
+}
+
+message burn_result {
+   bool value = 1;
+}
+
 message balance_object {
    uint64 value = 1 [jstype = JS_STRING];
 }
@@ -81,6 +92,11 @@ message mana_balance_object {
 
 message mint_event {
    bytes to = 1 [(koinos.btype) = ADDRESS];
+   uint64 value = 2 [jstype = JS_STRING];
+}
+
+message burn_event {
+   bytes from = 1 [(koinos.btype) = ADDRESS];
    uint64 value = 2 [jstype = JS_STRING];
 }
 

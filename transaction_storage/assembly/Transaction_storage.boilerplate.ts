@@ -1,4 +1,4 @@
-import { authority } from "koinos-as-sdk";
+import { System, Protobuf, authority } from "koinos-sdk-as";
 import { transaction_storage } from "./proto/transaction_storage";
 
 export class Transaction_storage {

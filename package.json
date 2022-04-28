@@ -1,40 +1,28 @@
 {
-  "name": "koinos-as-sdk-examples",
-  "version": "0.3.13",
+  "name": "koinos-sdk-as-examples",
+  "version": "0.4.2",
   "main": "assembly/index.ts",
   "license": "MIT",
   "author": "Roamin Roe <roamin@tuta.io>",
-  "repository": "https://github.com/roaminroe/koinos-as-sdk-examples",
-  "dependencies": {
-    "commander": "^9.0.0"
-  },
+  "repository": "https://github.com/roaminroe/koinos-sdk-as-examples",
+  "dependencies": {},
   "devDependencies": {
-    "@as-covers/core": "^0.2.1",
-    "@as-pect/cli": "^6.2.4",
-    "@roaminroe/protoc": "^2.4.0",
     "@typescript-eslint/eslint-plugin": "^5.10.0",
     "@typescript-eslint/parser": "^5.10.0",
-    "as-proto-gen": "^0.2.2",
-    "assemblyscript": "^0.19.22",
     "eslint": "^8.7.0",
-    "koinos-abi-proto-gen": "^0.1.6",
-    "koinos-as-gen": "^0.3.5",
-    "koinos-as-sdk": "^0.3.10",
-    "koinos-mock-vm": "^1.0.3",
-    "ts-node": "^10.4.0",
-    "typescript": "^4.5.5",
-    "yaml": "^2.0.0-11"
+    "koinos-sdk-as-cli": "^0.1.9",
+    "typescript": "^4.6.3"
   },
   "scripts": {
     "lint": "eslint --max-warnings 0 --ext ts \"*/assembly/**/*.ts\"",
-    "buildCalculator": "node cli.js build-all calculator release calculator.proto && node cli.js run-tests calculator",
-    "buildChat": "node cli.js build-all chat release chat.proto",
-    "buildControlledContractUpdate": "node cli.js build-all --generate_authorize controlled_contract_update release update.proto",
-    "buildImmutable": "node cli.js build-all immutable release immutable.proto",
-    "buildNft": "node cli.js build-all nft release nft.proto",
-    "buildStaking": "node cli.js build-all staking release staking.proto",
-    "buildToken": "node cli.js build-all token release token.proto && node cli.js run-tests token",
-    "buildTransactionStorage": "node cli.js build transaction_storage release && node cli.js run-tests transaction_storage",
+    "buildCalculator": "cd calculator && yarn install && koinos-sdk-as-cli build-all release calculator.proto && koinos-sdk-as-cli run-tests",
+    "buildChat": "cd chat && yarn install && koinos-sdk-as-cli build-all release chat.proto",
+    "buildControlledContractUpdate": "cd controlled_contract_update && yarn install && koinos-sdk-as-cli build-all --generate_authorize release update.proto",
+    "buildImmutable": "cd immutable && yarn install && koinos-sdk-as-cli build-all release immutable.proto",
+    "buildNft": "cd nft && yarn install && koinos-sdk-as-cli build-all release nft.proto",
+    "buildStaking": "cd staking && yarn install && koinos-sdk-as-cli build-all release staking.proto",
+    "buildToken": "cd token && yarn install && koinos-sdk-as-cli build-all release token.proto && koinos-sdk-as-cli run-tests",
+    "buildTransactionStorage": "cd transaction_storage && yarn install && koinos-sdk-as-cli build release && koinos-sdk-as-cli run-tests",
     "buildAll": "yarn lint && yarn buildCalculator && yarn buildChat && yarn buildControlledContractUpdate && yarn buildImmutable && yarn buildNft && yarn buildStaking && yarn buildToken && yarn buildTransactionStorage"
   }
 }

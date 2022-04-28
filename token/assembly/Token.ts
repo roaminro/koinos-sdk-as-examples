@@ -1,4 +1,4 @@
-import { Arrays, authority, Protobuf, System, SafeMath } from "koinos-as-sdk";
+import { Arrays, Protobuf, System, SafeMath, authority } from "koinos-sdk-as";
 import { token } from "./proto/token";
 import { State } from "./State";
 
@@ -122,6 +122,42 @@ export class Token {
 
     res.value = true;
 
+    return res;
+  }
+
+  burn(args: token.burn_arguments): token.burn_result {
+    const from = args.from!;
+    const value = args.value;
+
+    const res = new token.burn_result(false);
+
+    System.requireAuthority(authority.authorization_type.contract_call, from);
+
+    const fromBalance = this._state.GetBalance(from);
+
+    if (fromBalance.value < value) {
+      System.log("'from' has insufficient balance");
+
+      return res;
+    }
+
+    const supply = this._state.GetSupply();
+
+    const newSupply = SafeMath.sub(supply.value, value);
+
+    supply.value = newSupply;
+    fromBalance.value -= value;
+
+    this._state.SaveSupply(supply);
+    this._state.SaveBalance(from, fromBalance);
+
+    const burnEvent = new token.burn_event(from, value);
+    const impacted = [from];
+
+    System.event('token.burn', Protobuf.encode(burnEvent, token.burn_event.encode), impacted);
+
+    res.value = true;
+    
     return res;
   }
 }

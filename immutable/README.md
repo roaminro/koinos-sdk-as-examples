@@ -3,10 +3,10 @@
 ## Build
 ```sh
 # build the debug version
-node cli.js build-all --generate_authorize immutable debug immutable.proto 
+node cli.js build-all --generate_authorize debug immutable.proto 
 
 # build the release version
-node cli.js build-all --generate_authorize immutable release immutable.proto 
+node cli.js build-all --generate_authorize release immutable.proto 
 ```
 
 ## Upload

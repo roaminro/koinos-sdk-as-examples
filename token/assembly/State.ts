@@ -1,4 +1,4 @@
-import { chain, System } from "koinos-as-sdk";
+import { chain, System } from "koinos-sdk-as";
 import { token } from "./proto/token";
 
 const SUPPLY_SPACE_ID = 0;

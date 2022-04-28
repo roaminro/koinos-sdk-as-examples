@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package koinos.block_store;
+option go_package = "github.com/koinos/koinos-proto-golang/koinos/rpc/block_store";
+
+import "koinos/options.proto";
+import "koinos/protocol/protocol.proto";
+
+message block_item {
+   bytes block_id = 1 [(btype) = BLOCK_ID];
+   uint64 block_height = 2 [jstype = JS_STRING];
+   protocol.block block = 3; //optional
+   protocol.block_receipt receipt = 4; //optional
+}
+
+message block_record {
+   bytes block_id = 1 [(btype) = BLOCK_ID];
+   uint64 block_height = 2 [jstype = JS_STRING];
+   protocol.block block = 3;
+   protocol.block_receipt receipt = 4; //optional
+   repeated bytes previous_block_ids = 5 [(btype) = BLOCK_ID];
+}

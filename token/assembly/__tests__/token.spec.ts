@@ -1,4 +1,4 @@
-import { authority, Base58, MockVM, Arrays, Protobuf } from "koinos-as-sdk";
+import { Base58, MockVM, Arrays, Protobuf, authority } from "koinos-sdk-as";
 import { Token } from "../Token";
 import { token } from "../proto/token";
 
@@ -37,6 +37,89 @@ describe("token", () => {
     const res = tkn.decimals(args);
 
     expect(res.value).toBe(8);
+  });
+
+  it("should/not burn tokens", () => {
+    const tkn = new Token();
+
+    // set contract_call authority for CONTRACT_ID to true so that we can mint tokens
+    let auth = new MockVM.MockAuthority(authority.authorization_type.contract_call, CONTRACT_ID, true);
+    MockVM.setAuthorities([auth]);
+
+    // check total supply
+    const totalSupplyArgs = new token.total_supply_arguments();
+    let totalSupplyRes = tkn.total_supply(totalSupplyArgs);
+    expect(totalSupplyRes.value).toBe(0);
+
+    // mint tokens
+    const mintArgs = new token.mint_arguments(MOCK_ACCT1, 123);
+    const mintRes = tkn.mint(mintArgs);
+
+    expect(mintRes.value).toBe(true);
+
+    auth = new MockVM.MockAuthority(authority.authorization_type.contract_call, MOCK_ACCT1, true);
+    MockVM.setAuthorities([auth]);
+
+    // burn tokens
+    let burnArgs = new token.burn_arguments(MOCK_ACCT1, 10);
+    let burnRes = tkn.burn(burnArgs);
+
+    expect(burnRes.value).toBe(true);
+
+    // check events
+    const events = MockVM.getEvents();
+    expect(events.length).toBe(2);
+    expect(events[0].name).toBe('token.mint');
+    expect(events[0].impacted.length).toBe(1);
+    expect(Arrays.equal(events[0].impacted[0], MOCK_ACCT1)).toBe(true);
+    expect(events[1].name).toBe('token.burn');
+    expect(events[1].impacted.length).toBe(1);
+    expect(Arrays.equal(events[1].impacted[0], MOCK_ACCT1)).toBe(true);
+
+    const burnEvent = Protobuf.decode<token.burn_event>(events[1].data!, token.burn_event.decode);
+    expect(Arrays.equal(burnEvent.from, MOCK_ACCT1)).toBe(true);
+    expect(burnEvent.value).toBe(10);
+
+    // check balance
+    let balanceArgs = new token.balance_of_arguments(MOCK_ACCT1);
+    let balanceRes = tkn.balance_of(balanceArgs);
+    expect(balanceRes.value).toBe(113);
+
+    // check total supply
+    totalSupplyRes = tkn.total_supply(totalSupplyArgs);
+    expect(totalSupplyRes.value).toBe(113);
+
+    // does not burn tokens
+    burnArgs = new token.burn_arguments(MOCK_ACCT1, 200);
+    burnRes = tkn.burn(burnArgs);
+
+    expect(burnRes.value).toBe(false);
+
+    // check logs
+    const logs = MockVM.getLogs();
+    expect(logs.length).toBe(1);
+    expect(logs[0]).toBe("'from' has insufficient balance");
+
+    MockVM.setAuthorities([]);
+
+    // save the MockVM state because the burn is going to revert the transaction
+    MockVM.commitTransaction();
+
+    expect(() => {
+      // try to burn tokens
+      const tkn = new Token();
+      const burnArgs = new token.burn_arguments(MOCK_ACCT1, 123);
+      tkn.burn(burnArgs);
+    }).toThrow();
+
+    // check balance
+    balanceArgs = new token.balance_of_arguments(MOCK_ACCT1);
+    balanceRes = tkn.balance_of(balanceArgs);
+    expect(balanceRes.value).toBe(113);
+
+    // check total supply
+    totalSupplyRes = tkn.total_supply(totalSupplyArgs);
+    expect(totalSupplyRes.value).toBe(113);
   });
 
   it("should mint tokens", () => {
@@ -78,7 +161,6 @@ describe("token", () => {
     expect(totalSupplyRes.value).toBe(123);
   });
 
-
   it("should not mint tokens if not contract account", () => {
     const tkn = new Token();
 
@@ -97,7 +179,7 @@ describe("token", () => {
     expect(balanceRes.value).toBe(0);
 
     // save the MockVM state because the mint is going to revert the transaction
-    MockVM.beginTransaction();
+    MockVM.commitTransaction();
 
     expect(() => {
       // try to mint tokens
@@ -206,7 +288,7 @@ describe("token", () => {
     expect(mintRes.value).toBe(true);
 
     // save the MockVM state because the transfer is going to revert the transaction
-    MockVM.beginTransaction();
+    MockVM.commitTransaction();
 
     expect(() => {
       // try to transfer tokens without the proper authorizations for MOCK_ACCT1

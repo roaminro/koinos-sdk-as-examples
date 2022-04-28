@@ -1,14 +1,14 @@
 import { Writer, Reader } from "as-proto";
-import { protocol } from "koinos-as-sdk";
+import { protocol } from "koinos-sdk-as";
 
 export namespace transaction_storage {
   export class store_transaction_arguments {
     static encode(message: store_transaction_arguments, writer: Writer): void {
-      const transaction = message.transaction;
-      if (transaction !== null) {
+      const unique_name_transaction = message.transaction;
+      if (unique_name_transaction !== null) {
         writer.uint32(10);
         writer.fork();
-        protocol.transaction.encode(transaction, writer);
+        protocol.transaction.encode(unique_name_transaction, writer);
         writer.ldelim();
       }
     }
@@ -68,10 +68,10 @@ export namespace transaction_storage {
 
   export class get_transaction_arguments {
     static encode(message: get_transaction_arguments, writer: Writer): void {
-      const id = message.id;
-      if (id !== null) {
+      const unique_name_id = message.id;
+      if (unique_name_id !== null) {
         writer.uint32(10);
-        writer.bytes(id);
+        writer.bytes(unique_name_id);
       }
     }
 
@@ -104,11 +104,11 @@ export namespace transaction_storage {
 
   export class get_transaction_result {
     static encode(message: get_transaction_result, writer: Writer): void {
-      const value = message.value;
-      if (value !== null) {
+      const unique_name_value = message.value;
+      if (unique_name_value !== null) {
         writer.uint32(10);
         writer.fork();
-        protocol.transaction.encode(value, writer);
+        protocol.transaction.encode(unique_name_value, writer);
         writer.ldelim();
       }
     }

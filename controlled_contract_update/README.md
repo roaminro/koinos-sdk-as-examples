@@ -3,10 +3,10 @@
 ## Build
 ```sh
 # build the debug version
-node cli.js build-all --generate_authorize controlled_contract_update debug update.proto 
+node cli.js build-all --generate_authorize debug update.proto 
 
 # build the release version
-node cli.js build-all --generate_authorize controlled_contract_update release update.proto 
+node cli.js build-all --generate_authorize release update.proto 
 ```
 
 ## Upload

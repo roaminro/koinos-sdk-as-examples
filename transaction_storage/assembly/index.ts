@@ -1,4 +1,4 @@
-import { System, Protobuf, authority } from "koinos-as-sdk";
+import { System, Protobuf, authority } from "koinos-sdk-as";
 import { Transaction_storage as ContractClass } from "./Transaction_storage";
 import { transaction_storage as ProtoNamespace } from "./proto/transaction_storage";
 

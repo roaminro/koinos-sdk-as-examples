@@ -1,4 +1,4 @@
-import { chain, System } from "koinos-as-sdk";
+import { System, chain } from "koinos-sdk-as";
 import { staking } from "./proto/staking";
 
 const BALANCE_SPACE_ID = 1;
