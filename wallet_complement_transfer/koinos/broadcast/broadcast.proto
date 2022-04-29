@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package koinos.broadcast;
+option go_package = "github.com/koinos/koinos-proto-golang/koinos/broadcast";
+
+import "koinos/common.proto";
+import "koinos/options.proto";
+import "koinos/protocol/protocol.proto";
+
+message transaction_accepted {
+   protocol.transaction transaction = 1;
+   protocol.transaction_receipt receipt = 2;
+   uint64 height = 3 [jstype = JS_STRING];
+}
+
+message transaction_failed {
+   bytes id = 1 [(btype) = TRANSACTION_ID];
+}
+
+message mempool_accepted {
+   protocol.transaction transaction = 1;
+   protocol.transaction_receipt receipt = 2;
+   uint64 height = 3 [jstype = JS_STRING];
+   uint64 pending_rc_used = 4 [jstype = JS_STRING];
+}
+
+message block_accepted {
+   protocol.block block = 1;
+   protocol.block_receipt receipt = 2;
+   bool live = 3;
+}
+
+message block_irreversible {
+   block_topology topology = 1;
+}
+
+message fork_heads {
+   block_topology last_irreversible_block = 1;
+   repeated block_topology heads = 2;
+}
+
+message gossip_status {
+   bool enabled = 1;
+}
+
+message event_parcel {
+   bytes block_id = 1 [(btype) = BLOCK_ID];
+   uint64 height = 2;
+   optional bytes transaction_id = 3 [(btype) = TRANSACTION_ID];
+   protocol.event_data event = 4;
+}

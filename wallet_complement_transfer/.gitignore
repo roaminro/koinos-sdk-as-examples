@@ -1,0 +1,8 @@
+build
+*.wasm
+abi/*.abi
+assembly/proto/*.ts
+assembly/index.ts
+assembly/*.boilerplate.ts
+assembly/__tests__/*.map
+assembly/__tests__/*.wat
