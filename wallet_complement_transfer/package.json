@@ -24,8 +24,8 @@
   },
   "scripts": {
     "lint": "eslint --max-warnings 0 --ext ts \"*/assembly/**/*.ts\"",
-    "build:debug": "koinos-sdk-as-cli build-all debug wallet-complement-transfer.proto",
-    "build:release": "koinos-sdk-as-cli build-all release wallet-complement-transfer.proto",
+    "build:debug": "koinos-sdk-as-cli build-all debug wallet_complement_transfer.proto",
+    "build:release": "koinos-sdk-as-cli build-all release wallet_complement_transfer.proto",
     "test": "koinos-sdk-as-cli run-tests"
   }
 }

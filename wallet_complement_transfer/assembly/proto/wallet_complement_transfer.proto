@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package wallet_complement_transfer;
+
+import "koinos/options.proto"; 
+
+message transfer {
+  bytes from = 1 [(koinos.btype) = ADDRESS];
+  bytes to = 2 [(koinos.btype) = ADDRESS];
+  uint64 value = 3 [jstype = JS_STRING];
+}
+
+message budget {
+  uint64 value = 1 [jstype = JS_STRING];
+  uint64 time = 2 [jstype = JS_STRING];
+}
+
+// @description Returns the actual budget
+// @read-only true
+message get_budget_arguments {}
+
+message get_budget_result {
+  uint64 value = 1 [jstype = JS_STRING];
+}
+
+enum authorization_type {
+  contract_call = 0;
+  transaction_application = 1;
+  contract_upload = 2;
+}
+ 
+message call_target {
+  bytes contract_id = 1 [(koinos.btype) = ADDRESS];
+  uint32 entry_point = 2;
+}
+
+// @description Authorizes a transfer
+// @read-only false
+message authorize_transfer_arguments {
+  authorization_type type = 1;
+  call_target call = 2;
+}
+ 
+message authorize_transfer_result {
+  bool value = 1;
+}
