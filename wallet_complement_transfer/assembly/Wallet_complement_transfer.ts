@@ -6,7 +6,6 @@ import {
   Protobuf,
   chain,
   System,
-  Crypto,
   Base58,
   protocol,
 } from "koinos-sdk-as";
@@ -14,7 +13,8 @@ import { wallet_complement_transfer as w } from "./proto/wallet_complement_trans
 import { equalBytes } from "./utils";
 
 export const TRANSFER_DAILY_LIMIT: u64 = 2000 * 100000000; // 2000 tKoins
-const WALLET_CONTRACT = Base58.decode("1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe");
+const WALLET_CONTRACT = Base58.decode("1DN7vxfg6srzCf69KVawp7D2mURgifLHsy");
+const WALLET_ENTRY_POINT_REQUIRE_AUTHORITY = 0xad91ec37;
 const KOIN_CONTRACT = Base58.decode("19JntSm8pSNETT9aHTwAUHC5RMoaSmgZPJ");
 const ENTRY_POINT_TRANSFER = 0x27f576ca;
 const VARS_SPACE_ID = 0;
@@ -39,17 +39,22 @@ export class Wallet_complement_transfer {
   }
 
   _getBudget(): w.budget {
-    let budget = System.getObject<Uint8Array, w.budget>(this.varsSpace, BUDGET_KEY, w.budget.decode);
+    let budget = System.getObject<Uint8Array, w.budget>(
+      this.varsSpace,
+      BUDGET_KEY,
+      w.budget.decode
+    );
     const now = System.getHeadInfo().head_block_time;
 
-    if (!budget) budget = new w.budget(0, now);
+    if (!budget) budget = new w.budget(0, now - 86400000);
 
     // recharge budget
     const dtime = now - budget.time;
     // todo: use safe mat
-    let recharge = TRANSFER_DAILY_LIMIT * dtime / 86400;
+    let recharge = (TRANSFER_DAILY_LIMIT * dtime) / 86400000;
     budget.value += recharge;
-    if (budget.value > TRANSFER_DAILY_LIMIT) budget.value = TRANSFER_DAILY_LIMIT;
+    if (budget.value > TRANSFER_DAILY_LIMIT)
+      budget.value = TRANSFER_DAILY_LIMIT;
     budget.time = now;
     return budget;
   }
@@ -63,14 +68,16 @@ export class Wallet_complement_transfer {
     return new w.get_budget_result(budget.value);
   }
 
-  authorize_transfer(args: w.authorize_transfer_arguments): w.authorize_transfer_result {
+  authorize_transfer(
+    args: w.authorize_transfer_arguments
+  ): w.authorize_transfer_result {
     const caller = System.getCaller().caller;
 
     if (!equalBytes(caller!, WALLET_CONTRACT)) {
-      System.log("invalid caller");
+      System.log(`invalid caller ${Base58.encode(caller!)}`);
       return new w.authorize_transfer_result(false);
     }
-    
+
     const opsBytes =
       System.getTransactionField("operations")!.message_value!.value!;
     const operations = Protobuf.decode<value.list_type>(
@@ -84,7 +91,7 @@ export class Wallet_complement_transfer {
     }
 
     const operation = Protobuf.decode<protocol.operation>(
-      operations.values[0].bytes_value!,
+      operations.values[0].message_value!.value!,
       protocol.operation.decode
     );
 
@@ -103,14 +110,28 @@ export class Wallet_complement_transfer {
       return new w.authorize_transfer_result(false);
     }
 
-    const transfer = Protobuf.decode<w.transfer>(operation.call_contract!.args!, w.transfer.decode);
+    const transfer = Protobuf.decode<w.transfer>(
+      operation.call_contract!.args!,
+      w.transfer.decode
+    );
 
     let budget = this._getBudget();
 
     if (transfer.value > budget.value) {
-      System.log(`invalid amount ${transfer.value}. Current budget: ${budget.value}`);
+      System.log(
+        `invalid amount ${transfer.value}. Current budget: ${budget.value}`
+      );
       return new w.authorize_transfer_result(false);
     }
+
+    System.callContract(
+      WALLET_CONTRACT,
+      WALLET_ENTRY_POINT_REQUIRE_AUTHORITY,
+      Protobuf.encode(
+        new w.wallet_require_authority("koin-transfer"),
+        w.wallet_require_authority.encode
+      )
+    );
 
     budget.value -= transfer.value;
 

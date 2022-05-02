@@ -15,6 +15,10 @@ message budget {
   uint64 time = 2 [jstype = JS_STRING];
 }
 
+message wallet_require_authority {
+  string name = 1;
+}
+
 // @description Returns the actual budget
 // @read-only true
 message get_budget_arguments {}
