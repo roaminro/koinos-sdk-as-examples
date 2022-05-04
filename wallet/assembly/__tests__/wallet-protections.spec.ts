@@ -47,7 +47,7 @@ const SIG_ACCOUNT8 = Base64.decode(
 const SIG_ACCOUNT9 = Base64.decode(
   "H-jhwlYEkAvxxJ1mU-SsTtMuQEbtGzU0mIje_G1rgrYJIC9bEjtTRBKnA7OGAyoLZxFo2ztLuIfHikG8RrVhsco="
 );
-const TIME_0: u64 = 86400;
+const TIME_0: u64 = 86400000;
 
 let myWallet: Wallet;
 
@@ -132,18 +132,18 @@ describe("wallet protections", () => {
     myWallet.add_protection(
       new w.add_protection_arguments(
         new w.protected_contract(ACCOUNT6, 1),
-        new w.authority_contract("posting", null, 86400)
+        new w.authority_contract("posting", null, 86400000)
       )
     );
     MockVM.commitTransaction();
 
-    MockVM.setHeadInfo(new chain.head_info(null, TIME_0 + 86400, 1));
+    MockVM.setHeadInfo(new chain.head_info(null, TIME_0 + 86400000, 1));
 
     expect(() => {
       myWallet.update_protection(
         new w.update_protection_arguments(
           new w.protected_contract(ACCOUNT6, 1),
-          new w.authority_contract("owner", null, 86400)
+          new w.authority_contract("owner", null, 86400000)
         )
       );
     }).toThrow();
@@ -158,12 +158,12 @@ describe("wallet protections", () => {
     myWallet.add_protection(
       new w.add_protection_arguments(
         new w.protected_contract(ACCOUNT6, 1),
-        new w.authority_contract("posting", null, 86400)
+        new w.authority_contract("posting", null, 86400000)
       )
     );
     MockVM.commitTransaction();
 
-    MockVM.setHeadInfo(new chain.head_info(null, TIME_0 + 86400, 1));
+    MockVM.setHeadInfo(new chain.head_info(null, TIME_0 + 86400000, 1));
 
     // recovery signs
     MockVM.setTransaction(
@@ -183,7 +183,7 @@ describe("wallet protections", () => {
     myWallet.add_protection(
       new w.add_protection_arguments(
         new w.protected_contract(ACCOUNT6, 1),
-        new w.authority_contract("posting", null, 86400)
+        new w.authority_contract("posting", null, 86400000)
       )
     );
     MockVM.commitTransaction();

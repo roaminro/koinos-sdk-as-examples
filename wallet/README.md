@@ -4,17 +4,18 @@ This a contract to protect and manage digital assets using authorities and multi
 
 ## Instruction
 
-
 ## Build
+
 ```sh
 # build the debug version
-node cli.js build-all debug wallet.proto 
+node cli.js build-all debug wallet.proto
 
 # build the release version
-node cli.js build-all release wallet.proto 
+node cli.js build-all release wallet.proto
 ```
 
 ## Run tests
+
 ```sh
 # example for the calculator contract
 node cli.js run-tests

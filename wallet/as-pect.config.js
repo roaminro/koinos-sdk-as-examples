@@ -1,5 +1,5 @@
-const path = require('path');
-const { MockVM } = require('koinos-mock-vm');
+const path = require("path");
+const { MockVM } = require("koinos-mock-vm");
 
 module.exports = {
   /**
@@ -32,13 +32,13 @@ module.exports = {
 
     const myImports = {
       wasi_snapshot_preview1: {
-        fd_write: () => { },
-        proc_exit: () => { }
+        fd_write: () => {},
+        proc_exit: () => {},
       },
       // put your web assembly imports here, and return the module
       env: {
-        ...mockVM.getImports()
-      }
+        ...mockVM.getImports(),
+      },
     };
     instance = instantiateSync(binary, createImports(myImports));
     instance.exports.memory.grow(512);
@@ -57,9 +57,7 @@ module.exports = {
   //   returnOnExit: false,
   // },
   /** Enable code coverage. */
-  coverage: [
-    'assembly/*.ts'
-  ],
+  coverage: ["assembly/*.ts"],
   /**
    * Specify if the binary wasm file should be written to the file system.
    */

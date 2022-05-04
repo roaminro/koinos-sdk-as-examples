@@ -13,9 +13,9 @@ import { wallet } from "./proto/wallet";
 import { Collection } from "./Collection";
 import { equalBytes } from "./utils";
 
-export const GRACE_PERIOD_PROTECTION: u64 = 86400; // 1 day
-export const GRACE_PERIOD_RECOVERY: u64 = 86400; // 1 day
-export const PERIOD_UPDATE_RECOVERY: u64 = 86400 * 30; // 30 days
+export const GRACE_PERIOD_PROTECTION: u64 = 86400 * 1000; // 1 day
+export const GRACE_PERIOD_RECOVERY: u64 = 86400 * 1000; // 1 day
+export const PERIOD_UPDATE_RECOVERY: u64 = 30 * 86400 * 1000; // 30 days
 
 const VARS_SPACE_ID = 0;
 const AUTHORITIES_SPACE_ID = 1;

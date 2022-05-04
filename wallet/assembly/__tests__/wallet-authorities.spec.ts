@@ -46,7 +46,7 @@ const SIG_ACCOUNT8 = Base64.decode(
 const SIG_ACCOUNT9 = Base64.decode(
   "H-jhwlYEkAvxxJ1mU-SsTtMuQEbtGzU0mIje_G1rgrYJIC9bEjtTRBKnA7OGAyoLZxFo2ztLuIfHikG8RrVhsco="
 );
-const TIME_0: u64 = 86400;
+const TIME_0: u64 = 86400000;
 
 let myWallet: Wallet;
 

@@ -2,8 +2,7 @@
   "name": "wallet",
   "version": "0.1.0",
   "license": "MIT",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "@as-covers/core": "^0.2.1",
     "@as-pect/cli": "^6.2.4",
