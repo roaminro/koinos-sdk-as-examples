@@ -19,6 +19,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - name: setup Docker
+        uses: docker-practice/actions-setup-docker@master
+        with:
+          docker_version: "20.10"
+          docker_channel: "stable"
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
