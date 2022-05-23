@@ -619,10 +619,10 @@ json-stable-stringify-without-jsonify@^1.0.1:
   resolved "https://registry.yarnpkg.com/json-stable-stringify-without-jsonify/-/json-stable-stringify-without-jsonify-1.0.1.tgz#9db7b59496ad3f3cfef30a75142d2d930ad72651"
   integrity sha1-nbe1lJatPzz+8wp1FC0tkwrXJlE=
 
-koinos-sdk-as-cli@^0.1.9:
-  version "0.1.9"
-  resolved "https://registry.yarnpkg.com/koinos-sdk-as-cli/-/koinos-sdk-as-cli-0.1.9.tgz#2cfe8d4d6311ba19f9ef77cd73810147f61b934d"
-  integrity sha512-yYowk+QxRPJsMhV9d+V5ULKVjukwv1HyBIkYds6+t0Q5dLWvP6DD71dN3TVUMMxoRzNZiGTnfhWCiYuf4m7FDw==
+koinos-sdk-as-cli@^0.1.16:
+  version "0.1.16"
+  resolved "https://registry.yarnpkg.com/koinos-sdk-as-cli/-/koinos-sdk-as-cli-0.1.16.tgz#453a2cd4484682701ace16c0184141a6fd6dbfd6"
+  integrity sha512-esWnjS/t/APHHHRu4ggSVBLfx1QHov5r1ji0WmexjfbeK43Ze0JnALLAQ0wKXvCNlIBiunrRzLXhYKzxTHb8tQ==
   dependencies:
     chalk "4.1.2"
     commander "^9.0.0"

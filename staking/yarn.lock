@@ -640,12 +640,7 @@ as-bignum@^0.2.18:
   resolved "https://registry.yarnpkg.com/as-bignum/-/as-bignum-0.2.18.tgz#61ed4dd07d4a62107bde227fdb4370190217bf0b"
   integrity sha512-5LODrOr7wvS643oh7PHfyRtbBO9vCcU69vNNvrqh5yovrApM9nRHDeT5XcqnaSI8TqK9ZhN12qhZnq4rdIGcwQ==
 
-as-proto@^0.2.2:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/as-proto/-/as-proto-0.2.3.tgz#34107a1051e746324e258062822cb9e18b58e8c4"
-  integrity sha512-JwWFcTBYVTOzJEMqXtZfU/L9bYzR6rrLFJBA1DC4kRs0zE12titZtWhpnBAAmV27dhMSWauqOBJgbt5OrK2rcw==
-
-"as-proto@npm:@roaminroe/as-proto@^0.2.3":
+as-proto@^0.2.2, "as-proto@npm:@roaminroe/as-proto@^0.2.3":
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/@roaminroe/as-proto/-/as-proto-0.2.3.tgz#931ff8f805d1ba4726037465d46fb0d9ac5a4f04"
   integrity sha512-x+fDDY5fvfd1VHqJnD6ITh88m913uDuKQPCTnwi6TFwbCRIqmC9lfIst/pmPFx96rNVlNp8UBLXFKgZg9l6rYA==
@@ -1549,7 +1544,7 @@ koinos-sdk-as@koinos/koinos-sdk-as#e364972bb67bd962cd6915c2f9c21b115a9b20e9:
   resolved "https://codeload.github.com/koinos/koinos-sdk-as/tar.gz/e364972bb67bd962cd6915c2f9c21b115a9b20e9"
   dependencies:
     as-bignum "^0.2.18"
-    as-proto "npm:@roaminroe/as-proto@^0.2.3"
+    as-proto "^0.2.2"
     koinos-as-gen "0.4.8"
     koinos-proto-as "^0.4.1"
 
