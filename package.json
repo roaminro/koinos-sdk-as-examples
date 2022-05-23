@@ -7,6 +7,7 @@
   "repository": "https://github.com/roaminroe/koinos-sdk-as-examples",
   "dependencies": {},
   "devDependencies": {
+    "@types/jest": "^27.5.1",
     "@typescript-eslint/eslint-plugin": "^5.10.0",
     "@typescript-eslint/parser": "^5.10.0",
     "eslint": "^8.7.0",
@@ -15,7 +16,7 @@
   },
   "scripts": {
     "lint": "eslint --max-warnings 0 --ext ts \"*/assembly/**/*.ts\"",
-    "buildCalculator": "cd calculator && yarn install && koinos-sdk-as-cli build-all release calculator.proto && koinos-sdk-as-cli run-tests",
+    "buildCalculator": "cd calculator && yarn install && koinos-sdk-as-cli build-all release calculator.proto && koinos-sdk-as-cli run-tests && yarn integration-tests",
     "buildChat": "cd chat && yarn install && koinos-sdk-as-cli build-all release chat.proto",
     "buildControlledContractUpdate": "cd controlled_contract_update && yarn install && koinos-sdk-as-cli build-all --generate_authorize release update.proto",
     "buildImmutable": "cd immutable && yarn install && koinos-sdk-as-cli build-all release immutable.proto",

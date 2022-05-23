@@ -1,6 +1,5 @@
 build
 *.wasm
-abi/*.abi
 assembly/proto/*.ts
 assembly/index.ts
 assembly/*.boilerplate.ts
