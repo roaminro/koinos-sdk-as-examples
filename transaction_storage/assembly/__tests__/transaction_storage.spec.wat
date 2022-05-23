@@ -5627,19 +5627,19 @@
         i32.const 4
        else
         local.get $3
-        i64.const 17179869184
+        i64.const 34359738368
         i64.lt_u
         if (result i32)
          i32.const 5
         else
          local.get $3
-         i64.const 2199023255552
+         i64.const 4398046511104
          i64.lt_u
          if (result i32)
           i32.const 6
          else
           local.get $3
-          i64.const 281474976710656
+          i64.const 562949953421312
           i64.lt_u
           if (result i32)
            i32.const 7
@@ -5648,11 +5648,11 @@
            i32.const 9
            i32.const 10
            local.get $3
-           i64.const 4611686018427387904
+           i64.const -9223372036854775808
            i64.lt_u
            select
            local.get $3
-           i64.const 36028797018963968
+           i64.const 72057594037927936
            i64.lt_u
            select
           end
