@@ -4,7 +4,7 @@ import { LocalKoinos, Token, Signer } from 'local-koinos';
 // @ts-ignore 
 import * as abi from '../abi/calculator-abi.json';
 
-jest.setTimeout(120000);
+jest.setTimeout(600000);
 
 const localKoinos = new LocalKoinos();
 
