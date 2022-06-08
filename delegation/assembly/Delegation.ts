@@ -1,4 +1,4 @@
-import { System, authority } from "koinos-sdk-as";
+import { System, authority, Base58 } from "koinos-sdk-as";
 import { delegation } from "./proto/delegation";
 
 export class Delegation {
@@ -12,6 +12,7 @@ export class Delegation {
     // for example, you could have a whitelist of "payees" that are allowed to consume this address/contract's mana
     // result = false;
     // const whitelist = [
+    //    Base58.encode(System.getContractId()),
     //   '1NvZvWNqDX7t93inmLBvbv6kxhpEZYRFWK',
     //   '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe'
     // ];
