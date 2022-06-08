@@ -32,11 +32,6 @@ export class Delegation {
     const entry_point = args.entry_point;
     const contract_args = args.args!;
 
-    // "transaction_application" authorize has been overriden with our custom logic
-    // so the "account" param here doesn't matter
-    // if our Authorize returns true, that means the "delegation" is approved
-    System.requireAuthority(authority.authorization_type.transaction_application, System.getContractId());
-
     // so call the target contract
     const resBytes = System.callContract(contract_id, entry_point, contract_args);
 
