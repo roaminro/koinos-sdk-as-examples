@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package koinos.rpc;
+option go_package = "github.com/koinos/koinos-proto-golang/koinos/rpc";
+
+message reserved_rpc {}
+
+message error_response {
+   string message = 1;
+   string data = 2;
+}

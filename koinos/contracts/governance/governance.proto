@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+import "koinos/options.proto";
+import "koinos/protocol/protocol.proto";
+
+package koinos.contracts.governance;
+option go_package = "github.com/koinos/koinos-proto-golang/koinos/contracts/governance";
+
+enum proposal_status {
+   pending = 0;
+   active = 1;
+   approved = 2;
+   expired = 3;
+   applied = 4;
+}
+
+message proposal_record {
+   koinos.protocol.transaction proposal = 1;
+   uint64 vote_start_height = 2;
+   uint64 vote_tally = 3;
+   uint64 vote_threshold = 4;
+   bool shall_authorize = 5;
+   bool updates_governance = 6;
+   proposal_status status = 7;
+}
+
+message submit_proposal_arguments {
+   koinos.protocol.transaction proposal = 1;
+   uint64 fee = 2;
+}
+
+message submit_proposal_result {
+   bool value = 1;
+}
+
+message get_proposal_by_id_arguments {
+   bytes proposal_id = 1 [(btype) = TRANSACTION_ID];
+}
+
+message get_proposal_by_id_result {
+   proposal_record value = 1;
+}
+
+message get_proposals_by_status_arguments {
+   bytes start_proposal = 1 [(btype) = TRANSACTION_ID];
+   uint64 limit = 2;
+   proposal_status status = 3;
+}
+
+message get_proposals_by_status_result {
+   repeated proposal_record value = 1;
+}
+
+message get_proposals_arguments {
+   bytes start_proposal = 1 [(btype) = TRANSACTION_ID];
+   uint64 limit = 2;
+}
+
+message get_proposals_result {
+   repeated proposal_record value = 1;
+}
+
+message proposal_submission_event {
+   proposal_record proposal = 1;
+}
+
+message proposal_status_event {
+   bytes id = 1 [(btype) = TRANSACTION_ID];
+   proposal_status status = 2;
+}
+
+message proposal_vote_event {
+   bytes id = 1 [(btype) = TRANSACTION_ID];
+   uint64 vote_tally = 2;
+   uint64 vote_threshold = 3;
+}
+
+message block_callback_arguments{}
+message block_callback_result{}
