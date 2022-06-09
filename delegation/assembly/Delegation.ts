@@ -1,4 +1,4 @@
-import { System, authority, Base58 } from "koinos-sdk-as";
+import { System, authority } from "koinos-sdk-as";
 import { delegation } from "./proto/delegation";
 
 export class Delegation {
