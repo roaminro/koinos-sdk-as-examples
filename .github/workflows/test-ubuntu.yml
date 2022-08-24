@@ -26,4 +26,5 @@ jobs:
       - name: Install dependencies
         run: yarn --frozen-lockfile
       - name: Build All
-        run: yarn buildAll:ubuntu
+        #run: yarn buildAll:ubuntu
+        run: yarn buildAll
