@@ -1,4 +1,4 @@
-import { authority } from "koinos-sdk-as";
+import { authority } from "@koinos/sdk-as";
 import { immutable } from "./proto/immutable";
 
 export class Immutable {
