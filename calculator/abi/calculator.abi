@@ -4,28 +4,28 @@
             "argument": "calculator.add_arguments",
             "return": "calculator.add_result",
             "description": "Add two integers",
-            "entry_point": "0x7e9e5ac3",
+            "entry-point": "0x7e9e5ac3",
             "read-only": true
         },
         "sub": {
             "argument": "calculator.sub_arguments",
             "return": "calculator.sub_result",
             "description": "Subtract two integers",
-            "entry_point": "0xddc6e2b2",
+            "entry-point": "0xddc6e2b2",
             "read-only": true
         },
         "mul": {
             "argument": "calculator.mul_arguments",
             "return": "calculator.mul_result",
             "description": "Mulitply two integers",
-            "entry_point": "0x29df0906",
+            "entry-point": "0x29df0906",
             "read-only": true
         },
         "div": {
             "argument": "calculator.div_arguments",
             "return": "calculator.div_result",
             "description": "Divide two integers",
-            "entry_point": "0xcd35a242",
+            "entry-point": "0xcd35a242",
             "read-only": true
         }
     },
