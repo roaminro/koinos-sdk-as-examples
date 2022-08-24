@@ -1,5 +1,5 @@
 const path = require('path');
-const { MockVM } = require('koinos-mock-vm');
+const { MockVM } = require('@koinos-mock/vm');
 
 module.exports = {
   /**

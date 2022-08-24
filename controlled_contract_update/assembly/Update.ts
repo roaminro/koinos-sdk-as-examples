@@ -1,4 +1,4 @@
-import { Base58, Base64, Crypto, chain, protocol, authority, StringBytes, System } from "koinos-sdk-as";
+import { Base58, Base64, Crypto, chain, protocol, authority, StringBytes, System } from "@koinos/sdk-as";
 import { update } from "./proto/update";
 
 const DIGEST_KEY = 'digest';
