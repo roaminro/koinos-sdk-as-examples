@@ -1,5 +1,5 @@
 import { Writer, Reader } from "as-proto";
-import { protocol } from "koinos-sdk-as";
+import { protocol } from "@koinos/sdk-as";
 
 export namespace transaction_storage {
   export class store_transaction_arguments {

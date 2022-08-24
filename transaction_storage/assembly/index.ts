@@ -1,18 +1,17 @@
-import { System, Protobuf, authority } from "koinos-sdk-as";
+import { System, Protobuf, authority } from "@koinos/sdk-as";
 import { Transaction_storage as ContractClass } from "./Transaction_storage";
 import { transaction_storage as ProtoNamespace } from "./proto/transaction_storage";
 
 export function main(): i32 {
-  const entryPoint = System.getEntryPoint();
-  const rdbuf = System.getContractArguments();
+  const contractArgs = System.getArguments();
   let retbuf = new Uint8Array(1024);
 
   const c = new ContractClass();
 
-  switch (entryPoint) {
+  switch (contractArgs.entry_point) {
     case 0x2e31315a: {
       const args = Protobuf.decode<ProtoNamespace.store_transaction_arguments>(
-        rdbuf,
+        contractArgs.args,
         ProtoNamespace.store_transaction_arguments.decode
       );
       const res = c.store_transaction(args);
@@ -25,7 +24,7 @@ export function main(): i32 {
 
     case 0x8fa709bd: {
       const args = Protobuf.decode<ProtoNamespace.get_transaction_arguments>(
-        rdbuf,
+        contractArgs.args,
         ProtoNamespace.get_transaction_arguments.decode
       );
       const res = c.get_transaction(args);
@@ -37,13 +36,11 @@ export function main(): i32 {
     }
 
     default:
-      System.exitContract(1);
+      System.exit(1);
       break;
   }
 
-  System.setContractResult(retbuf);
-
-  System.exitContract(0);
+  System.exit(0, retbuf);
   return 0;
 }
 

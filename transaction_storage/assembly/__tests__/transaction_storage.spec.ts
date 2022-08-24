@@ -1,5 +1,5 @@
-import { Base58, chain, System, Arrays, MockVM } from "koinos-sdk-as";
-import { protocol } from "koinos-proto-as";
+import { Base58, chain, System, Arrays, MockVM } from "@koinos/sdk-as";
+import { protocol } from "@koinos/proto-as";
 import { Transaction_storage } from "../Transaction_storage";
 import { transaction_storage } from "../proto/transaction_storage";
 

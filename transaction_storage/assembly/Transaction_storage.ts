@@ -1,4 +1,4 @@
-import { chain, protocol, System } from "koinos-sdk-as";
+import { chain, protocol, System } from "@koinos/sdk-as";
 import { transaction_storage } from "./proto/transaction_storage";
 
 export class Transaction_storage {
