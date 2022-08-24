@@ -1,4 +1,4 @@
-import { System, Protobuf, authority } from "koinos-sdk-as";
+import { System, Protobuf, authority } from "@koinos/sdk-as";
 import { delegation } from "./proto/delegation";
 
 export class Delegation {

@@ -9,8 +9,10 @@ export namespace delegation {
         writer.bytes(unique_name_contract_id);
       }
 
-      writer.uint32(16);
-      writer.uint32(message.entry_point);
+      if (message.entry_point != 0) {
+        writer.uint32(16);
+        writer.uint32(message.entry_point);
+      }
 
       const unique_name_args = message.args;
       if (unique_name_args !== null) {

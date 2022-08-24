@@ -1,4 +1,4 @@
-import { System, authority } from "koinos-sdk-as";
+import { System, authority } from "@koinos/sdk-as";
 import { delegation } from "./proto/delegation";
 
 export class Delegation {
@@ -34,8 +34,8 @@ export class Delegation {
     const contract_args = args.args!;
 
     // so call the target contract
-    const resBytes = System.callContract(contract_id, entry_point, contract_args);
+    const callRet = System.call(contract_id, entry_point, contract_args);
 
-    return new delegation.call_contract_result(resBytes);
+    return new delegation.call_contract_result(callRet.res.object);
   }
 }

@@ -4,7 +4,7 @@
             "argument": "delegation.call_contract_arguments",
             "return": "delegation.call_contract_result",
             "description": "Call a contract",
-            "entry_point": "0x6c843663",
+            "entry-point": "0x6c843663",
             "read-only": false
         }
     },

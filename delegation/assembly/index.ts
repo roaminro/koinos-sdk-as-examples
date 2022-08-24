@@ -1,18 +1,17 @@
-import { System, Protobuf, authority } from "koinos-sdk-as";
+import { System, Protobuf, authority } from "@koinos/sdk-as";
 import { Delegation as ContractClass } from "./Delegation";
 import { delegation as ProtoNamespace } from "./proto/delegation";
 
 export function main(): i32 {
-  const entryPoint = System.getEntryPoint();
-  const rdbuf = System.getContractArguments();
+  const contractArgs = System.getArguments();
   let retbuf = new Uint8Array(1024);
 
   const c = new ContractClass();
 
-  switch (entryPoint) {
+  switch (contractArgs.entry_point) {
     case 0x4a2dbd90: {
       const args = Protobuf.decode<authority.authorize_arguments>(
-        rdbuf,
+        contractArgs.args,
         authority.authorize_arguments.decode
       );
       const res = c.authorize(args);
@@ -22,7 +21,7 @@ export function main(): i32 {
 
     case 0x6c843663: {
       const args = Protobuf.decode<ProtoNamespace.call_contract_arguments>(
-        rdbuf,
+        contractArgs.args,
         ProtoNamespace.call_contract_arguments.decode
       );
       const res = c.call_contract(args);
@@ -31,13 +30,11 @@ export function main(): i32 {
     }
 
     default:
-      System.exitContract(1);
+      System.exit(1);
       break;
   }
 
-  System.setContractResult(retbuf);
-
-  System.exitContract(0);
+  System.exit(0, retbuf);
   return 0;
 }
 
