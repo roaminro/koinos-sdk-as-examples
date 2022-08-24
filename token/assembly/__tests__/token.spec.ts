@@ -1,4 +1,4 @@
-import { Base58, MockVM, Arrays, Protobuf, authority } from "koinos-sdk-as";
+import { Base58, MockVM, Arrays, Protobuf, authority } from "@koinos/sdk-as";
 import { Token } from "../Token";
 import { token } from "../proto/token";
 
