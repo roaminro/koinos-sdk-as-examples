@@ -1,4 +1,4 @@
-import { Base58, StringBytes, System, value } from "koinos-sdk-as";
+import { Base58, StringBytes, System, value } from "@koinos/sdk-as";
 import { chat } from "./proto/chat";
 import { State } from "./State";
 

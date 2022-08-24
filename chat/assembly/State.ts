@@ -1,4 +1,4 @@
-import { System, chain } from "koinos-sdk-as";
+import { System, chain } from "@koinos/sdk-as";
 import { chat } from "./proto/chat";
 
 const METADATA_SPACE_ID = 0;
