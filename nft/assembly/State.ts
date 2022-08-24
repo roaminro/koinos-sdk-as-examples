@@ -1,4 +1,4 @@
-import { chain, Protobuf, System } from "koinos-sdk-as";
+import { chain, Protobuf, System } from "@koinos/sdk-as";
 import { nft } from "./proto/nft";
 
 const TOKEN_SPACE_ID = 0;
