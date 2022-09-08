@@ -13,7 +13,7 @@ Link to the Koinos AssemblyScript SDK documentation: https://roamin.github.io/ko
 
 ```sh
 # clone this repo
-git clone https://github.com/roamin/koinos-sdk-as-examples
+git clone https://github.com/roaminro/koinos-sdk-as-examples
 
 # with npm
 npm install
