@@ -1,0 +1,378 @@
+syntax = "proto3";
+
+package koinos.chain;
+option go_package = "github.com/koinos/koinos-proto-golang/koinos/chain";
+
+import "koinos/options.proto";
+import "koinos/protocol/protocol.proto";
+import "koinos/chain/authority.proto";
+import "koinos/chain/chain.proto";
+import "koinos/chain/value.proto";
+
+///////////////////////////////////////////////////////////////////////////////
+// General Blockchain Management                                             //
+///////////////////////////////////////////////////////////////////////////////
+
+message get_head_info_arguments {}
+
+message get_head_info_result {
+   head_info value = 1;
+}
+
+message apply_block_arguments {
+   protocol.block block = 1;
+}
+
+message apply_block_result {}
+
+message apply_transaction_arguments {
+   protocol.transaction transaction = 1;
+}
+
+message apply_transaction_result {}
+
+message apply_upload_contract_operation_arguments {
+   protocol.upload_contract_operation op = 1;
+}
+
+message apply_upload_contract_operation_result {}
+
+message apply_call_contract_operation_arguments {
+   protocol.call_contract_operation op = 1;
+}
+
+message apply_call_contract_operation_result {}
+
+message apply_set_system_call_operation_arguments {
+   protocol.set_system_call_operation op = 1;
+}
+
+message apply_set_system_call_operation_result {}
+
+message apply_set_system_contract_operation_arguments {
+   protocol.set_system_contract_operation op = 1;
+}
+
+message apply_set_system_contract_operation_result {}
+
+message pre_block_callback_arguments {}
+
+message pre_block_callback_result {}
+
+message post_block_callback_arguments {}
+
+message post_block_callback_result {}
+
+message pre_transaction_callback_arguments {}
+
+message pre_transaction_callback_result {}
+
+message post_transaction_callback_arguments {}
+
+message post_transaction_callback_result {}
+
+///////////////////////////////////////////////////////////////////////////////
+// System Helpers                                                            //
+///////////////////////////////////////////////////////////////////////////////
+
+message process_block_signature_arguments {
+   bytes digest = 1;
+   protocol.block_header header = 2;
+   bytes signature = 3;
+}
+
+message process_block_signature_result {
+   bool value = 1;
+}
+
+message get_transaction_arguments {}
+
+message get_transaction_result {
+   protocol.transaction value = 1;
+}
+
+enum system_authorization_type {
+   set_system_contract = 0;
+   set_system_call = 1;
+}
+
+message get_transaction_field_arguments {
+   string field = 1;
+}
+
+message get_transaction_field_result {
+   value_type value = 1;
+}
+
+message get_block_arguments {}
+
+message get_block_result {
+   protocol.block value = 1;
+}
+
+message get_block_field_arguments {
+   string field = 1;
+}
+
+message get_block_field_result
+{
+   value_type value = 1;
+}
+
+message get_last_irreversible_block_arguments {}
+
+message get_last_irreversible_block_result {
+   uint64 value = 1 [jstype = JS_STRING];
+}
+
+message get_account_nonce_arguments {
+   bytes account = 1 [(btype) = ADDRESS];
+}
+
+message get_account_nonce_result {
+   bytes value = 1;
+}
+
+message verify_account_nonce_arguments {
+   bytes account = 1 [(btype) = ADDRESS];
+   bytes nonce = 2;
+}
+
+message verify_account_nonce_result {
+   bool value = 1;
+}
+
+message set_account_nonce_arguments {
+   bytes account = 1 [(btype) = ADDRESS];
+   bytes nonce = 2;
+}
+
+message set_account_nonce_result {}
+
+message require_system_authority_arguments {
+   system_authorization_type type = 1;
+}
+
+message require_system_authority_result {}
+
+///////////////////////////////////////////////////////////////////////////////
+// Resource Subsystem                                                        //
+///////////////////////////////////////////////////////////////////////////////
+
+message get_account_rc_arguments {
+   bytes account = 1 [(btype) = ADDRESS];
+}
+
+message get_account_rc_result {
+   uint64 value = 1 [jstype = JS_STRING];
+}
+
+message consume_account_rc_arguments {
+   bytes account = 1 [(btype) = ADDRESS];
+   uint64 value = 2 [jstype = JS_STRING];
+}
+
+message consume_account_rc_result {
+   bool value = 1;
+}
+
+message get_resource_limits_arguments {}
+
+message get_resource_limits_result {
+   resource_limit_data value = 1;
+}
+
+message consume_block_resources_arguments {
+   uint64 disk_storage_consumed = 1 [jstype = JS_STRING];
+   uint64 network_bandwidth_consumed = 2 [jstype = JS_STRING];
+   uint64 compute_bandwidth_consumed = 3 [jstype = JS_STRING];
+}
+
+message consume_block_resources_result {
+   bool value = 1;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Database                                                                  //
+///////////////////////////////////////////////////////////////////////////////
+
+message put_object_arguments {
+   object_space space = 1;
+   bytes key = 2;
+   bytes obj = 3;
+}
+
+message put_object_result {
+   int32 value = 1;
+}
+
+message remove_object_arguments {
+   object_space space = 1;
+   bytes key = 2;
+}
+
+message remove_object_result {}
+
+message get_object_arguments {
+   object_space space = 1;
+   bytes key = 2;
+}
+
+message database_object {
+   bool exists = 1;
+   bytes value = 2;
+   bytes key = 3; // Only returned with get_next_object and get_prev_object
+}
+
+message get_object_result {
+   database_object value = 1;
+}
+
+message get_next_object_arguments {
+   object_space space = 1;
+   bytes key = 2;
+}
+
+message get_next_object_result {
+   database_object value = 1;
+}
+
+message get_prev_object_arguments {
+   object_space space = 1;
+   bytes key = 2;
+}
+
+message get_prev_object_result {
+   database_object value = 1;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Logging                                                                   //
+///////////////////////////////////////////////////////////////////////////////
+
+message log_arguments {
+   string message = 1;
+}
+
+message log_result {}
+
+message event_arguments {
+   string name = 1;
+   bytes data = 2;
+   repeated bytes impacted = 3 [(btype) = ADDRESS];
+}
+
+message event_result {}
+
+///////////////////////////////////////////////////////////////////////////////
+// Cryptography                                                              //
+///////////////////////////////////////////////////////////////////////////////
+
+message hash_arguments {
+   uint64 code = 1 [jstype = JS_STRING];
+   bytes obj = 2;
+   uint64 size = 3 [jstype = JS_STRING];
+}
+
+message hash_result {
+   bytes value = 1;
+}
+
+message recover_public_key_arguments {
+   dsa type = 1;
+   bytes signature = 2;
+   bytes digest = 3;
+}
+
+message recover_public_key_result {
+   bytes value = 1 [(btype) = BASE64];
+}
+
+message verify_merkle_root_arguments {
+   bytes root = 1;
+   repeated bytes hashes = 2;
+}
+
+message verify_merkle_root_result {
+   bool value = 1;
+}
+
+message verify_signature_arguments {
+   dsa type = 1;
+   bytes public_key = 2 [(btype) = BASE64];
+   bytes signature = 3 [(btype) = BASE64];
+   bytes digest = 4 [(btype) = BASE64];
+}
+
+message verify_signature_result {
+   bool value = 1;
+}
+
+message verify_vrf_proof_arguments {
+   dsa type = 1;
+   bytes public_key = 2 [(btype) = BASE64];
+   bytes proof = 3 [(btype) = BASE64];
+   bytes hash = 4 [(btype) = BASE64];
+   bytes message = 5 [(btype) = BASE64];
+}
+
+message verify_vrf_proof_result {
+   bool value = 1;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Contract Management                                                       //
+///////////////////////////////////////////////////////////////////////////////
+
+message call_contract_arguments {
+   bytes contract_id = 1 [(btype) = CONTRACT_ID];
+   uint32 entry_point = 2;
+   bytes args = 3;
+}
+
+message call_contract_result {
+   bytes value = 1;
+}
+
+message get_entry_point_arguments {}
+
+message get_entry_point_result {
+   uint32 value = 1;
+}
+
+message get_contract_arguments_arguments {}
+
+message get_contract_arguments_result {
+   bytes value = 1;
+}
+
+message set_contract_result_arguments {
+   bytes value = 1;
+}
+
+message set_contract_result_result {}
+
+message exit_contract_arguments {
+   uint32 exit_code = 1;
+}
+
+message exit_contract_result {}
+
+message get_contract_id_arguments {}
+
+message get_contract_id_result {
+   bytes value = 1 [(btype) = CONTRACT_ID];
+}
+
+message get_caller_arguments {}
+
+message get_caller_result {
+   caller_data value = 1;
+}
+
+message require_authority_arguments {
+   authorization_type type = 1;
+   bytes account = 2 [(btype) = ADDRESS];
+}
+
+message require_authority_result {}

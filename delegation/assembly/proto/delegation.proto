@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package delegation;
+
+import "koinos/options.proto";
+
+// @description Call a contract
+// @read-only false
+message call_contract_arguments {
+  bytes contract_id = 1 [(koinos.btype) = CONTRACT_ID];
+  uint32 entry_point = 2;
+  bytes args = 3;
+}
+
+message call_contract_result {
+  bytes result = 1;
+}

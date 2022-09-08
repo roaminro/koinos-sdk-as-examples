@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package calculator;
+
+
+// @description Add two integers
+// @read-only true
+message add_arguments {
+  int64 x = 1;
+  int64 y = 2;
+}
+
+message add_result {
+  int64 value = 1;
+}
+
+/*
+  @description Subtract two integers
+  @read-only true
+*/
+message sub_arguments {
+  int64 x = 1;
+  int64 y = 2;
+}
+
+message sub_result {
+  int64 value = 1;
+}
+
+/*
+  @description Mulitply two integers
+  @read-only true
+*/
+message mul_arguments {
+  int64 x = 1;
+  int64 y = 2;
+}
+
+message mul_result {
+  int64 value = 1;
+}
+
+/*
+  @description Divide two integers
+  @read-only true
+*/
+message div_arguments {
+  int64 x = 1;
+  int64 y = 2;
+}
+
+message div_result {
+  int64 value = 1;
+}

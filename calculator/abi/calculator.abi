@@ -1,0 +1,33 @@
+{
+    "methods": {
+        "add": {
+            "argument": "calculator.add_arguments",
+            "return": "calculator.add_result",
+            "description": "Add two integers",
+            "entry-point": "0x7e9e5ac3",
+            "read-only": true
+        },
+        "sub": {
+            "argument": "calculator.sub_arguments",
+            "return": "calculator.sub_result",
+            "description": "Subtract two integers",
+            "entry-point": "0xddc6e2b2",
+            "read-only": true
+        },
+        "mul": {
+            "argument": "calculator.mul_arguments",
+            "return": "calculator.mul_result",
+            "description": "Mulitply two integers",
+            "entry-point": "0x29df0906",
+            "read-only": true
+        },
+        "div": {
+            "argument": "calculator.div_arguments",
+            "return": "calculator.div_result",
+            "description": "Divide two integers",
+            "entry-point": "0xcd35a242",
+            "read-only": true
+        }
+    },
+    "types": "CvkCCh9hc3NlbWJseS9wcm90by9jYWxjdWxhdG9yLnByb3RvEgpjYWxjdWxhdG9yIisKDWFkZF9hcmd1bWVudHMSDAoBeBgBIAEoA1IBeBIMCgF5GAIgASgDUgF5IiIKCmFkZF9yZXN1bHQSFAoFdmFsdWUYASABKANSBXZhbHVlIisKDXN1Yl9hcmd1bWVudHMSDAoBeBgBIAEoA1IBeBIMCgF5GAIgASgDUgF5IiIKCnN1Yl9yZXN1bHQSFAoFdmFsdWUYASABKANSBXZhbHVlIisKDW11bF9hcmd1bWVudHMSDAoBeBgBIAEoA1IBeBIMCgF5GAIgASgDUgF5IiIKCm11bF9yZXN1bHQSFAoFdmFsdWUYASABKANSBXZhbHVlIisKDWRpdl9hcmd1bWVudHMSDAoBeBgBIAEoA1IBeBIMCgF5GAIgASgDUgF5IiIKCmRpdl9yZXN1bHQSFAoFdmFsdWUYASABKANSBXZhbHVlYgZwcm90bzM="
+}

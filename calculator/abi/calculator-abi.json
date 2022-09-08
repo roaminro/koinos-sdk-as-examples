@@ -1,0 +1,120 @@
+{
+    "methods": {
+        "add": {
+            "input": "calculator.add_arguments",
+            "output": "calculator.add_result",
+            "description": "Add two integers",
+            "entryPoint": 2124307139,
+            "readOnly": true
+        },
+        "sub": {
+            "input": "calculator.sub_arguments",
+            "output": "calculator.sub_result",
+            "description": "Subtract two integers",
+            "entryPoint": 3720798898,
+            "readOnly": true
+        },
+        "mul": {
+            "input": "calculator.mul_arguments",
+            "output": "calculator.mul_result",
+            "description": "Mulitply two integers",
+            "entryPoint": 702482694,
+            "readOnly": true
+        },
+        "div": {
+            "input": "calculator.div_arguments",
+            "output": "calculator.div_result",
+            "description": "Divide two integers",
+            "entryPoint": 3442844226,
+            "readOnly": true
+        }
+    },
+    "types": {
+        "nested": {
+            "calculator": {
+                "nested": {
+                    "add_arguments": {
+                        "fields": {
+                            "x": {
+                                "type": "int64",
+                                "id": 1
+                            },
+                            "y": {
+                                "type": "int64",
+                                "id": 2
+                            }
+                        }
+                    },
+                    "add_result": {
+                        "fields": {
+                            "value": {
+                                "type": "int64",
+                                "id": 1
+                            }
+                        }
+                    },
+                    "sub_arguments": {
+                        "fields": {
+                            "x": {
+                                "type": "int64",
+                                "id": 1
+                            },
+                            "y": {
+                                "type": "int64",
+                                "id": 2
+                            }
+                        }
+                    },
+                    "sub_result": {
+                        "fields": {
+                            "value": {
+                                "type": "int64",
+                                "id": 1
+                            }
+                        }
+                    },
+                    "mul_arguments": {
+                        "fields": {
+                            "x": {
+                                "type": "int64",
+                                "id": 1
+                            },
+                            "y": {
+                                "type": "int64",
+                                "id": 2
+                            }
+                        }
+                    },
+                    "mul_result": {
+                        "fields": {
+                            "value": {
+                                "type": "int64",
+                                "id": 1
+                            }
+                        }
+                    },
+                    "div_arguments": {
+                        "fields": {
+                            "x": {
+                                "type": "int64",
+                                "id": 1
+                            },
+                            "y": {
+                                "type": "int64",
+                                "id": 2
+                            }
+                        }
+                    },
+                    "div_result": {
+                        "fields": {
+                            "value": {
+                                "type": "int64",
+                                "id": 1
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

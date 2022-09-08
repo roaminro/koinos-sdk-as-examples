@@ -1,0 +1,92 @@
+syntax = "proto3";
+
+package koinos.contracts.token;
+option go_package = "github.com/koinos/koinos-proto-golang/koinos/contracts/token";
+
+import "koinos/options.proto";
+
+message name_arguments {}
+
+message name_result {
+   string value = 1;
+}
+
+message symbol_arguments {}
+
+message symbol_result {
+   string value = 1;
+}
+
+message decimals_arguments {}
+
+message decimals_result {
+   uint32 value = 1;
+}
+
+message total_supply_arguments {}
+
+message total_supply_result {
+   uint64 value = 1 [jstype = JS_STRING];
+}
+
+message balance_of_arguments {
+   bytes owner = 1 [(btype) = ADDRESS];
+}
+
+message balance_of_result {
+   uint64 value = 1 [jstype = JS_STRING];
+}
+
+message transfer_arguments {
+   bytes from = 1 [(btype) = ADDRESS];
+   bytes to = 2 [(btype) = ADDRESS];
+   uint64 value = 3 [jstype = JS_STRING];
+}
+
+message transfer_result {
+   bool value = 1;
+}
+
+message mint_arguments {
+   bytes to = 1 [(btype) = ADDRESS];
+   uint64 value = 2 [jstype = JS_STRING];
+}
+
+message mint_result {
+   bool value = 1;
+}
+
+message burn_arguments {
+   bytes from = 1 [(btype) = ADDRESS];
+   uint64 value = 2 [jstype = JS_STRING];
+}
+
+message burn_result {
+   bool value = 1;
+}
+
+message balance_object {
+   uint64 value = 1 [jstype = JS_STRING];
+}
+
+message mana_balance_object {
+   uint64 balance = 1 [jstype = JS_STRING];
+   uint64 mana = 2 [jstype = JS_STRING];
+   uint64 last_mana_update = 3 [jstype = JS_STRING];
+}
+
+message burn_event {
+   bytes from = 1 [(btype) = ADDRESS];
+   uint64 value = 2 [jstype = JS_STRING];
+}
+
+message mint_event {
+   bytes to = 1 [(btype) = ADDRESS];
+   uint64 value = 2 [jstype = JS_STRING];
+}
+
+message transfer_event {
+   bytes from = 1 [(btype) = ADDRESS];
+   bytes to = 2 [(btype) = ADDRESS];
+   uint64 value = 3 [jstype = JS_STRING];
+}

@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package transaction_storage;
+
+import "koinos/options.proto";
+import "koinos/protocol/protocol.proto";
+
+// @description Stores a transaction on the blockchain
+// @read-only false
+message store_transaction_arguments {
+  koinos.protocol.transaction transaction = 1;
+}
+
+message store_transaction_result {
+}
+
+// @description Gets a transaction from the blockchain
+// @read-only true
+message get_transaction_arguments {
+  bytes id = 1 [(koinos.btype) = TRANSACTION_ID];
+}
+
+message get_transaction_result {
+  koinos.protocol.transaction value = 1;
+}

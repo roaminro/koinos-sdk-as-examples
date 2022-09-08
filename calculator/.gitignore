@@ -1,0 +1,5 @@
+build
+*.wasm
+assembly/proto/*.ts
+assembly/index.ts
+assembly/*.boilerplate.ts

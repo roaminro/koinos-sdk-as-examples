@@ -1,0 +1,12 @@
+{
+    "methods": {
+        "call_contract": {
+            "argument": "delegation.call_contract_arguments",
+            "return": "delegation.call_contract_result",
+            "description": "Call a contract",
+            "entry-point": "0x6c843663",
+            "read-only": false
+        }
+    },
+    "types": "CvIBCh9hc3NlbWJseS9wcm90by9kZWxlZ2F0aW9uLnByb3RvEgpkZWxlZ2F0aW9uGhRrb2lub3Mvb3B0aW9ucy5wcm90byJ1ChdjYWxsX2NvbnRyYWN0X2FyZ3VtZW50cxIlCgtjb250cmFjdF9pZBgBIAEoDEIEgLUYBVIKY29udHJhY3RJZBIfCgtlbnRyeV9wb2ludBgCIAEoDVIKZW50cnlQb2ludBISCgRhcmdzGAMgASgMUgRhcmdzIi4KFGNhbGxfY29udHJhY3RfcmVzdWx0EhYKBnJlc3VsdBgBIAEoDFIGcmVzdWx0YgZwcm90bzMK5wMKHGtvaW5vcy9jaGFpbi9hdXRob3JpdHkucHJvdG8SDGtvaW5vcy5jaGFpbhoUa29pbm9zL29wdGlvbnMucHJvdG8iVQoLY2FsbF90YXJnZXQSJQoLY29udHJhY3RfaWQYASABKAxCBIC1GAZSCmNvbnRyYWN0SWQSHwoLZW50cnlfcG9pbnQYAiABKA1SCmVudHJ5UG9pbnQiiAEKE2F1dGhvcml6ZV9hcmd1bWVudHMSNAoEdHlwZRgBIAEoDjIgLmtvaW5vcy5jaGFpbi5hdXRob3JpemF0aW9uX3R5cGVSBHR5cGUSMgoEY2FsbBgCIAEoCzIZLmtvaW5vcy5jaGFpbi5jYWxsX3RhcmdldEgAUgRjYWxsiAEBQgcKBV9jYWxsIigKEGF1dGhvcml6ZV9yZXN1bHQSFAoFdmFsdWUYASABKAhSBXZhbHVlKlkKEmF1dGhvcml6YXRpb25fdHlwZRIRCg1jb250cmFjdF9jYWxsEAASGwoXdHJhbnNhY3Rpb25fYXBwbGljYXRpb24QARITCg9jb250cmFjdF91cGxvYWQQAkI0WjJnaXRodWIuY29tL2tvaW5vcy9rb2lub3MtcHJvdG8tZ29sYW5nL2tvaW5vcy9jaGFpbmIGcHJvdG8z"
+}
