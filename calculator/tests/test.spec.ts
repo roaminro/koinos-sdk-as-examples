@@ -44,10 +44,6 @@ test("test1", async () => {
     expect(error.message).toContain('can only mint token with contract authority');
   }
 
-  const signer2 = Signer.fromWif('5KL5GNq42Syr52dUUi4UhQ5cANwNr9xgxKivF9YjtGdM7BBjuks');
-  signer2.provider = localKoinos.getProvider();
-  tkn = new Token(localKoinos.koin.address(), signer2);
-
   try {
     const signer2 = Signer.fromWif('5KL5GNq42Syr52dUUi4UhQ5cANwNr9xgxKivF9YjtGdM7BBjuks');
     signer2.provider = localKoinos.getProvider();
