@@ -2,7 +2,7 @@ import { LocalKoinos, Token, Signer } from '@roamin/local-koinos';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore 
-import * as abi from '../abi/calculator-abi.json';
+import * as abi from './calculator-abi.json';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore koilib_types is needed when using koilib
