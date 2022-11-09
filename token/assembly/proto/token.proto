@@ -4,6 +4,8 @@ package token;
 
 import "koinos/options.proto"; 
 
+message empty_message {}
+
 // @description Returns the token's name
 // @read-only true
 message name_arguments {}
@@ -48,46 +50,31 @@ message balance_of_result {
 
 // @description Transfers the token
 // @read-only false
+// @result empty_message
 message transfer_arguments {
    bytes from = 1 [(koinos.btype) = ADDRESS];
    bytes to = 2 [(koinos.btype) = ADDRESS];
    uint64 value = 3 [jstype = JS_STRING];
 }
 
-message transfer_result {
-   bool value = 1;
-}
-
 // @description Mints the token
 // @read-only false
+// @result empty_message
 message mint_arguments {
    bytes to = 1 [(koinos.btype) = ADDRESS];
    uint64 value = 2 [jstype = JS_STRING];
 }
 
-message mint_result {
-   bool value = 1;
-}
-
 // @description Burns the token
 // @read-only false
+// @result empty_message
 message burn_arguments {
    bytes from = 1 [(koinos.btype) = ADDRESS];
    uint64 value = 2 [jstype = JS_STRING];
 }
 
-message burn_result {
-   bool value = 1;
-}
-
 message balance_object {
    uint64 value = 1 [jstype = JS_STRING];
-}
-
-message mana_balance_object {
-   uint64 balance = 1 [jstype = JS_STRING];
-   uint64 mana = 2 [jstype = JS_STRING];
-   uint64 last_mana_update = 3 [jstype = JS_STRING];
 }
 
 message mint_event {

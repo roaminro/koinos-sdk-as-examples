@@ -1,4 +1,4 @@
-import { Arrays, Protobuf, System, SafeMath, authority } from "@koinos/sdk-as";
+import { Arrays, Protobuf, System, SafeMath, authority, error } from "@koinos/sdk-as";
 import { token } from "./proto/token";
 import { State } from "./State";
 
@@ -47,28 +47,23 @@ export class Token {
     return res;
   }
 
-  transfer(args: token.transfer_arguments): token.transfer_result {
+  transfer(args: token.transfer_arguments): token.empty_message {
     const from = args.from!;
     const to = args.to!;
     const value = args.value;
 
-    const res = new token.transfer_result();
+    System.require(!Arrays.equal(from, to), 'Cannot transfer to self');
 
-    if (Arrays.equal(from, to)) {
-      System.log('Cannot transfer to self');
-
-      return res;
-    }
-
-    System.requireAuthority(authority.authorization_type.contract_call, from);
+    System.require(
+      Arrays.equal(System.getCaller().caller, args.from!) || 
+        System.checkAuthority(authority.authorization_type.contract_call, args.from!),
+      "'from' has not authorized transfer",
+      error.error_code.authorization_failure
+    );
 
     const fromBalance = this._state.GetBalance(from);
 
-    if (fromBalance.value < value) {
-      System.log("'from' has insufficient balance");
-
-      return res;
-    }
+    System.require(fromBalance.value >= value, "'from' has insufficient balance");
 
     const toBalance = this._state.GetBalance(to);
 
@@ -82,18 +77,14 @@ export class Token {
     const transferEvent = new token.transfer_event(from, to, value);
     const impacted = [to, from];
 
-    System.event('token.transfer', Protobuf.encode(transferEvent, token.transfer_event.encode), impacted);
+    System.event('token.transfer_event', Protobuf.encode(transferEvent, token.transfer_event.encode), impacted);
 
-    res.value = true;
-
-    return res;
+    return new token.empty_message();
   }
 
-  mint(args: token.mint_arguments): token.mint_result {
+  mint(args: token.mint_arguments): token.empty_message {
     const to = args.to!;
     const value = args.value;
-
-    const res = new token.mint_result(false);
 
     System.requireAuthority(authority.authorization_type.contract_call, this._contractId);
 
@@ -101,12 +92,8 @@ export class Token {
 
     const newSupply = SafeMath.tryAdd(supply.value, value);
 
-    if (newSupply.error) {
-      System.log('Mint would overflow supply');
+    System.require(!newSupply.error, 'Mint would overflow supply');
 
-      return res;
-    }
-    
     const toBalance = this._state.GetBalance(to);
     toBalance.value += value;
 
@@ -118,28 +105,25 @@ export class Token {
     const mintEvent = new token.mint_event(to, value);
     const impacted = [to];
 
-    System.event('token.mint', Protobuf.encode(mintEvent, token.mint_event.encode), impacted);
+    System.event('token.mint_event', Protobuf.encode(mintEvent, token.mint_event.encode), impacted);
 
-    res.value = true;
-
-    return res;
+    return new token.empty_message();
   }
 
-  burn(args: token.burn_arguments): token.burn_result {
+  burn(args: token.burn_arguments): token.empty_message {
     const from = args.from!;
     const value = args.value;
 
-    const res = new token.burn_result(false);
-
-    System.requireAuthority(authority.authorization_type.contract_call, from);
+    System.require(
+      Arrays.equal(System.getCaller().caller, args.from!) || 
+        System.checkAuthority(authority.authorization_type.contract_call, args.from!),
+      "'from' has not authorized transfer",
+      error.error_code.authorization_failure
+    );
 
     const fromBalance = this._state.GetBalance(from);
 
-    if (fromBalance.value < value) {
-      System.log("'from' has insufficient balance");
-
-      return res;
-    }
+    System.require(fromBalance.value >= value, "'from' has insufficient balance");
 
     const supply = this._state.GetSupply();
 
@@ -154,10 +138,8 @@ export class Token {
     const burnEvent = new token.burn_event(from, value);
     const impacted = [from];
 
-    System.event('token.burn', Protobuf.encode(burnEvent, token.burn_event.encode), impacted);
-
-    res.value = true;
+    System.event('token.burn_event', Protobuf.encode(burnEvent, token.burn_event.encode), impacted);
     
-    return res;
+    return new token.empty_message();
   }
 }
