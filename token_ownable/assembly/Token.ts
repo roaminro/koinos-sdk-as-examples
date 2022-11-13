@@ -79,7 +79,7 @@ export class Token {
     const metadata = this.state.GetMetadata();
 
     System.require(
-      metadata.owner!.length && Arrays.equal(System.getCaller().caller, metadata.owner),
+      Arrays.equal(System.getCaller().caller, metadata.owner),
       'not authorized mint',
       error.error_code.authorization_failure
     );
@@ -111,7 +111,7 @@ export class Token {
     const metadata = this.state.GetMetadata();
 
     System.require(
-      metadata.owner!.length && Arrays.equal(System.getCaller().caller, metadata.owner),
+      Arrays.equal(System.getCaller().caller, metadata.owner),
       'not authorized burn',
       error.error_code.authorization_failure
     );
@@ -150,7 +150,7 @@ export class Token {
     metadata.decimals = args.decimals;
 
     this.state.SaveMetadata(metadata);
-    
+
     return new token.empty_message();
   }
 
