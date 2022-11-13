@@ -1,10 +1,12 @@
 # token contract
 
 ## Instruction
-Update the following contract properties with your token details:
-- _name: string = "Token";
-- _symbol: string = "TKN";
-- _decimals: u32 = 8;
+- upload contract
+- call `initialize` function with the following details:
+- name: string = "Token"
+- symbol: string = "TKN"
+- decimals: u32 = 8
+- owner: address of the contract that can mint/burn tokens
 
 ## Build
 ```sh
