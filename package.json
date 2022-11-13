@@ -26,8 +26,9 @@
     "buildNft": "cd nft && yarn install && koinos-sdk-as-cli build-all release 0 nft.proto",
     "buildStaking": "cd staking && yarn install && koinos-sdk-as-cli build-all release 0 staking.proto",
     "buildToken": "cd token && yarn install && koinos-sdk-as-cli build-all release 0 token.proto && koinos-sdk-as-cli run-tests",
+    "buildTokenOwnable": "cd token_ownable && yarn install && koinos-sdk-as-cli build-all release 0 token.proto && koinos-sdk-as-cli run-tests",
     "buildTransactionStorage": "cd transaction_storage && yarn install && koinos-sdk-as-cli build release && koinos-sdk-as-cli run-tests",
-    "buildAll": "yarn lint && yarn buildCalculator && yarn buildChat && yarn buildControlledContractUpdate && yarn buildImmutable && yarn buildNft && yarn buildStaking && yarn buildToken && yarn buildTransactionStorage",
-    "buildAll:ubuntu": "yarn lint && yarn buildCalculator:ubuntu && yarn buildChat && yarn buildControlledContractUpdate && yarn buildImmutable && yarn buildNft && yarn buildStaking && yarn buildToken && yarn buildTransactionStorage"
+    "buildAll": "yarn lint && yarn buildCalculator && yarn buildChat && yarn buildControlledContractUpdate && yarn buildImmutable && yarn buildNft && yarn buildStaking && yarn buildToken && yarn buildTokenOwnable && yarn buildTransactionStorage",
+    "buildAll:ubuntu": "yarn lint && yarn buildCalculator:ubuntu && yarn buildChat && yarn buildControlledContractUpdate && yarn buildImmutable && yarn buildNft && yarn buildStaking && yarn buildToken && yarn buildTokenOwnable && yarn buildTransactionStorage"
   }
 }

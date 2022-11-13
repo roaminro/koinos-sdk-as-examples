@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package koinos;
+option go_package = "github.com/koinos/koinos-proto-golang/koinos";
+
+import "koinos/options.proto";
+
+message block_topology {
+   bytes id = 1 [(btype) = BLOCK_ID];
+   uint64 height = 2 [jstype = JS_STRING];
+   bytes previous = 3 [(btype) = BLOCK_ID];
+}
