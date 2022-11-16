@@ -137,6 +137,9 @@ export class Token {
   }
 
   initialize(args: token.initialize_arguments): token.empty_message {
+    // only this contract can initialize itself
+    System.requireAuthority(authority.authorization_type.contract_call, this.contractId);
+
     const metadata = this.state.GetMetadata();
     System.require(!metadata.initialized, 'already initialized');
     System.require(args.owner!.length, 'missing owner argument');

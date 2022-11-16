@@ -16,7 +16,7 @@ describe("token", () => {
 
   it("should get the name", () => {
     const tkn = new Token();
-
+    MockVM.setAuthorities([new MockVM.MockAuthority(authority.authorization_type.contract_call, CONTRACT_ID, true)]);
     tkn.initialize(new token.initialize_arguments(OWNER_ID, 'Token', 'TKN', 8));
 
     const args = new token.name_arguments();
@@ -27,6 +27,7 @@ describe("token", () => {
 
   it("should get the symbol", () => {
     const tkn = new Token();
+    MockVM.setAuthorities([new MockVM.MockAuthority(authority.authorization_type.contract_call, CONTRACT_ID, true)]);
 
     tkn.initialize(new token.initialize_arguments(OWNER_ID, 'Token', 'TKN', 8));
 
@@ -38,6 +39,7 @@ describe("token", () => {
 
   it("should get the decimals", () => {
     const tkn = new Token();
+    MockVM.setAuthorities([new MockVM.MockAuthority(authority.authorization_type.contract_call, CONTRACT_ID, true)]);
 
     tkn.initialize(new token.initialize_arguments(OWNER_ID, 'Token', 'TKN', 8));
 
@@ -49,7 +51,7 @@ describe("token", () => {
 
   it("should get the metadata", () => {
     const tkn = new Token();
-
+    MockVM.setAuthorities([new MockVM.MockAuthority(authority.authorization_type.contract_call, CONTRACT_ID, true)]);
     tkn.initialize(new token.initialize_arguments(OWNER_ID, 'Token', 'TKN', 8));
 
     const res = tkn.get_metadata(new token.get_metadata_arguments());
@@ -64,7 +66,7 @@ describe("token", () => {
 
   it("should/not burn tokens", () => {
     const tkn = new Token();
-
+    MockVM.setAuthorities([new MockVM.MockAuthority(authority.authorization_type.contract_call, CONTRACT_ID, true)]);
     tkn.initialize(new token.initialize_arguments(OWNER_ID, 'Token', 'TKN', 8));
 
     // set caller to OWNER_ID so that we can mint/burn tokens
@@ -143,7 +145,7 @@ describe("token", () => {
 
   it("should mint tokens", () => {
     const tkn = new Token();
-
+    MockVM.setAuthorities([new MockVM.MockAuthority(authority.authorization_type.contract_call, CONTRACT_ID, true)]);
     tkn.initialize(new token.initialize_arguments(OWNER_ID, 'Token', 'TKN', 8));
 
     // set caller to OWNER_ID so that we can mint/burn tokens
@@ -181,7 +183,7 @@ describe("token", () => {
 
   it("should not mint tokens if not owner account", () => {
     const tkn = new Token();
-
+    MockVM.setAuthorities([new MockVM.MockAuthority(authority.authorization_type.contract_call, CONTRACT_ID, true)]);
     tkn.initialize(new token.initialize_arguments(OWNER_ID, 'Token', 'TKN', 8));
 
     // set caller to OWNER_ID so that we can mint/burn tokens
@@ -220,7 +222,7 @@ describe("token", () => {
 
   it("should not mint tokens if new total supply overflows", () => {
     const tkn = new Token();
-
+    MockVM.setAuthorities([new MockVM.MockAuthority(authority.authorization_type.contract_call, CONTRACT_ID, true)]);
     tkn.initialize(new token.initialize_arguments(OWNER_ID, 'Token', 'TKN', 8));
 
     // set caller to OWNER_ID so that we can mint/burn tokens
@@ -253,6 +255,7 @@ describe("token", () => {
 
   it("should transfer tokens", () => {
     const tkn = new Token();
+    MockVM.setAuthorities([new MockVM.MockAuthority(authority.authorization_type.contract_call, CONTRACT_ID, true)]);
     tkn.initialize(new token.initialize_arguments(OWNER_ID, 'Token', 'TKN', 8));
 
     // set caller to OWNER_ID so that we can mint/burn tokens
@@ -296,6 +299,7 @@ describe("token", () => {
 
   it("should not transfer tokens without the proper authorizations", () => {
     const tkn = new Token();
+    MockVM.setAuthorities([new MockVM.MockAuthority(authority.authorization_type.contract_call, CONTRACT_ID, true)]);
     tkn.initialize(new token.initialize_arguments(OWNER_ID, 'Token', 'TKN', 8));
 
     // set caller to OWNER_ID so that we can mint/burn tokens
@@ -329,6 +333,7 @@ describe("token", () => {
 
   it("should not transfer tokens to self", () => {
     const tkn = new Token();
+    MockVM.setAuthorities([new MockVM.MockAuthority(authority.authorization_type.contract_call, CONTRACT_ID, true)]);
     tkn.initialize(new token.initialize_arguments(OWNER_ID, 'Token', 'TKN', 8));
 
     // set caller to OWNER_ID so that we can mint/burn tokens
@@ -362,6 +367,7 @@ describe("token", () => {
 
   it("should not transfer if unsufficient balance", () => {
     const tkn = new Token();
+    MockVM.setAuthorities([new MockVM.MockAuthority(authority.authorization_type.contract_call, CONTRACT_ID, true)]);
     tkn.initialize(new token.initialize_arguments(OWNER_ID, 'Token', 'TKN', 8));
 
     // set caller to OWNER_ID so that we can mint/burn tokens
