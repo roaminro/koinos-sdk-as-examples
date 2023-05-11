@@ -46,7 +46,7 @@ export class Token {
 
     System.require(
       Arrays.equal(System.getCaller().caller, args.from!) || 
-        System.checkAuthority(authority.authorization_type.contract_call, args.from!),
+        System.checkAuthority(authority.authorization_type.contract_call, args.from!, System.getArguments().args),
       "'from' has not authorized transfer",
       error.error_code.authorization_failure
     );

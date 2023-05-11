@@ -165,6 +165,13 @@
     google-protobuf "^3.19.4"
     protobufjs "^6.11.2"
 
+"@koinos/abi-proto-gen@github:koinos/koinos-abi-proto-gen#19cf0a276ed7c8a35b26b448e9ee149e697c2500":
+  version "1.0.1"
+  resolved "https://codeload.github.com/koinos/koinos-abi-proto-gen/tar.gz/19cf0a276ed7c8a35b26b448e9ee149e697c2500"
+  dependencies:
+    google-protobuf "^3.19.4"
+    protobufjs "^6.11.2"
+
 "@koinos/as-gen@^0.4.0":
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/@koinos/as-gen/-/as-gen-0.4.0.tgz#4acc59b701ff8e9c8864f7c4ca17727a70c0870f"

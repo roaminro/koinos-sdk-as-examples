@@ -12,7 +12,7 @@
     "@typescript-eslint/parser": "^5.10.0",
     "assemblyscript": "^0.19.22",
     "eslint": "^8.7.0",
-    "@koinos/abi-proto-gen": "^0.4.0",
+    "@koinos/abi-proto-gen": "github:koinos/koinos-abi-proto-gen#19cf0a276ed7c8a35b26b448e9ee149e697c2500",
     "@koinos/as-proto-gen": "^0.4.3",
     "@koinos/as-gen": "^0.4.0",
     "@koinos/mock-vm": "^0.4.2",

@@ -1,0 +1,27 @@
+// See https://containers.dev/implementors/json_reference/ for configuration reference
+{
+	"name": "Koinos AS SDK Dev",
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+	"runArgs": ["--add-host=host.docker.internal:host-gateway"],
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				// eslint extension
+				"dbaeumer.vscode-eslint",
+				// Proto extension
+				"zxh404.vscode-proto3"
+			]
+		}
+	},
+	"remoteUser": "node",
+	"features": {
+		"ghcr.io/devcontainers/features/node:1": {},
+		"docker-from-docker": {
+			"version": "latest",
+			"moby": true,
+			"dockerDashComposeVersion": "v2"
+		}
+	}
+}

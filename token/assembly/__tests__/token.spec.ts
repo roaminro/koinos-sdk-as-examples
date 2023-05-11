@@ -43,6 +43,9 @@ describe("token", () => {
   it("should/not burn tokens", () => {
     const tkn = new Token();
 
+    MockVM.setContractArguments(new Uint8Array(0));
+    MockVM.setEntryPoint(1);
+
     // set contract_call authority for CONTRACT_ID to true so that we can mint tokens
     let auth = new MockVM.MockAuthority(authority.authorization_type.contract_call, CONTRACT_ID, true);
     MockVM.setAuthorities([auth]);
@@ -228,6 +231,9 @@ describe("token", () => {
 
   it("should transfer tokens", () => {
     const tkn = new Token();
+
+    MockVM.setContractArguments(new Uint8Array(0));
+    MockVM.setEntryPoint(1);
 
     // set contract_call authority for CONTRACT_ID to true so that we can mint tokens
     const authContractId = new MockVM.MockAuthority(authority.authorization_type.contract_call, CONTRACT_ID, true);

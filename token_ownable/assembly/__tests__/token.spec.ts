@@ -255,6 +255,8 @@ describe("token", () => {
 
   it("should transfer tokens", () => {
     const tkn = new Token();
+    MockVM.setContractArguments(new Uint8Array(0));
+    MockVM.setEntryPoint(1);
     MockVM.setAuthorities([new MockVM.MockAuthority(authority.authorization_type.contract_call, CONTRACT_ID, true)]);
     tkn.initialize(new token.initialize_arguments(OWNER_ID, 'Token', 'TKN', 8));
 
@@ -299,6 +301,8 @@ describe("token", () => {
 
   it("should not transfer tokens without the proper authorizations", () => {
     const tkn = new Token();
+    MockVM.setContractArguments(new Uint8Array(0));
+    MockVM.setEntryPoint(1);
     MockVM.setAuthorities([new MockVM.MockAuthority(authority.authorization_type.contract_call, CONTRACT_ID, true)]);
     tkn.initialize(new token.initialize_arguments(OWNER_ID, 'Token', 'TKN', 8));
 
