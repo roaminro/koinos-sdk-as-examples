@@ -40,6 +40,15 @@ describe("token", () => {
     expect(res.value).toBe(8);
   });
 
+  it("should get the max supply", () => {
+    const tkn = new Token();
+
+    const args = new token.max_supply_arguments();
+    const res = tkn.max_supply(args);
+
+    expect(res.value).toBe(0);
+  });
+
   it("should/not burn tokens", () => {
     const tkn = new Token();
 
@@ -223,6 +232,39 @@ describe("token", () => {
     }).toThrow();
 
     expect(MockVM.getErrorMessage()).toStrictEqual('Mint would overflow supply');
+
+    // check total supply
+    totalSupplyRes = tkn.total_supply(totalSupplyArgs);
+    expect(totalSupplyRes.value).toBe(123);
+  });
+
+  it("should not mint tokens if new total supply overflows max supply", () => {
+    const tkn = new Token();
+
+    // set contract_call authority for CONTRACT_ID to true so that we can mint tokens
+    const auth = new MockVM.MockAuthority(authority.authorization_type.contract_call, CONTRACT_ID, true);
+    MockVM.setAuthorities([auth]);
+
+    let mintArgs = new token.mint_arguments(MOCK_ACCT2, 123);
+    tkn.mint(mintArgs);
+
+    // check total supply
+    let totalSupplyArgs = new token.total_supply_arguments();
+    let totalSupplyRes = tkn.total_supply(totalSupplyArgs);
+    expect(totalSupplyRes.value).toBe(123);
+
+    // save the MockVM state because the mint is going to revert the transaction
+    MockVM.commitTransaction();
+
+    expect(() => {
+      // try to mint tokens
+      const tkn = new Token();
+      tkn._maxSupply = 400;
+      const mintArgs = new token.mint_arguments(MOCK_ACCT2, 500);
+      tkn.mint(mintArgs);
+    }).toThrow();
+
+    expect(MockVM.getErrorMessage()).toStrictEqual('Mint would overflow max supply');
 
     // check total supply
     totalSupplyRes = tkn.total_supply(totalSupplyArgs);

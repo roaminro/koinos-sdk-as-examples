@@ -3,9 +3,16 @@ import { token } from "./proto/token";
 import { State } from "./State";
 
 export class Token {
+  // SETTINGS BEGINNING
   _name: string = "Token";
   _symbol: string = "TKN";
   _decimals: u32 = 8;
+
+  // set _maxSupply to zero if there is no max supply
+  // if set to zero, the supply would still be limited by how many tokens can fit in a u64 (u64.MAX_VALUE)
+  _maxSupply: u64 = 0;
+
+  // SETTINGS END
 
   _contractId: Uint8Array;
   _state: State;
@@ -36,6 +43,10 @@ export class Token {
     return res;
   }
 
+  max_supply(args: token.max_supply_arguments): token.max_supply_result {
+    return new token.max_supply_result(this._maxSupply);
+  }
+
   balance_of(args: token.balance_of_arguments): token.balance_of_result {
     const owner = args.owner!;
 
@@ -55,8 +66,8 @@ export class Token {
     System.require(!Arrays.equal(from, to), 'Cannot transfer to self');
 
     System.require(
-      Arrays.equal(System.getCaller().caller, args.from!) || 
-        System.checkAuthority(authority.authorization_type.contract_call, args.from!, System.getArguments().args),
+      Arrays.equal(System.getCaller().caller, args.from!) ||
+      System.checkAuthority(authority.authorization_type.contract_call, args.from!, System.getArguments().args),
       "'from' has not authorized transfer",
       error.error_code.authorization_failure
     );
@@ -94,6 +105,8 @@ export class Token {
 
     System.require(!newSupply.error, 'Mint would overflow supply');
 
+    System.require(this._maxSupply == 0 || newSupply.value <= this._maxSupply, 'Mint would overflow max supply');
+
     const toBalance = this._state.GetBalance(to);
     toBalance.value += value;
 
@@ -115,8 +128,8 @@ export class Token {
     const value = args.value;
 
     System.require(
-      Arrays.equal(System.getCaller().caller, args.from!) || 
-        System.checkAuthority(authority.authorization_type.contract_call, args.from!, System.getArguments().args),
+      Arrays.equal(System.getCaller().caller, args.from!) ||
+      System.checkAuthority(authority.authorization_type.contract_call, args.from!, System.getArguments().args),
       "'from' has not authorized transfer",
       error.error_code.authorization_failure
     );
@@ -139,7 +152,7 @@ export class Token {
     const impacted = [from];
 
     System.event('token.burn_event', Protobuf.encode(burnEvent, token.burn_event.encode), impacted);
-    
+
     return new token.empty_message();
   }
 }

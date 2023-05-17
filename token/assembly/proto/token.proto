@@ -38,6 +38,14 @@ message total_supply_result {
    uint64 value = 1 [jstype = JS_STRING];
 }
 
+// @description Returns the token's max supply
+// @read-only true
+message max_supply_arguments {}
+
+message max_supply_result {
+   uint64 value = 1 [jstype = JS_STRING];
+}
+
 // @description Checks the balance at an address
 // @read-only true
 message balance_of_arguments {
