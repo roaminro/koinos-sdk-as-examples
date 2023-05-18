@@ -22,8 +22,8 @@
   },
   "scripts": {
     "lint": "eslint --max-warnings 0 --ext ts \"*/assembly/**/*.ts\"",
-    "build:debug": "koinos-sdk-as-cli build-all debug 0 token.proto",
-    "build:release": "koinos-sdk-as-cli build-all release 0 token.proto",
+    "build:debug": "koinos-sdk-as-cli build-all debug 0 token.proto koinos/contracts/token/token.proto",
+    "build:release": "koinos-sdk-as-cli build-all release 0 token.proto koinos/contracts/token/token.proto",
     "test": "koinos-sdk-as-cli run-tests"
   }
 }

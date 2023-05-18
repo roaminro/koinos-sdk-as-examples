@@ -78,10 +78,10 @@ describe("token", () => {
     // check events
     const events = MockVM.getEvents();
     expect(events.length).toBe(2);
-    expect(events[0].name).toBe('token.mint_event');
+    expect(events[0].name).toBe('koinos.contracts.token.mint_event');
     expect(events[0].impacted.length).toBe(1);
     expect(Arrays.equal(events[0].impacted[0], MOCK_ACCT1)).toBe(true);
-    expect(events[1].name).toBe('token.burn_event');
+    expect(events[1].name).toBe('koinos.contracts.token.burn_event');
     expect(events[1].impacted.length).toBe(1);
     expect(Arrays.equal(events[1].impacted[0], MOCK_ACCT1)).toBe(true);
 
@@ -152,7 +152,7 @@ describe("token", () => {
     // check events
     const events = MockVM.getEvents();
     expect(events.length).toBe(1);
-    expect(events[0].name).toBe('token.mint_event');
+    expect(events[0].name).toBe('koinos.contracts.token.mint_event');
     expect(events[0].impacted.length).toBe(1);
     expect(Arrays.equal(events[0].impacted[0], MOCK_ACCT1)).toBe(true);
 
@@ -305,7 +305,7 @@ describe("token", () => {
     const events = MockVM.getEvents();
     // 2 events, 1st one is the mint event, the second one is the transfer event
     expect(events.length).toBe(2);
-    expect(events[1].name).toBe('token.transfer_event');
+    expect(events[1].name).toBe('koinos.contracts.token.transfer_event');
     expect(events[1].impacted.length).toBe(2);
     expect(Arrays.equal(events[1].impacted[0], MOCK_ACCT2)).toBe(true);
     expect(Arrays.equal(events[1].impacted[1], MOCK_ACCT1)).toBe(true);

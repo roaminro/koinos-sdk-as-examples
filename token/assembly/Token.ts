@@ -85,7 +85,7 @@ export class Token {
     const transferEvent = new token.transfer_event(from, to, value);
     const impacted = [to, from];
 
-    System.event('token.transfer_event', Protobuf.encode(transferEvent, token.transfer_event.encode), impacted);
+    System.event('koinos.contracts.token.transfer_event', Protobuf.encode(transferEvent, token.transfer_event.encode), impacted);
 
     return new token.empty_message();
   }
@@ -115,7 +115,7 @@ export class Token {
     const mintEvent = new token.mint_event(to, value);
     const impacted = [to];
 
-    System.event('token.mint_event', Protobuf.encode(mintEvent, token.mint_event.encode), impacted);
+    System.event('koinos.contracts.token.mint_event', Protobuf.encode(mintEvent, token.mint_event.encode), impacted);
 
     return new token.empty_message();
   }
@@ -148,7 +148,7 @@ export class Token {
     const burnEvent = new token.burn_event(from, value);
     const impacted = [from];
 
-    System.event('token.burn_event', Protobuf.encode(burnEvent, token.burn_event.encode), impacted);
+    System.event('koinos.contracts.token.burn_event', Protobuf.encode(burnEvent, token.burn_event.encode), impacted);
 
     return new token.empty_message();
   }
