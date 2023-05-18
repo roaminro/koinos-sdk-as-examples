@@ -1,9 +1,10 @@
 import { Arrays, Protobuf, System, SafeMath, authority, error } from "@koinos/sdk-as";
 import { token } from "./proto/token";
-import { State } from "./State";
+import { SupplyStorage } from "./state/SupplyStorage";
+import { BalancesStorage } from "./state/BalancesStorage";
 
 export class Token {
-  // SETTINGS BEGINNING
+  // SETTINGS BEGIN
   _name: string = "Token";
   _symbol: string = "TKN";
   _decimals: u32 = 8;
@@ -14,13 +15,9 @@ export class Token {
 
   // SETTINGS END
 
-  _contractId: Uint8Array;
-  _state: State;
-
-  constructor() {
-    this._contractId = System.getContractId();
-    this._state = new State(this._contractId);
-  }
+  _contractId: Uint8Array = System.getContractId();
+  _supplyStorage: SupplyStorage = new SupplyStorage(this._contractId);
+  _balancesStorage: BalancesStorage = new BalancesStorage(this._contractId);
 
   name(args: token.name_arguments): token.name_result {
     return new token.name_result(this._name);
@@ -35,7 +32,7 @@ export class Token {
   }
 
   total_supply(args: token.total_supply_arguments): token.total_supply_result {
-    const supply = this._state.GetSupply();
+    const supply = this._supplyStorage.get()!;
 
     const res = new token.total_supply_result();
     res.value = supply.value;
@@ -48,9 +45,9 @@ export class Token {
   }
 
   balance_of(args: token.balance_of_arguments): token.balance_of_result {
-    const owner = args.owner!;
+    const owner = args.owner;
 
-    const balanceObj = this._state.GetBalance(owner);
+    const balanceObj = this._balancesStorage.get(owner)!;
 
     const res = new token.balance_of_result();
     res.value = balanceObj.value;
@@ -59,31 +56,31 @@ export class Token {
   }
 
   transfer(args: token.transfer_arguments): token.empty_message {
-    const from = args.from!;
-    const to = args.to!;
+    const from = args.from;
+    const to = args.to;
     const value = args.value;
 
     System.require(!Arrays.equal(from, to), 'Cannot transfer to self');
 
     System.require(
-      Arrays.equal(System.getCaller().caller, args.from!) ||
-      System.checkAuthority(authority.authorization_type.contract_call, args.from!, System.getArguments().args),
+      Arrays.equal(System.getCaller().caller, args.from) ||
+      System.checkAuthority(authority.authorization_type.contract_call, args.from, System.getArguments().args),
       "'from' has not authorized transfer",
       error.error_code.authorization_failure
     );
 
-    const fromBalance = this._state.GetBalance(from);
+    const fromBalance = this._balancesStorage.get(from)!;
 
     System.require(fromBalance.value >= value, "'from' has insufficient balance");
 
-    const toBalance = this._state.GetBalance(to);
+    const toBalance = this._balancesStorage.get(to)!;
 
     // the balances cannot hold more than the supply, so we don't check for overflow/underflow
     fromBalance.value -= value;
     toBalance.value += value;
 
-    this._state.SaveBalance(from, fromBalance);
-    this._state.SaveBalance(to, toBalance);
+    this._balancesStorage.put(from, fromBalance);
+    this._balancesStorage.put(to, toBalance);
 
     const transferEvent = new token.transfer_event(from, to, value);
     const impacted = [to, from];
@@ -94,12 +91,12 @@ export class Token {
   }
 
   mint(args: token.mint_arguments): token.empty_message {
-    const to = args.to!;
+    const to = args.to;
     const value = args.value;
 
     System.requireAuthority(authority.authorization_type.contract_call, this._contractId);
 
-    const supply = this._state.GetSupply();
+    const supply = this._supplyStorage.get()!;
 
     const newSupply = SafeMath.tryAdd(supply.value, value);
 
@@ -107,13 +104,13 @@ export class Token {
 
     System.require(this._maxSupply == 0 || newSupply.value <= this._maxSupply, 'Mint would overflow max supply');
 
-    const toBalance = this._state.GetBalance(to);
+    const toBalance = this._balancesStorage.get(to)!;
     toBalance.value += value;
 
     supply.value = newSupply.value;
 
-    this._state.SaveSupply(supply);
-    this._state.SaveBalance(to, toBalance);
+    this._supplyStorage.put(supply);
+    this._balancesStorage.put(to, toBalance);
 
     const mintEvent = new token.mint_event(to, value);
     const impacted = [to];
@@ -124,29 +121,29 @@ export class Token {
   }
 
   burn(args: token.burn_arguments): token.empty_message {
-    const from = args.from!;
+    const from = args.from;
     const value = args.value;
 
     System.require(
-      Arrays.equal(System.getCaller().caller, args.from!) ||
-      System.checkAuthority(authority.authorization_type.contract_call, args.from!, System.getArguments().args),
+      Arrays.equal(System.getCaller().caller, args.from) ||
+      System.checkAuthority(authority.authorization_type.contract_call, args.from, System.getArguments().args),
       "'from' has not authorized transfer",
       error.error_code.authorization_failure
     );
 
-    const fromBalance = this._state.GetBalance(from);
+    const fromBalance = this._balancesStorage.get(from)!;
 
     System.require(fromBalance.value >= value, "'from' has insufficient balance");
 
-    const supply = this._state.GetSupply();
+    const supply = this._supplyStorage.get()!;
 
     const newSupply = SafeMath.sub(supply.value, value);
 
     supply.value = newSupply;
     fromBalance.value -= value;
 
-    this._state.SaveSupply(supply);
-    this._state.SaveBalance(from, fromBalance);
+    this._supplyStorage.put(supply);
+    this._balancesStorage.put(from, fromBalance);
 
     const burnEvent = new token.burn_event(from, value);
     const impacted = [from];
