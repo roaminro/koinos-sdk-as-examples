@@ -1,0 +1,122 @@
+syntax = "proto3";
+
+package token;
+
+import "koinos/options.proto"; 
+
+message empty_message {}
+
+// @description Returns the token's name
+// @read-only true
+message name_arguments {}
+
+message name_result {
+   string value = 1;
+}
+
+// @description Returns the token's symbol
+// @read-only true
+message symbol_arguments {}
+
+message symbol_result {
+   string value = 1;
+}
+
+// @description Returns the token's decimals precision
+// @read-only true
+message decimals_arguments {}
+
+message decimals_result {
+   uint32 value = 1;
+}
+
+// @description Returns the token's total supply
+// @read-only true
+message total_supply_arguments {}
+
+message total_supply_result {
+   uint64 value = 1 [jstype = JS_STRING];
+}
+
+// @description Returns the token's max supply
+// @read-only true
+message max_supply_arguments {}
+
+message max_supply_result {
+   uint64 value = 1 [jstype = JS_STRING];
+}
+
+// @description Checks the balance at an address
+// @read-only true
+message balance_of_arguments {
+   bytes owner = 1 [(koinos.btype) = ADDRESS];
+}
+
+message balance_of_result {
+   uint64 value = 1 [jstype = JS_STRING];
+}
+
+// @description Transfers the token
+// @read-only false
+// @result empty_message
+message transfer_arguments {
+   bytes from = 1 [(koinos.btype) = ADDRESS];
+   bytes to = 2 [(koinos.btype) = ADDRESS];
+   uint64 value = 3 [jstype = JS_STRING];
+}
+
+// @description Mints the token
+// @read-only false
+// @result empty_message
+message mint_arguments {
+   bytes to = 1 [(koinos.btype) = ADDRESS];
+   uint64 value = 2 [jstype = JS_STRING];
+}
+
+// @description Burns the token
+// @read-only false
+// @result empty_message
+message burn_arguments {
+   bytes from = 1 [(koinos.btype) = ADDRESS];
+   uint64 value = 2 [jstype = JS_STRING];
+}
+
+// @description Initialize the token
+// @read-only false
+// @result empty_message
+message initialize_arguments {
+   bytes owner = 1 [(koinos.btype) = ADDRESS];
+   string name = 2;
+   string symbol = 3;
+   uint32 decimals = 4;
+   uint64 max_supply = 5 [jstype = JS_STRING];
+}
+
+// @description Update the owner of the contract
+// @read-only false
+// @result empty_message
+message update_owner_arguments {
+   bytes new_owner = 1 [(koinos.btype) = ADDRESS];
+}
+
+// @description Get the token metadata
+// @read-only true
+// @result metadata_object
+message get_metadata_arguments {
+   
+}
+
+// objects
+message balance_object {
+   uint64 value = 1 [jstype = JS_STRING];
+}
+
+message metadata_object {
+   bool initialized = 1;
+   bytes owner = 2 [(koinos.btype) = ADDRESS];
+   string name = 3;
+   string symbol = 4;
+   uint32 decimals = 5;
+   uint64 supply = 6 [jstype = JS_STRING];
+   uint64 max_supply = 7 [jstype = JS_STRING];
+}
