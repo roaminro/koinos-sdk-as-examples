@@ -1,0 +1,111 @@
+syntax = "proto3";
+
+package koinos.rpc.chain;
+option go_package = "github.com/koinos/koinos-proto-golang/koinos/rpc/chain";
+
+import "koinos/common.proto";
+import "koinos/options.proto";
+import "koinos/chain/chain.proto";
+import "koinos/protocol/protocol.proto";
+import "koinos/rpc/rpc.proto";
+
+message submit_block_request {
+   protocol.block block = 1;
+}
+
+message submit_block_response {
+   protocol.block_receipt receipt = 1;
+}
+
+message submit_transaction_request {
+   protocol.transaction transaction = 1;
+}
+
+message submit_transaction_response {
+   protocol.transaction_receipt receipt = 1;
+}
+
+message get_head_info_request {}
+
+message get_head_info_response {
+   block_topology head_topology = 1;
+   uint64 last_irreversible_block = 2 [jstype = JS_STRING];
+   bytes head_state_merkle_root = 3;
+}
+
+message get_chain_id_request {}
+
+message get_chain_id_response {
+   bytes chain_id = 1;
+}
+
+message get_fork_heads_request {}
+
+message get_fork_heads_response {
+   block_topology last_irreversible_block = 1;
+   repeated block_topology fork_heads = 2;
+}
+
+message read_contract_request {
+   bytes contract_id = 1 [(btype) = CONTRACT_ID];
+   uint32 entry_point = 2;
+   bytes args = 3;
+}
+
+message read_contract_response {
+   bytes result = 1;
+   repeated string logs = 2;
+}
+
+message get_account_nonce_request {
+   bytes account = 1 [(btype) = ADDRESS];
+}
+
+message get_account_nonce_response {
+   bytes nonce = 1;
+}
+
+message get_account_rc_request {
+   bytes account = 1 [(btype) = ADDRESS];
+}
+
+message get_account_rc_response {
+   uint64 rc = 1 [jstype = JS_STRING];
+}
+
+message get_resource_limits_request {}
+
+message get_resource_limits_response {
+   koinos.chain.resource_limit_data resource_limit_data = 1;
+}
+
+message chain_request {
+   oneof request {
+      rpc.reserved_rpc reserved = 1;
+      submit_block_request submit_block = 2;
+      submit_transaction_request submit_transaction = 3;
+      get_head_info_request get_head_info = 4;
+      get_chain_id_request get_chain_id = 5;
+      get_fork_heads_request get_fork_heads = 6;
+      read_contract_request read_contract = 7;
+      get_account_nonce_request get_account_nonce = 8;
+      get_account_rc_request get_account_rc = 9;
+      get_resource_limits_request get_resource_limits = 10;
+   }
+}
+
+message chain_response {
+   oneof response {
+      rpc.reserved_rpc reserved = 1;
+      rpc.error_response error = 2;
+      submit_block_response submit_block = 3;
+      submit_transaction_response submit_transaction = 4;
+      get_head_info_response get_head_info = 5;
+      get_chain_id_response get_chain_id = 6;
+      get_fork_heads_response get_fork_heads = 7;
+      read_contract_response read_contract = 8;
+      get_account_nonce_response get_account_nonce = 9;
+      get_account_rc_response get_account_rc = 10;
+      get_resource_limits_response get_resource_limits = 11;
+   }
+}

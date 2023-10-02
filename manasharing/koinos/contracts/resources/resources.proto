@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package koinos.contracts.resources;
+option go_package = "github.com/koinos/koinos-proto-golang/koinos/contracts/resources";
+
+message market {
+   uint64 resource_supply = 1 [jstype = JS_STRING];
+   uint64 rc_reserve = 2 [jstype = JS_STRING];
+   uint64 block_budget = 3 [jstype = JS_STRING];
+   uint64 block_limit = 4 [jstype = JS_STRING];
+}
+
+message resource_markets {
+   market disk_storage = 1;
+   market network_bandwidth = 2;
+   market compute_bandwidth = 3;
+}
+
+message get_resource_markets_arguments {}
+
+message get_resource_markets_result {
+   resource_markets value = 1;
+}

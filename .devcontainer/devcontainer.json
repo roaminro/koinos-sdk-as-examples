@@ -18,10 +18,6 @@
 	"remoteUser": "node",
 	"features": {
 		"ghcr.io/devcontainers/features/node:1": {},
-		"docker-from-docker": {
-			"version": "latest",
-			"moby": true,
-			"dockerDashComposeVersion": "v2"
-		}
+		"ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
 	}
 }
