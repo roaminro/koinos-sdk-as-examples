@@ -2,101 +2,152 @@ syntax = "proto3";
 
 package token;
 
-import "koinos/options.proto"; 
+import "koinos/options.proto";
 
-message empty_message {}
-
+// --------------------------- Contract ----------------------------------- //
 // @description Returns the token's name
 // @read-only true
-message name_arguments {}
+// @result string_object
+message name_arguments {
 
-message name_result {
-   string value = 1;
 }
 
 // @description Returns the token's symbol
 // @read-only true
-message symbol_arguments {}
+// @result string_object
+message symbol_arguments {
 
-message symbol_result {
-   string value = 1;
 }
 
 // @description Returns the token's decimals precision
 // @read-only true
-message decimals_arguments {}
+// @result uint32_object
+message decimals_arguments {
 
-message decimals_result {
-   uint32 value = 1;
 }
+
 
 // @description Returns the token's total supply
 // @read-only true
+// @result uint64_object
 message total_supply_arguments {}
-
-message total_supply_result {
-   uint64 value = 1 [jstype = JS_STRING];
-}
 
 // @description Returns the token's max supply
 // @read-only true
+// @result uint64_object
 message max_supply_arguments {}
-
-message max_supply_result {
-   uint64 value = 1 [jstype = JS_STRING];
-}
 
 // @description Checks the balance at an address
 // @read-only true
+// @result uint64_object
 message balance_of_arguments {
-   bytes owner = 1 [(koinos.btype) = ADDRESS];
-}
-
-message balance_of_result {
-   uint64 value = 1 [jstype = JS_STRING];
+  bytes owner = 1 [(koinos.btype) = ADDRESS];
 }
 
 // @description Transfers the token
 // @read-only false
 // @result empty_message
 message transfer_arguments {
-   bytes from = 1 [(koinos.btype) = ADDRESS];
-   bytes to = 2 [(koinos.btype) = ADDRESS];
-   uint64 value = 3 [jstype = JS_STRING];
+  bytes from = 1 [(koinos.btype) = ADDRESS];
+  bytes to = 2 [(koinos.btype) = ADDRESS];
+  uint64 value = 3 [jstype = JS_STRING];
 }
 
 // @description Mints the token
 // @read-only false
 // @result empty_message
 message mint_arguments {
-   bytes to = 1 [(koinos.btype) = ADDRESS];
-   uint64 value = 2 [jstype = JS_STRING];
+  bytes to = 1 [(koinos.btype) = ADDRESS];
+  uint64 value = 2 [jstype = JS_STRING];
 }
 
 // @description Burns the token
 // @read-only false
 // @result empty_message
 message burn_arguments {
-   bytes from = 1 [(koinos.btype) = ADDRESS];
-   uint64 value = 2 [jstype = JS_STRING];
+  bytes from = 1 [(koinos.btype) = ADDRESS];
+  uint64 value = 2 [jstype = JS_STRING];
 }
 
-message balance_object {
-   uint64 value = 1 [jstype = JS_STRING];
+// @description approve a spender to spend value of behalf of owner
+// @read-only false
+// @result empty_message
+message approve_arguments {
+  bytes owner = 1 [(koinos.btype) = ADDRESS];
+  bytes spender = 2 [(koinos.btype) = ADDRESS];
+  uint64 value = 3 [jstype = JS_STRING];
 }
 
-message mint_event {
-   bytes to = 1 [(koinos.btype) = ADDRESS];
-   uint64 value = 2 [jstype = JS_STRING];
+// @description Get allowance for an owner and a spender
+// @read-only true
+// @result uint64_object
+message allowance_arguments {
+  bytes owner = 1 [(koinos.btype) = ADDRESS];
+  bytes spender = 2 [(koinos.btype) = ADDRESS];
 }
 
-message burn_event {
-   bytes from = 1 [(koinos.btype) = ADDRESS];
-   uint64 value = 2 [jstype = JS_STRING];
+// @description Update the owner of the contract
+// @read-only false
+// @result empty_message
+message update_owner_arguments {
+  bytes new_owner = 1 [(koinos.btype) = ADDRESS];
 }
 
-message transfer_event {
-   bytes from = 1 [(koinos.btype) = ADDRESS];
-   bytes to = 2 [(koinos.btype) = ADDRESS];
-   uint64 value = 3 [jstype = JS_STRING];
+// @description Get the token information
+// @read-only true
+// @result info_object
+message get_info_arguments {
+  
 }
+
+// --------------------------- Contract ----------------------------------- //
+
+
+// --------------------------- Common objects ---------------------------- //
+message empty_message {
+
+}
+
+message string_object {
+  string value = 1;
+}
+
+message uint32_object {
+  uint32 value = 1;
+}
+
+message uint64_object {
+  uint64 value = 1 [jstype = JS_STRING];
+}
+
+message allowance_key {
+  bytes owner = 1;
+  bytes spender = 2;
+}
+
+message metadata_object {
+  bytes owner = 1 [(koinos.btype) = ADDRESS];
+  uint64 supply = 2 [jstype = JS_STRING];
+}
+
+message info_object {
+  string name = 1;
+  string symbol = 2;
+  uint32 decimals = 3;
+  uint64 supply = 4 [jstype = JS_STRING];
+  uint64 max_supply = 5 [jstype = JS_STRING];
+  bytes owner = 6 [(koinos.btype) = ADDRESS];
+}
+
+// --------------------------- Common objects ---------------------------- //
+
+// --------------------------- Events ---------------------------- //
+message approve_event {
+  bytes owner = 1 [(koinos.btype) = ADDRESS];
+  bytes spender = 2 [(koinos.btype) = ADDRESS];
+  uint64 value = 3 [jstype = JS_STRING];
+}
+// --------------------------- Events ---------------------------- //
+
+// --------------------------- External contracts ---------------------------- //
+// --------------------------- External contracts ---------------------------- //

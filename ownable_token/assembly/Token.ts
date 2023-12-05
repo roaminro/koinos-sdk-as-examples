@@ -55,6 +55,8 @@ export class Token {
     const to = args.to;
     const value = args.value;
 
+    System.require(from.length, "missing 'from' argument");
+    System.require(to.length, "missing 'to' argument");
     System.require(!Arrays.equal(from, to), 'Cannot transfer to self');
 
     System.require(

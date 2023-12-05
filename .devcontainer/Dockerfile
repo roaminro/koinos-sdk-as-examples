@@ -12,7 +12,7 @@ RUN echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
 ENV DEVCONTAINER=true
 
 # install AS SDK
-RUN yarn global add @roamin/sdk-as-cli@1.1.1
+RUN yarn global add @roamin/sdk-as-cli@1.1.3
 
 # install Local Koinos
-RUN yarn global add @roamin/local-koinos@0.4.9
+RUN yarn global add @roamin/local-koinos@0.4.12

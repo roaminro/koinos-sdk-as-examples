@@ -1,6 +1,6 @@
 // See https://containers.dev/implementors/json_reference/ for configuration reference
 {
-	"name": "Koinos AS SDK Dev",
+	"name": "Koinos SDK AS examples",
 	"build": {
 		"dockerfile": "Dockerfile"
 	},
@@ -8,10 +8,9 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				// eslint extension
 				"dbaeumer.vscode-eslint",
-				// Proto extension
-				"zxh404.vscode-proto3"
+				"zxh404.vscode-proto3",
+				"esbenp.prettier-vscode"
 			]
 		}
 	},

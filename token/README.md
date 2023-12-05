@@ -1,22 +1,21 @@
-# token contract
-
-## Instruction
-Update the following contract properties with your token details:
-- _name: string = "Token";
-- _symbol: string = "TKN";
-- _decimals: u32 = 8;
+# Token
 
 ## Build
 ```sh
 # build the debug version
-node cli.js build-all debug token.proto 
+yarn build:debug
+# or
+yarn exec koinos-sdk-as-cli build-all debug 0 token.proto 
 
 # build the release version
-node cli.js build-all release token.proto 
+yarn build:release
+# or
+yarn exec koinos-sdk-as-cli build-all release 0 token.proto 
 ```
 
-## Run tests
+## Test
 ```sh
-# example for the calculator contract
-node cli.js run-tests
+yarn test
+# or
+yarn exec koinos-sdk-as-cli run-tests
 ```

@@ -1,0 +1,96 @@
+{
+    "methods": {
+        "name": {
+            "argument": "token.name_arguments",
+            "return": "token.string_object",
+            "description": "Returns the token's name",
+            "entry-point": "0x82a3537f",
+            "read-only": true
+        },
+        "symbol": {
+            "argument": "token.symbol_arguments",
+            "return": "token.string_object",
+            "description": "Returns the token's symbol",
+            "entry-point": "0xb76a7ca1",
+            "read-only": true
+        },
+        "decimals": {
+            "argument": "token.decimals_arguments",
+            "return": "token.uint32_object",
+            "description": "Returns the token's decimals precision",
+            "entry-point": "0xee80fd2f",
+            "read-only": true
+        },
+        "total_supply": {
+            "argument": "token.total_supply_arguments",
+            "return": "token.uint64_object",
+            "description": "Returns the token's total supply",
+            "entry-point": "0xb0da3934",
+            "read-only": true
+        },
+        "max_supply": {
+            "argument": "token.max_supply_arguments",
+            "return": "token.uint64_object",
+            "description": "Returns the token's max supply",
+            "entry-point": "0x02c683fd",
+            "read-only": true
+        },
+        "balance_of": {
+            "argument": "token.balance_of_arguments",
+            "return": "token.uint64_object",
+            "description": "Checks the balance at an address",
+            "entry-point": "0x5c721497",
+            "read-only": true
+        },
+        "transfer": {
+            "argument": "token.transfer_arguments",
+            "return": "token.empty_message",
+            "description": "Transfers the token",
+            "entry-point": "0x27f576ca",
+            "read-only": false
+        },
+        "mint": {
+            "argument": "token.mint_arguments",
+            "return": "token.empty_message",
+            "description": "Mints the token",
+            "entry-point": "0xdc6f17bb",
+            "read-only": false
+        },
+        "burn": {
+            "argument": "token.burn_arguments",
+            "return": "token.empty_message",
+            "description": "Burns the token",
+            "entry-point": "0x859facc5",
+            "read-only": false
+        },
+        "approve": {
+            "argument": "token.approve_arguments",
+            "return": "token.empty_message",
+            "description": "approve a spender to spend value of behalf of owner",
+            "entry-point": "0x74e21680",
+            "read-only": false
+        },
+        "allowance": {
+            "argument": "token.allowance_arguments",
+            "return": "token.uint64_object",
+            "description": "Get allowance for an owner and a spender",
+            "entry-point": "0x32f09fa1",
+            "read-only": true
+        },
+        "update_owner": {
+            "argument": "token.update_owner_arguments",
+            "return": "token.empty_message",
+            "description": "Update the owner of the contract",
+            "entry-point": "0x48bd00e9",
+            "read-only": false
+        },
+        "get_info": {
+            "argument": "token.get_info_arguments",
+            "return": "token.info_object",
+            "description": "Get the token information",
+            "entry-point": "0xbd7f6850",
+            "read-only": true
+        }
+    },
+    "types": "CowKChphc3NlbWJseS9wcm90by90b2tlbi5wcm90bxIFdG9rZW4aFGtvaW5vcy9vcHRpb25zLnByb3RvIhAKDm5hbWVfYXJndW1lbnRzIhIKEHN5bWJvbF9hcmd1bWVudHMiFAoSZGVjaW1hbHNfYXJndW1lbnRzIhgKFnRvdGFsX3N1cHBseV9hcmd1bWVudHMiFgoUbWF4X3N1cHBseV9hcmd1bWVudHMiMgoUYmFsYW5jZV9vZl9hcmd1bWVudHMSGgoFb3duZXIYASABKAxCBIC1GAZSBW93bmVyIl4KEnRyYW5zZmVyX2FyZ3VtZW50cxIYCgRmcm9tGAEgASgMQgSAtRgGUgRmcm9tEhQKAnRvGAIgASgMQgSAtRgGUgJ0bxIYCgV2YWx1ZRgDIAEoBEICMAFSBXZhbHVlIkAKDm1pbnRfYXJndW1lbnRzEhQKAnRvGAEgASgMQgSAtRgGUgJ0bxIYCgV2YWx1ZRgCIAEoBEICMAFSBXZhbHVlIkQKDmJ1cm5fYXJndW1lbnRzEhgKBGZyb20YASABKAxCBIC1GAZSBGZyb20SGAoFdmFsdWUYAiABKARCAjABUgV2YWx1ZSJpChFhcHByb3ZlX2FyZ3VtZW50cxIaCgVvd25lchgBIAEoDEIEgLUYBlIFb3duZXISHgoHc3BlbmRlchgCIAEoDEIEgLUYBlIHc3BlbmRlchIYCgV2YWx1ZRgDIAEoBEICMAFSBXZhbHVlIlEKE2FsbG93YW5jZV9hcmd1bWVudHMSGgoFb3duZXIYASABKAxCBIC1GAZSBW93bmVyEh4KB3NwZW5kZXIYAiABKAxCBIC1GAZSB3NwZW5kZXIiOwoWdXBkYXRlX293bmVyX2FyZ3VtZW50cxIhCgluZXdfb3duZXIYASABKAxCBIC1GAZSCG5ld093bmVyIhQKEmdldF9pbmZvX2FyZ3VtZW50cyIPCg1lbXB0eV9tZXNzYWdlIiUKDXN0cmluZ19vYmplY3QSFAoFdmFsdWUYASABKAlSBXZhbHVlIiUKDXVpbnQzMl9vYmplY3QSFAoFdmFsdWUYASABKA1SBXZhbHVlIikKDXVpbnQ2NF9vYmplY3QSGAoFdmFsdWUYASABKARCAjABUgV2YWx1ZSI/Cg1hbGxvd2FuY2Vfa2V5EhQKBW93bmVyGAEgASgMUgVvd25lchIYCgdzcGVuZGVyGAIgASgMUgdzcGVuZGVyIkkKD21ldGFkYXRhX29iamVjdBIaCgVvd25lchgBIAEoDEIEgLUYBlIFb3duZXISGgoGc3VwcGx5GAIgASgEQgIwAVIGc3VwcGx5IrABCgtpbmZvX29iamVjdBISCgRuYW1lGAEgASgJUgRuYW1lEhYKBnN5bWJvbBgCIAEoCVIGc3ltYm9sEhoKCGRlY2ltYWxzGAMgASgNUghkZWNpbWFscxIaCgZzdXBwbHkYBCABKARCAjABUgZzdXBwbHkSIQoKbWF4X3N1cHBseRgFIAEoBEICMAFSCW1heFN1cHBseRIaCgVvd25lchgGIAEoDEIEgLUYBlIFb3duZXIiZQoNYXBwcm92ZV9ldmVudBIaCgVvd25lchgBIAEoDEIEgLUYBlIFb3duZXISHgoHc3BlbmRlchgCIAEoDEIEgLUYBlIHc3BlbmRlchIYCgV2YWx1ZRgDIAEoBEICMAFSBXZhbHVlYgZwcm90bzMK1wkKImtvaW5vcy9jb250cmFjdHMvdG9rZW4vdG9rZW4ucHJvdG8SFmtvaW5vcy5jb250cmFjdHMudG9rZW4aFGtvaW5vcy9vcHRpb25zLnByb3RvIhAKDm5hbWVfYXJndW1lbnRzIiMKC25hbWVfcmVzdWx0EhQKBXZhbHVlGAEgASgJUgV2YWx1ZSISChBzeW1ib2xfYXJndW1lbnRzIiUKDXN5bWJvbF9yZXN1bHQSFAoFdmFsdWUYASABKAlSBXZhbHVlIhQKEmRlY2ltYWxzX2FyZ3VtZW50cyInCg9kZWNpbWFsc19yZXN1bHQSFAoFdmFsdWUYASABKA1SBXZhbHVlIhgKFnRvdGFsX3N1cHBseV9hcmd1bWVudHMiLwoTdG90YWxfc3VwcGx5X3Jlc3VsdBIYCgV2YWx1ZRgBIAEoBEICMAFSBXZhbHVlIjIKFGJhbGFuY2Vfb2ZfYXJndW1lbnRzEhoKBW93bmVyGAEgASgMQgSAtRgGUgVvd25lciItChFiYWxhbmNlX29mX3Jlc3VsdBIYCgV2YWx1ZRgBIAEoBEICMAFSBXZhbHVlIl4KEnRyYW5zZmVyX2FyZ3VtZW50cxIYCgRmcm9tGAEgASgMQgSAtRgGUgRmcm9tEhQKAnRvGAIgASgMQgSAtRgGUgJ0bxIYCgV2YWx1ZRgDIAEoBEICMAFSBXZhbHVlIicKD3RyYW5zZmVyX3Jlc3VsdBIUCgV2YWx1ZRgBIAEoCFIFdmFsdWUiQAoObWludF9hcmd1bWVudHMSFAoCdG8YASABKAxCBIC1GAZSAnRvEhgKBXZhbHVlGAIgASgEQgIwAVIFdmFsdWUiIwoLbWludF9yZXN1bHQSFAoFdmFsdWUYASABKAhSBXZhbHVlIkQKDmJ1cm5fYXJndW1lbnRzEhgKBGZyb20YASABKAxCBIC1GAZSBGZyb20SGAoFdmFsdWUYAiABKARCAjABUgV2YWx1ZSIjCgtidXJuX3Jlc3VsdBIUCgV2YWx1ZRgBIAEoCFIFdmFsdWUiKgoOYmFsYW5jZV9vYmplY3QSGAoFdmFsdWUYASABKARCAjABUgV2YWx1ZSJ5ChNtYW5hX2JhbGFuY2Vfb2JqZWN0EhwKB2JhbGFuY2UYASABKARCAjABUgdiYWxhbmNlEhYKBG1hbmEYAiABKARCAjABUgRtYW5hEiwKEGxhc3RfbWFuYV91cGRhdGUYAyABKARCAjABUg5sYXN0TWFuYVVwZGF0ZSJACgpidXJuX2V2ZW50EhgKBGZyb20YASABKAxCBIC1GAZSBGZyb20SGAoFdmFsdWUYAiABKARCAjABUgV2YWx1ZSI8CgptaW50X2V2ZW50EhQKAnRvGAEgASgMQgSAtRgGUgJ0bxIYCgV2YWx1ZRgCIAEoBEICMAFSBXZhbHVlIloKDnRyYW5zZmVyX2V2ZW50EhgKBGZyb20YASABKAxCBIC1GAZSBGZyb20SFAoCdG8YAiABKAxCBIC1GAZSAnRvEhgKBXZhbHVlGAMgASgEQgIwAVIFdmFsdWVCPlo8Z2l0aHViLmNvbS9rb2lub3Mva29pbm9zLXByb3RvLWdvbGFuZy9rb2lub3MvY29udHJhY3RzL3Rva2VuYgZwcm90bzM="
+}
