@@ -30,7 +30,6 @@
     "build:debug": "koinos-sdk-as-cli build-all --generate_authorize debug 0 manasharing.proto",
     "build:release": "koinos-sdk-as-cli build-all --generate_authorize release 0 manasharing.proto",
     "test": "koinos-sdk-as-cli run-tests",
-    "ci": "jest -i",
-    "ci:devcontainer": "ENV=DEVCONTAINER jest -i"
+    "ci": "jest -i"
   }
 }
