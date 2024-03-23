@@ -3,7 +3,7 @@
   "version": "0.4.2",
   "main": "assembly/index.ts",
   "license": "MIT",
-  "author": "Roamin",
+  "author": "Roamin Ro",
   "repository": "https://github.com/roaminro/koinos-sdk-as-examples",
   "dependencies": {},
   "devDependencies": {
